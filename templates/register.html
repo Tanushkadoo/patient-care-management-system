@@ -12,89 +12,117 @@
 
 <body>
 
-    <!-- Google Translate Widget -->
-    <div id="google_translate_element"></div>
-    <script type="text/javascript">
-        function googleTranslateElementInit() {
-            new google.translate.TranslateElement(
-                {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
-                'google_translate_element'
-            );
-        }
-    </script>
-    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <!-- Header containing Google Translate Widget -->
+    <header class="top-bar">
+        <div id="google_translate_element"></div>
+        <script type="text/javascript">
+            function googleTranslateElementInit() {
+                new google.translate.TranslateElement(
+                    {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+                    'google_translate_element'
+                );
+            }
+        </script>
+        <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    </header>
 
-    <!-- Register Area -->
-    <div class="login-container">
-        <div class="login-box">
-            
-            <h1>Hospital Management System</h1>
-            <h2>Create Account</h2>
+    <!-- Main Container designed for a split-screen or side-by-side layout in your CSS -->
+    <main class="registration-container">
 
-            <form action="/register" method="POST">
+        <!-- Left Side: Hospital Branding & Information -->
+        <section class="branding-panel">
+            <h1>CityCare Hospital</h1>
+            <h2>Management System</h2>
+            <p>Join our secure network to manage appointments, access health records, and connect with medical professionals.</p>
+            <ul>
+                <li>✓ 24/7 Access to Patient Records</li>
+                <li>✓ Secure & Confidential</li>
+                <li>✓ Easy Appointment Scheduling</li>
+            </ul>
+        </section>
+
+        <!-- Right Side: The Registration Form -->
+        <section class="form-panel">
+            <div class="form-box">
                 
-                <div class="input-group">
-                    <label>Name</label>
-                    <input 
-                        type="text" 
-                        name="full_name" 
-                        placeholder="Enter your name" 
-                        required>
-                </div>
+                <h2>Create Your Account</h2>
+                <p>Please fill in your details to register.</p>
+
+                <form action="/register" method="POST">
+                    
+                    <!-- Group 1: Personal Details using HTML5 Fieldset -->
+                    <fieldset>
+                        <legend>Personal Information</legend>
+
+                        <div class="input-group">
+                            <!-- Added 'for' and 'id' attributes for better accessibility -->
+                            <label for="full_name">Full Name</label>
+                            <input type="text" id="full_name" name="full_name" placeholder="e.g. John Doe" required>
+                        </div>
+
+                        <br>
+
+                        <div class="input-group">
+                            <label for="dob">Date of Birth</label>
+                            <input type="date" id="dob" name="dob" required>
+                        </div>
+                    </fieldset>
+
+                    <br>
+
+                    <!-- Group 2: Account Details -->
+                    <fieldset>
+                        <legend>Account Details</legend>
+
+                        <div class="input-group">
+                            <label for="email">Email Address</label>
+                            <input type="email" id="email" name="email" placeholder="name@example.com" required>
+                        </div>
+
+                        <br>
+
+                        <div class="input-group">
+                            <label for="password">Password</label>
+                            <input type="password" id="password" name="password" placeholder="Create a strong password" required>
+                        </div>
+
+                        <br>
+
+                        <div class="input-group">
+                            <label for="role">Registering As</label>
+                            <select id="role" name="role" required>
+                                <option value="" disabled selected>-- Select Your Role --</option>
+                                <option value="patient">Patient</option>
+                                <option value="doctor">Medical Doctor</option>
+                                <option value="nurse">Registered Nurse</option>
+                                <option value="staff">Admin Staff</option>
+                            </select>
+                        </div>
+                    </fieldset>
+
+                    <br>
+
+                    <button type="submit" class="btn-primary">
+                        Register Account
+                    </button>
+
+                </form>
 
                 <br>
-
-                <div class="input-group">
-                    <label>Email</label>
-                    <input 
-                        type="email" 
-                        name="email" 
-                        placeholder="Enter your email" 
-                        required>
-                </div>
-
+                <hr>
                 <br>
 
-                <div class="input-group">
-                    <label>Password</label>
-                    <input 
-                        type="password" 
-                        name="password" 
-                        placeholder="Enter your password" 
-                        required>
+                <!-- Footer Links -->
+                <div class="form-footer">
+                    <p>Already have an account? <a href="/login">Login here</a></p>
+                    <br>
+                    <a href="/" class="back-link">← Back to Home Page</a>
                 </div>
 
-                <br>
+            </div>
+        </section>
 
-                <div class="input-group">
-                    <label>Role</label>
-                    <select name="role" required>
-                        <option value="">-- Select Role --</option>
-                        <option value="patient">Patient</option>
-                        <option value="doctor">Doctor</option>
-                        <option value="nurse">Nurse</option>
-                    </select>
-                </div>
-
-                <br>
-
-                <button type="submit">
-                    Register
-                </button>
-
-            </form>
-
-            <p>
-                Already have an account? 
-                <a href="/login">Login</a>
-            </p>
-
-            <br>
-
-            <a href="/">← Back to Home</a>
-
-        </div>
-    </div>
+    </main>
 
 </body>
 </html>
