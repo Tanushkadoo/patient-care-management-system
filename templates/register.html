@@ -2,77 +2,81 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Register</title>
-
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='style.css') }}">
-
+    <title>Register - Hospital Management System</title>
+    
+    <!-- This links to your external CSS file -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
-<div id="google_translate_element"></div>
-<script type="text/javascript">
-  function googleTranslateElementInit() {
-    new google.translate.TranslateElement(
-      {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
-      'google_translate_element'
-    );
-  }
-</script>
-<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
+    <!-- Google Translate Widget -->
+    <div id="google_translate_element"></div>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement(
+                {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+                'google_translate_element'
+            );
+        }
+    </script>
+    <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+    <!-- Register Area -->
     <div class="login-container">
-
         <div class="login-box">
-
-            <h1> Hospital Management System</h1>
-
+            
+            <h1>Hospital Management System</h1>
             <h2>Create Account</h2>
 
             <form action="/register" method="POST">
+                
+                <div class="input-group">
+                    <label>Name</label>
+                    <input 
+                        type="text" 
+                        name="full_name" 
+                        placeholder="Enter your name" 
+                        required>
+                </div>
 
-                <label>Name</label>
+                <br>
 
-                <input
-                    type="text"
-                    name="full_name"
-                    placeholder="Enter your name"
-                    required>
+                <div class="input-group">
+                    <label>Email</label>
+                    <input 
+                        type="email" 
+                        name="email" 
+                        placeholder="Enter your email" 
+                        required>
+                </div>
 
-                <label>Email</label>
+                <br>
 
-                <input
-                    type="email"
-                    name="email"
-                    placeholder="Enter your email"
-                    required>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input 
+                        type="password" 
+                        name="password" 
+                        placeholder="Enter your password" 
+                        required>
+                </div>
 
-                <label>Password</label>
+                <br>
 
-                <input
-                    type="password"
-                    name="password"
-                    placeholder="Enter your password"
-                    required>
+                <div class="input-group">
+                    <label>Role</label>
+                    <select name="role" required>
+                        <option value="">-- Select Role --</option>
+                        <option value="patient">Patient</option>
+                        <option value="doctor">Doctor</option>
+                        <option value="nurse">Nurse</option>
+                    </select>
+                </div>
 
-                <label>Role</label>
-
-                <select name="role" required>
-
-                    <option value="">-- Select Role --</option>
-
-                    <option value="patient">Patient</option>
-
-                    <option value="doctor">Doctor</option>
-
-                    <option value="nurse">Nurse</option>
-
-                </select>
+                <br>
 
                 <button type="submit">
                     Register
@@ -81,11 +85,8 @@
             </form>
 
             <p>
-
-                Already have an account?
-
+                Already have an account? 
                 <a href="/login">Login</a>
-
             </p>
 
             <br>
@@ -93,9 +94,7 @@
             <a href="/">← Back to Home</a>
 
         </div>
-
     </div>
 
 </body>
-
 </html>
