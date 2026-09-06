@@ -10,7 +10,7 @@
 
 :root {
     /* Brand */
-    --color-primary: #1B4E8C;
+    --color-primary: rgb(227, 130, 130);
     --color-primary-dark: #123763;
     --color-primary-soft: #4E7FB5;
     --color-navy: #17324F;
