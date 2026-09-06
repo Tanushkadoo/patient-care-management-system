@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View EHR</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+      'google_translate_element'
+    );
+  }
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<div class="page-container">
+
+    <div class="page-header">
+        <h1>Electronic Health Records</h1>
+    </div>
+
+    <table class="data-table">
+
+        <tr>
+            <th>Patient</th>
+            <th>Medical History</th>
+            <th>Allergies</th>
+            <th>Diagnosis</th>
+            <th>Medications</th>
+            <th>Action</th>
+        </tr>
+
+        {% for record in ehr_records %}
+
+        <tr>
+
+            <td>{{ record[1] }}</td>
+            <td>{{ record[2] }}</td>
+            <td>{{ record[3] }}</td>
+            <td>{{ record[4] }}</td>
+            <td>{{ record[5] }}</td>
+
+            <td>
+
+                <a href="/edit_ehr/{{ record[0] }}" class="edit-btn">
+                    Edit
+                </a>
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+    <br>
+
+    <a href="/dashboard" class="back-btn">
+        ← Back to Dashboard
+    </a>
+
+</div>
+
+</body>
+</html>

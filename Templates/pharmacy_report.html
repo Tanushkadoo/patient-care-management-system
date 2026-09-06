@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Pharmacy Report</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+      'google_translate_element'
+    );
+  }
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<div class="page-container">
+
+<div class="page-header">
+
+<h1>Pharmacy Report</h1>
+
+<a href="/pharmacist_dashboard" class="btn-primary">
+Back
+</a>
+
+</div>
+
+<div class="stats">
+
+<div class="card">
+<h3>Total Medicines</h3>
+<h1>{{ total_medicines }}</h1>
+</div>
+
+<div class="card">
+<h3>Total Stock</h3>
+<h1>{{ total_stock }}</h1>
+</div>
+
+<div class="card">
+<h3>Low Stock</h3>
+<h1>{{ low_stock }}</h1>
+</div>
+
+<div class="card">
+<h3>Expired Medicines</h3>
+<h1>{{ expired }}</h1>
+</div>
+
+<div class="card">
+<h3>Medicines Dispensed</h3>
+<h1>{{ dispensed }}</h1>
+</div>
+
+</div>
+
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Edit Doctor</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+      'google_translate_element'
+    );
+  }
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+    <div class="form-container">
+
+        <div class="form-box">
+
+            <h1> Edit Doctor</h1>
+
+            <form method="POST">
+
+                <label>Doctor Name</label>
+
+                <input
+                    type="text"
+                    name="doctor_name"
+                    value="{{ doctor[1] }}"
+                    required>
+
+                <label>Specialization</label>
+
+                <input
+                    type="text"
+                    name="specialization"
+                    value="{{ doctor[2] }}"
+                    required>
+
+                <label>Phone</label>
+
+                <input
+                    type="text"
+                    name="phone"
+                    value="{{ doctor[3] }}"
+                    required>
+
+                <label>Experience (Years)</label>
+
+                <input
+                    type="number"
+                    name="experience"
+                    value="{{ doctor[4] }}"
+                    required>
+
+                <label>Available From</label>
+
+                <input
+                    type="time"
+                    name="available_from"
+                    value="{{ doctor[6] }}"
+                    required>
+
+                <label>Available To</label>
+
+                <input
+                    type="time"
+                    name="available_to"
+                    value="{{ doctor[7] }}"
+                    required>
+
+                <button type="submit">
+                    Update Doctor
+                </button>
+
+            </form>
+
+            <br>
+
+            <a href="/view_doctors" class="back-btn">
+                ← Back to Doctors
+            </a>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

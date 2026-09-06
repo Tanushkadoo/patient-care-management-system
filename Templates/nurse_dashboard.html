@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nurse Dashboard</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+      'google_translate_element'
+    );
+  }
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    
+    <div class="topbar">
+        <div class="logo">
+             Hospital Management System
+        </div>
+        <div class="welcome">
+            Welcome {{ session["user"] }}
+        </div>
+    </div>
+
+    
+
+    <div class="sidebar">
+        <h2>Menu</h2>
+        <a href="/dashboard"> Dashboard</a>
+        <a href="/view_patients"> Patients</a>
+        <a href="/view_ehr">View EHR</a><br>
+        <a href="/view_consultation">View Consultation</a><br>
+        <a href="/view_prescriptions">View Prescriptions</a>
+        <a href="/view_lab">View Lab Reports</a>
+        <a href="/search_patient_history">Patient Medical History</a>
+        <a href="/logout"> Logout</a>
+    </div>
+    <div class="main-content">
+
+        <h1> Nurse Dashboard</h1>
+        <div class="dashboard-section">
+
+            
+
+            <div class="dashboard-card">
+                <h2> Patients</h2>
+
+                <a href="/add_patient" class="btn-primary">
+                    Add Patient
+                </a>
+                <br><br>
+
+                <a href="/view_patients" class="btn-primary">
+                    View Patients
+                </a>
+            </div>
+
+            
+            
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Billing Report</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+      'google_translate_element'
+    );
+  }
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<div class="report-page">
+
+    <h1>Billing Report</h1>
+
+    <p class="page-subtitle">
+        Patient billing and payment information
+    </p>
+
+    <div class="report-table-container">
+
+        <table class="report-table">
+
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Patient</th>
+                    <th>Amount</th>
+                    <th>Payment Method</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for bill in bills %}
+
+                <tr>
+
+                    <td>{{ bill[0] }}</td>
+
+                    <td>{{ bill[1] }}</td>
+
+                    <td>
+                        ₹{{ bill[2] }}
+                    </td>
+
+                    <td>{{ bill[3] }}</td>
+
+                    <td>
+
+                        {% if bill[4] == 'Paid' %}
+
+                            <span class="report-status status-success">
+                                Paid
+                            </span>
+
+                        {% elif bill[4] == 'Pending' %}
+
+                            <span class="report-status status-warning">
+                                Pending
+                            </span>
+
+                        {% elif bill[4] == 'Cancelled' %}
+
+                            <span class="report-status status-danger">
+                                Cancelled
+                            </span>
+
+                        {% else %}
+
+                            {{ bill[4] }}
+
+                        {% endif %}
+
+                    </td>
+
+                    <td>{{ bill[5] }}</td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <br>
+
+    <a href="/reports_dashboard"
+       class="report-btn report-btn-primary">
+
+        ← Back to Reports
+
+    </a>
+
+</div>
+
+</body>
+
+</html>

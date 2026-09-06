@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Payment Status</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+
+<body>
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+      'google_translate_element'
+    );
+  }
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<div class="billing-page">
+
+    <h1> Payment Status</h1>
+
+    <p class="billing-subtitle">
+        Check the payment status of patient bills
+    </p>
+
+
+    <div class="billing-table-container">
+
+        {% if bills %}
+
+        <table class="billing-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>Bill ID</th>
+
+                    <th>Patient ID</th>
+
+                    <th>Amount</th>
+
+                    <th>Payment Status</th>
+
+                    <th>Date</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for bill in bills %}
+
+                <tr>
+
+                    <td>
+                        {{ bill[0] }}
+                    </td>
+
+
+                    <td>
+                        {{ bill[1] }}
+                    </td>
+
+
+                    <td>
+                        ₹{{ bill[2] }}
+                    </td>
+
+
+                    <td>
+
+                        {% if bill[4] == "Paid" %}
+
+                            <span class="payment-paid">
+                                 Paid
+                            </span>
+
+                        {% elif bill[4] == "Failed" %}
+
+                            <span class="payment-failed">
+                                 Failed
+                            </span>
+
+                        {% else %}
+
+                            <span class="payment-pending">
+                                 Pending
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <td>
+                        {{ bill[5] }}
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        {% else %}
+
+        <div class="bill-summary">
+
+            <h3> No Payment Records</h3>
+
+            <p>
+                There are currently no payment records available.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <a href="/dashboard"
+       class="billing-back">
+
+        ← Back to Dashboard
+
+    </a>
+
+</div>
+
+</body>
+
+</html>

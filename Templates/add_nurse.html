@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Nurse</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+      'google_translate_element'
+    );
+  }
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+    <div class="form-container">
+        <div class="form-box">
+            <h1> Add Nurse</h1>
+            <form method="POST">
+
+                <label>Nurse Name</label>
+                <input
+                    type="text"
+                    name="nurse_name"
+                    placeholder="Enter nurse name"
+                    required>
+
+                <label>Department</label>
+                <input
+                    type="text"
+                    name="department"
+                    placeholder="Enter department"
+                    required>
+
+                <label>Shift</label>
+                <select name="shift" required>
+                    <option value="">-- Select Shift --</option>
+                    <option value="Morning">Morning</option>
+                    <option value="Afternoon">Afternoon</option>
+                    <option value="Night">Night</option>
+
+                </select>
+
+                <label>Phone</label>
+                <input
+                    type="text"
+                    name="phone"
+                    placeholder="Enter phone number"
+                    required>
+
+                <label>Experience (Years)</label>
+                <input
+                    type="number"
+                    name="experience"
+                    placeholder="Enter experience"
+                    required>
+
+                <button type="submit">
+                    Add Nurse
+                </button>
+            </form>
+            <br>
+            <a href="/view_nurses" class="back-btn">
+                ← Back to Nurses List
+            </a>
+
+        </div>
+    </div>
+</body>
+</html>

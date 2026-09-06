@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Notifications</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+      'google_translate_element'
+    );
+  }
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<div class="form-container">
+
+    <div class="form-box">
+
+        <h2>Notification Management</h2>
+
+        <br>
+
+        <a href="/appointment_notification">
+            <button>Appointment Reminder</button>
+        </a>
+
+        <br><br>
+
+        <a href="/lab_notification">
+            <button>Lab Report Notification</button>
+        </a>
+
+        <br><br>
+
+        <a href="/prescription_notification">
+            <button>Prescription Notification</button>
+        </a>
+
+        <br><br>
+
+        <a href="/billing_notification">
+            <button>Billing Reminder</button>
+        </a>
+
+        <br><br>
+
+        <a href="/view_notifications">
+            <button>Notification History</button>
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

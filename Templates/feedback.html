@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Patient Feedback</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+
+<body>
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+      'google_translate_element'
+    );
+  }
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<div class="sidebar">
+
+    <h2>Patient Care</h2>
+
+    <a href="/dashboard">
+         Dashboard
+    </a>
+
+    <a href="/feedback">
+         Feedback
+    </a>
+
+    <a href="/logout">
+         Logout
+    </a>
+
+</div>
+
+
+<div class="main-content">
+
+    <div class="feedback-container">
+
+        <h1> Patient Feedback</h1>
+
+        <p class="feedback-intro">
+
+            Your feedback helps us improve our
+            healthcare services.
+
+        </p>
+
+
+        {% if request.args.get("success") %}
+
+        <div class="success-message">
+
+            Feedback submitted successfully!
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- ================================= -->
+        <!-- FEEDBACK FORM -->
+        <!-- ================================= -->
+
+        <div class="feedback-card">
+
+            <h2>Submit Feedback</h2>
+
+
+            <form method="POST"
+                  action="/feedback">
+
+
+                <!-- Doctor -->
+
+                <label>
+                    Doctor
+                </label>
+
+                <select name="doctor_id">
+
+                    <option value="">
+                        Select Doctor
+                    </option>
+
+                    {% for doctor in doctors %}
+
+                    <option value="{{ doctor[0] }}">
+
+                        {{ doctor[1] }}
+
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+
+                <!-- Department -->
+
+                <label>
+                    Department
+                </label>
+
+                <input
+                    type="text"
+                    name="department"
+                    placeholder="Example: Cardiology"
+                    required
+                >
+
+
+                <!-- Doctor Rating -->
+
+                <label>
+                    Doctor Performance
+                </label>
+
+                <select name="doctor_rating"
+                        required>
+
+                    <option value="">
+                        Select Rating
+                    </option>
+
+                    <option value="1">
+                         1 - Poor
+                    </option>
+
+                    <option value="2">
+                         2 - Fair
+                    </option>
+
+                    <option value="3">
+                         3 - Good
+                    </option>
+
+                    <option value="4">
+                         4 - Very Good
+                    </option>
+
+                    <option value="5">
+                         5 - Excellent
+                    </option>
+
+                </select>
+
+
+                <!-- Hospital Rating -->
+
+                <label>
+                    Hospital Services
+                </label>
+
+                <select name="hospital_rating"
+                        required>
+
+                    <option value="">
+                        Select Rating
+                    </option>
+
+                    <option value="1"> 1</option>
+                    <option value="2"> 2</option>
+                    <option value="3"> 3</option>
+                    <option value="4"> 4</option>
+                    <option value="5"> 5</option>
+
+                </select>
+
+
+                <!-- Laboratory -->
+
+                <label>
+                    Laboratory Services
+                </label>
+
+                <select name="laboratory_rating"
+                        required>
+
+                    <option value="">
+                        Select Rating
+                    </option>
+
+                    <option value="1"> 1</option>
+                    <option value="2"> 2</option>
+                    <option value="3"> 3</option>
+                    <option value="4"> 4</option>
+                    <option value="5"> 5</option>
+
+                </select>
+
+
+                <!-- Pharmacy -->
+
+                <label>
+                    Pharmacy Services
+                </label>
+
+                <select name="pharmacy_rating"
+                        required>
+
+                    <option value="">
+                        Select Rating
+                    </option>
+
+                    <option value="1"> 1</option>
+                    <option value="2"> 2</option>
+                    <option value="3"> 3</option>
+                    <option value="4"> 4</option>
+                    <option value="5"> 5</option>
+
+                </select>
+
+
+                <!-- Comments -->
+
+                <label>
+                    Comments
+                </label>
+
+                <textarea
+                    name="comments"
+                    rows="5"
+                    placeholder="Tell us about your experience..."
+                ></textarea>
+
+
+                <!-- Suggestions -->
+
+                <label>
+                    Suggestions
+                </label>
+
+                <textarea
+                    name="suggestions"
+                    rows="5"
+                    placeholder="How can we improve?"
+                ></textarea>
+
+
+                <button
+                    type="submit"
+                    class="feedback-submit">
+
+                    Submit Feedback
+
+                </button>
+
+
+            </form>
+
+        </div>
+
+
+        <!-- ================================= -->
+        <!-- FEEDBACK HISTORY -->
+        <!-- ================================= -->
+
+        <div class="feedback-card">
+
+            <h2>
+                 My Feedback History
+            </h2>
+
+
+            {% if feedback_history %}
+
+            <table class="feedback-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>Doctor</th>
+
+                        <th>Department</th>
+
+                        <th>Doctor Rating</th>
+
+                        <th>Hospital</th>
+
+                        <th>Laboratory</th>
+
+                        <th>Pharmacy</th>
+
+                        <th>Date</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for feedback in feedback_history %}
+
+                    <tr>
+
+                        <td>
+                            {{ feedback[1] or "Not specified" }}
+                        </td>
+
+                        <td>
+                            {{ feedback[2] }}
+                        </td>
+
+                        <td>
+                             {{ feedback[3] }}/5
+                        </td>
+
+                        <td>
+                             {{ feedback[4] }}/5
+                        </td>
+
+                        <td>
+                             {{ feedback[5] }}/5
+                        </td>
+
+                        <td>
+                             {{ feedback[6] }}/5
+                        </td>
+
+                        <td>
+                            {{ feedback[9] }}
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+
+            {% else %}
+
+            <p>
+                You have not submitted any feedback yet.
+            </p>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+
+</body>
+
+</html>

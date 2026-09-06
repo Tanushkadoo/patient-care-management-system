@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Analytics Dashboard</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+      'google_translate_element'
+    );
+  }
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<div class="main-content">
+
+<h1>Hospital Analytics Dashboard</h1>
+
+<div class="cards">
+
+    <div class="card">
+        <h3>Total Patients</h3>
+        <h2>{{ total_patients }}</h2>
+    </div>
+
+    <div class="card">
+        <h3>Total Doctors</h3>
+        <h2>{{ total_doctors }}</h2>
+    </div>
+
+    <div class="card">
+        <h3>Total Appointments</h3>
+        <h2>{{ total_appointments }}</h2>
+    </div>
+
+    <div class="card">
+        <h3>Total Revenue</h3>
+        <h2>₹{{ revenue }}</h2>
+    </div>
+
+</div>
+
+<br><br>
+
+<h2>Appointment Status</h2>
+
+<canvas id="statusChart"></canvas>
+
+<br><br>
+
+<a href="/reports_dashboard">
+
+<button>
+
+Back
+
+</button>
+
+</a>
+
+</div>
+
+<script>
+
+const statusData = {{ status_data | tojson }};
+
+const labels = statusData.map(item => item[0]);
+
+const values = statusData.map(item => item[1]);
+
+new Chart(
+
+document.getElementById("statusChart"),
+
+{
+
+type:"pie",
+
+data:{
+
+labels:labels,
+
+datasets:[{
+
+data:values
+
+}]
+
+}
+
+}
+
+);
+
+</script>
+
+</body>
+</html>

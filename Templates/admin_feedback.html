@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Patient Feedback</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+
+<body>
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+      'google_translate_element'
+    );
+  }
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<div class="main-content">
+
+    <div class="feedback-page">
+
+        <h1> Patient Feedback</h1>
+
+        <p class="feedback-subtitle">
+            View feedback submitted by patients
+        </p>
+
+
+        {% if feedback %}
+
+        <div class="feedback-container">
+
+            <table class="feedback-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>ID</th>
+
+                        <th>Patient ID</th>
+
+                        <th>Doctor ID</th>
+
+                        <th>Department</th>
+
+                        <th>Doctor Rating</th>
+
+                        <th>Hospital Rating</th>
+
+                        <th>Laboratory Rating</th>
+
+                        <th>Pharmacy Rating</th>
+
+                        <th>Comments</th>
+
+                        <th>Suggestions</th>
+
+                        <th>Date</th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for item in feedback %}
+
+                    <tr>
+
+                        <td>
+                            {{ item[0] }}
+                        </td>
+
+                        <td>
+                            {{ item[1] }}
+                        </td>
+
+                        <td>
+                            {{ item[2] if item[2] else "N/A" }}
+                        </td>
+
+                        <td>
+                            {{ item[3] if item[3] else "N/A" }}
+                        </td>
+
+                        <td>
+                            {% if item[4] %}
+                                 {{ item[4] }}/5
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if item[5] %}
+                                 {{ item[5] }}/5
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if item[6] %}
+                                 {{ item[6] }}/5
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if item[7] %}
+                                 {{ item[7] }}/5
+                            {% else %}
+                                N/A
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {{ item[8] if item[8] else "No comments" }}
+                        </td>
+
+                        <td>
+                            {{ item[9] if item[9] else "No suggestions" }}
+                        </td>
+
+                        <td>
+                            {{ item[10] }}
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="no-feedback">
+
+            <h2> No Feedback Yet</h2>
+
+            <p>
+                No patients have submitted feedback yet.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+
+        <a href="/dashboard"
+           class="feedback-back">
+
+            ← Back to Admin Dashboard
+
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

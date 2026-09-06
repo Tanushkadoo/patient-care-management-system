@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Edit Medicine</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+      'google_translate_element'
+    );
+  }
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<div class="form-container">
+
+<div class="form-box">
+
+<h1>Edit Medicine</h1>
+
+<form method="POST">
+
+<label>Medicine Name</label>
+
+<input
+type="text"
+name="medicine_name"
+value="{{ medicine[1] }}"
+required>
+
+<label>Category</label>
+
+<input
+type="text"
+name="category"
+value="{{ medicine[2] }}"
+required>
+
+<label>Manufacturer</label>
+
+<input
+type="text"
+name="manufacturer"
+value="{{ medicine[3] }}"
+required>
+
+<label>Batch Number</label>
+
+<input
+type="text"
+name="batch_no"
+value="{{ medicine[4] }}"
+required>
+
+<label>Stock</label>
+
+<input
+type="number"
+name="stock"
+value="{{ medicine[5] }}"
+required>
+
+<label>Unit Price</label>
+
+<input
+type="number"
+step="0.01"
+name="unit_price"
+value="{{ medicine[6] }}"
+required>
+
+<label>Expiry Date</label>
+
+<input
+type="date"
+name="expiry_date"
+value="{{ medicine[7] }}"
+required>
+
+<button type="submit">
+
+Update Medicine
+
+</button>
+
+</form>
+
+<a href="/view_medicines" class="back-btn">
+
+← Back
+
+</a>
+
+</div>
+
+</div>
+
+</body>
+</html>

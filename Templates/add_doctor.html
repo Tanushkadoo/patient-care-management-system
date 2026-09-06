@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Doctor</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+      'google_translate_element'
+    );
+  }
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+    <div class="form-container">
+
+        <div class="form-box">
+
+            <h1> Add Doctor</h1>
+
+            <form method="POST">
+
+                <label>Doctor Name</label>
+                <input type="text"
+                       name="doctor_name"
+                       required>
+
+                <label>Specialization</label>
+                <input type="text"
+                       name="specialization"
+                       required>
+
+                <label>Phone</label>
+                <input type="text"
+                       name="phone"
+                       required>
+
+                <label>Experience (Years)</label>
+                <input type="number"
+                       name="experience"
+                       required>
+
+                <label>Available From</label>
+                <input type="time"
+                       name="available_from"
+                       required>
+
+                <label>Available To</label>
+                <input type="time"
+                       name="available_to"
+                       required>
+
+                <label>Select Doctor User</label>
+                <select name="user_id" required>
+                    <option value="">-- Select Doctor --</option>
+
+                    {% for doctor in doctor_users %}
+                    <option value="{{ doctor[0] }}">
+                        {{ doctor[1] }}
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+                <button type="submit">
+                    Add Doctor
+                </button>
+            </form>
+
+            <br>
+
+            <a href="/view_doctors"
+               class="back-btn">
+                ← Back to Doctors
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>
+
+

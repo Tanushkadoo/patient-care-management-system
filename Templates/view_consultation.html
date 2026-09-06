@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View Consultations</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+      'google_translate_element'
+    );
+  }
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<div class="page-container">
+
+<div class="page-header">
+
+<h1>Consultation Records</h1>
+
+</div>
+
+<table class="data-table">
+
+<tr>
+
+<th>ID</th>
+<th>Patient</th>
+<th>Doctor</th>
+<th>Symptoms</th>
+<th>Diagnosis</th>
+<th>Treatment</th>
+<th>Date</th>
+
+{% if session["role"] in ["admin","doctor"] %}
+<th>Action</th>
+{% endif %}
+
+</tr>
+
+{% for consultation in consultations %}
+
+<tr>
+
+<td>{{ consultation[0] }}</td>
+<td>{{ consultation[1] }}</td>
+<td>{{ consultation[2] }}</td>
+<td>{{ consultation[3] }}</td>
+<td>{{ consultation[4] }}</td>
+<td>{{ consultation[5] }}</td>
+<td>{{ consultation[6] }}</td>
+
+{% if session["role"] in ["admin","doctor"] %}
+
+<td>
+
+<a href="/edit_consultation/{{ consultation[0] }}"
+class="edit-btn">
+
+Edit
+
+</a>
+
+</td>
+
+{% endif %}
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+<br>
+
+<a href="/dashboard" class="back-btn">
+
+← Back to Dashboard
+
+</a>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Prescriptions</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+      'google_translate_element'
+    );
+  }
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<div class="page-container">
+
+    <div class="page-header">
+        <h1>My Prescriptions</h1>
+    </div>
+
+    {% if prescriptions %}
+
+    <table class="data-table">
+
+        <tr>
+            <th>ID</th>
+            <th>Doctor</th>
+            <th>Medicine</th>
+            <th>Dosage</th>
+            <th>Frequency</th>
+            <th>Duration</th>
+            <th>Instructions</th>
+            <th>Date</th>
+        </tr>
+
+        {% for prescription in prescriptions %}
+
+        <tr>
+            <td>{{ prescription[0] }}</td>
+            <td>{{ prescription[1] }}</td>
+            <td>{{ prescription[2] }}</td>
+            <td>{{ prescription[3] }}</td>
+            <td>{{ prescription[4] }}</td>
+            <td>{{ prescription[5] }}</td>
+            <td>{{ prescription[6] }}</td>
+            <td>{{ prescription[7] }}</td>
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+    {% else %}
+
+    <h3>No Prescriptions Found.</h3>
+
+    {% endif %}
+
+    <br>
+
+    <a href="/dashboard" class="back-btn">
+        ← Back to Dashboard
+    </a>
+
+</div>
+
+</body>
+</html>

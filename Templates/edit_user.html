@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Edit User</title>
+</head>
+
+<body>
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+      'google_translate_element'
+    );
+  }
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+    <h1>Edit User</h1>
+
+    <form method="POST">
+
+        Full Name:
+        <input type="text" name="full_name" value="{{ user[1] }}">
+        <br><br>
+
+        Email:
+        <input type="email" name="email" value="{{ user[2] }}">
+        <br><br>
+
+        Password:
+        <input type="text" name="password" value="{{ user[3] }}">
+        <br><br>
+
+        Role:
+        <select name="role">
+
+            <option value="admin" {% if user[4]=="admin" %}selected{% endif %}>Admin</option>
+
+            <option value="doctor" {% if user[4]=="doctor" %}selected{% endif %}>Doctor</option>
+
+            <option value="nurse" {% if user[4]=="nurse" %}selected{% endif %}>Nurse</option>
+
+            <option value="patient" {% if user[4]=="patient" %}selected{% endif %}>Patient</option>
+
+        </select>
+
+        <br><br>
+
+        <button type="submit">Update User</button>
+
+    </form>
+
+</body>
+
+</html>

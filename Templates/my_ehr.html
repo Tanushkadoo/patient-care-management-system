@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My EHR</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+      'google_translate_element'
+    );
+  }
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<div class="page-container">
+
+    <div class="page-header">
+        <h1>My Electronic Health Record</h1>
+    </div>
+
+    {% if ehr %}
+
+    <table class="data-table">
+
+        <tr>
+            <th>Medical History</th>
+            <td>{{ ehr[2] }}</td>
+        </tr>
+
+        <tr>
+            <th>Allergies</th>
+            <td>{{ ehr[3] }}</td>
+        </tr>
+
+        <tr>
+            <th>Diagnosis</th>
+            <td>{{ ehr[4] }}</td>
+        </tr>
+
+        <tr>
+            <th>Medications</th>
+            <td>{{ ehr[5] }}</td>
+        </tr>
+
+        <tr>
+            <th>Created At</th>
+            <td>{{ ehr[6] }}</td>
+        </tr>
+
+    </table>
+
+    {% else %}
+
+    <h3>No Electronic Health Record Found.</h3>
+
+    {% endif %}
+
+    <br>
+
+    <a href="/dashboard" class="back-btn">
+        ← Back to Dashboard
+    </a>
+
+</div>
+
+</body>
+</html>

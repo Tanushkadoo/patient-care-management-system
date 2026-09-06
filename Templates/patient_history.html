@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Patient Medical History</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+      'google_translate_element'
+    );
+  }
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<div class="page-container">
+
+    <div class="page-header">
+        <h1>Patient Medical History</h1>
+    </div>
+
+    <h2>Patient Information</h2>
+
+    <table class="data-table">
+
+        <tr>
+            <th>Field</th>
+            <th>Details</th>
+        </tr>
+
+        <tr>
+            <td>Name</td>
+            <td>{{ patient[1] }}</td>
+        </tr>
+
+        <tr>
+            <td>Age</td>
+            <td>{{ patient[2] }}</td>
+        </tr>
+
+        <tr>
+            <td>Disease</td>
+            <td>{{ patient[3] }}</td>
+        </tr>
+
+        <tr>
+            <td>Phone</td>
+            <td>{{ patient[4] }}</td>
+        </tr>
+
+        <tr>
+            <td>Gender</td>
+            <td>{{ patient[5] }}</td>
+        </tr>
+
+        <tr>
+            <td>Blood Group</td>
+            <td>{{ patient[6] }}</td>
+        </tr>
+
+        <tr>
+            <td>Address</td>
+            <td>{{ patient[7] }}</td>
+        </tr>
+
+    </table>
+
+    <br><br>
+
+    <h2>Electronic Health Records</h2>
+
+    {% if ehr %}
+
+    <table class="data-table">
+
+        <tr>
+            <th>Medical History</th>
+            <th>Allergies</th>
+            <th>Diagnosis</th>
+            <th>Medications</th>
+        </tr>
+
+        {% for record in ehr %}
+
+        <tr>
+            <td>{{ record[2] }}</td>
+            <td>{{ record[3] }}</td>
+            <td>{{ record[4] }}</td>
+            <td>{{ record[5] }}</td>
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+    {% else %}
+
+    <p>No EHR Records Found.</p>
+
+    {% endif %}
+
+    <br><br>
+
+    <h2>Consultation History</h2>
+
+    {% if consultations %}
+
+    <table class="data-table">
+
+        <tr>
+            <th>Doctor ID</th>
+            <th>Symptoms</th>
+            <th>Diagnosis</th>
+            <th>Treatment</th>
+            <th>Date</th>
+        </tr>
+
+        {% for consultation in consultations %}
+
+        <tr>
+            <td>{{ consultation[2] }}</td>
+            <td>{{ consultation[3] }}</td>
+            <td>{{ consultation[4] }}</td>
+            <td>{{ consultation[5] }}</td>
+            <td>{{ consultation[6] }}</td>
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+    {% else %}
+
+    <p>No Consultation Records Found.</p>
+
+    {% endif %}
+
+    <br><br>
+
+    <h2>Prescription History</h2>
+
+    {% if prescriptions %}
+
+    <table class="data-table">
+
+        <tr>
+            <th>Medicine</th>
+            <th>Dosage</th>
+            <th>Frequency</th>
+            <th>Duration</th>
+            <th>Instructions</th>
+            <th>Date</th>
+        </tr>
+
+        {% for prescription in prescriptions %}
+
+        <tr>
+            <td>{{ prescription[3] }}</td>
+            <td>{{ prescription[4] }}</td>
+            <td>{{ prescription[5] }}</td>
+            <td>{{ prescription[6] }}</td>
+            <td>{{ prescription[7] }}</td>
+            <td>{{ prescription[8] }}</td>
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+    {% else %}
+
+    <p>No Prescription Records Found.</p>
+
+    {% endif %}
+
+    <br><br>
+
+    <h2>Laboratory Reports</h2>
+
+    {% if labs %}
+
+    <table class="data-table">
+
+        <tr>
+            <th>Test Name</th>
+            <th>Test Date</th>
+            <th>Result</th>
+            <th>Status</th>
+        </tr>
+
+        {% for lab in labs %}
+
+        <tr>
+            <td>{{ lab[3] }}</td>
+            <td>{{ lab[4] }}</td>
+            <td>{{ lab[5] }}</td>
+            <td>{{ lab[6] }}</td>
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+    {% else %}
+
+    <p>No Laboratory Reports Found.</p>
+
+    {% endif %}
+
+    <br><br>
+
+    <a href="/generate_report/{{ patient[0] }}" class="btn-primary">
+        Download Medical Report (PDF)
+    </a>
+
+    <br><br>
+
+    <a href="/search_patient_history" class="back-btn">
+        ← Search Another Patient
+    </a>
+
+    <br>
+
+    <a href="/dashboard" class="back-btn">
+        ← Back to Dashboard
+    </a>
+
+</div>
+
+</body>
+</html>

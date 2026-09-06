@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Search Medicine</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+      'google_translate_element'
+    );
+  }
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<div class="page-container">
+
+<div class="page-header">
+
+<h1>Search Medicine</h1>
+
+<a href="/pharmacist_dashboard" class="btn-primary">
+Back
+</a>
+
+</div>
+
+<form method="POST" class="form-box">
+
+<label>Medicine Name</label>
+
+<input
+type="text"
+name="keyword"
+placeholder="Enter medicine name"
+required>
+
+<button type="submit">
+
+Search
+
+</button>
+
+</form>
+
+<br><br>
+
+{% if medicines %}
+
+<table class="data-table">
+
+<tr>
+
+<th>ID</th>
+<th>Name</th>
+<th>Category</th>
+<th>Manufacturer</th>
+<th>Batch</th>
+<th>Stock</th>
+<th>Price</th>
+<th>Expiry</th>
+
+</tr>
+
+{% for medicine in medicines %}
+
+<tr>
+
+<td>{{ medicine[0] }}</td>
+<td>{{ medicine[1] }}</td>
+<td>{{ medicine[2] }}</td>
+<td>{{ medicine[3] }}</td>
+<td>{{ medicine[4] }}</td>
+<td>{{ medicine[5] }}</td>
+<td>{{ medicine[6] }}</td>
+<td>{{ medicine[7] }}</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+{% endif %}
+
+</div>
+
+</body>
+
+</html>

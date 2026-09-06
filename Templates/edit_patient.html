@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Patient</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+      'google_translate_element'
+    );
+  }
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <div class="form-container">
+        <div class="form-box">
+            <h1> Edit Patient</h1>
+            <form method="POST">
+
+                <label>Patient Name</label>
+                <input
+                    type="text"
+                    name="patient_name"
+                    value="{{ patient[1] }}"
+                    required>
+
+                <label>Age</label>
+                <input
+                    type="number"
+                    name="age"
+                    value="{{ patient[2] }}"
+                    required>
+
+                <label>Disease</label>
+                <input
+                    type="text"
+                    name="disease"
+                    value="{{ patient[3] }}"
+                    required>
+
+                <label>Phone</label>
+                <input
+                    type="text"
+                    name="phone"
+                    value="{{ patient[4] }}"
+                    required>
+
+                <label>Gender</label>
+                <select name="gender" required>
+                    <option value="Male"
+                        {% if patient[5] == "Male" %}selected{% endif %}>
+                        Male
+                    </option>
+
+                    <option value="Female"
+                        {% if patient[5] == "Female" %}selected{% endif %}>
+                        Female
+                    </option>
+
+                    <option value="Other"
+                        {% if patient[5] == "Other" %}selected{% endif %}>
+                        Other
+                    </option>
+
+                </select>
+
+                <label>Blood Group</label>
+
+                <select name="blood_group" required>
+                    <option value="A+" {% if patient[6]=="A+" %}selected{% endif %}>A+</option>
+                    <option value="A-" {% if patient[6]=="A-" %}selected{% endif %}>A-</option>
+                    <option value="B+" {% if patient[6]=="B+" %}selected{% endif %}>B+</option>
+                    <option value="B-" {% if patient[6]=="B-" %}selected{% endif %}>B-</option>
+                    <option value="AB+" {% if patient[6]=="AB+" %}selected{% endif %}>AB+</option>
+                    <option value="AB-" {% if patient[6]=="AB-" %}selected{% endif %}>AB-</option>
+                    <option value="O+" {% if patient[6]=="O+" %}selected{% endif %}>O+</option>
+                    <option value="O-" {% if patient[6]=="O-" %}selected{% endif %}>O-</option>
+
+                </select>
+
+                <label>Address</label>
+
+                <textarea
+                    name="address"
+                    rows="4"
+                    required>{{ patient[7] }}</textarea>
+
+                <label>Aadhaar Number</label>
+
+                <textarea
+                    type="text"
+                    name="aadhaar_number"
+                    value="{{ patient[8] }}"
+                    required></textarea>
+
+                <br><br>
+
+                <button type="submit">
+                    Update Patient
+                </button>
+
+            </form>
+
+            <br>
+            <a href="/view_patients" class="back-btn">
+                ← Back to Patients List
+            </a>
+
+        </div>
+    </div>
+</body>
+</html>

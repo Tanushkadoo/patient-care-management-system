@@ -1,0 +1,198 @@
+S
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Dashboard</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div id="google_translate_element"></div>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement(
+                {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+                'google_translate_element'
+            );
+        }
+    </script>
+    <script type="text/javascript"
+        src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+    <div class="topbar">
+
+        <div class="logo">
+            Hospital Management System
+        </div>
+
+        <div class="welcome">
+            Welcome {{ session["user"] }}
+        </div>
+
+    </div>
+
+
+    <div class="sidebar">
+
+        <h2>Menu</h2>
+
+        <a href="/dashboard"> Dashboard</a>
+
+        <a href="/book_appointment">
+            Book Appointment
+        </a>
+
+        <a href="/my_appointments">
+            My Appointments
+        </a>
+
+        <a href="/nearby_hospitals">
+            Find Nearby Hospitals
+        </a>
+
+        <a href="/my_ehr">
+            My EHR
+        </a>
+
+        <a href="/my_consultations">
+            My Consultations
+        </a>
+
+        <a href="/my_prescriptions">
+            My Prescriptions
+        </a>
+
+        <a href="/my_lab_reports">
+            My Lab Reports
+        </a>
+
+        <a href="#notifications">
+            Notifications
+        </a>
+
+        <a href="/feedback">
+            Patient Feedback
+        </a>
+
+        <a href="/logout">
+            Logout
+        </a>
+
+    </div>
+
+
+    <div class="main-content">
+
+        <h1> Patient Dashboard</h1>
+
+
+        <!-- Dashboard Cards -->
+
+        <div class="dashboard-section">
+
+            <div class="dashboard-card">
+
+                <h2> Book Appointment</h2>
+
+                <a href="/book_appointment" class="btn-primary">
+
+                    Book Appointment
+
+                </a>
+
+            </div>
+
+
+            <div class="dashboard-card">
+
+                <h2> My Appointments</h2>
+
+                <a href="/my_appointments" class="btn-primary">
+
+                    View My Appointments
+
+                </a>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- Notifications -->
+
+        <div id="notifications" class="notification-section">
+
+            <h2> My Notifications</h2>
+
+
+            {% if notifications %}
+
+            {% for notification in notifications %}
+
+            <div class="notification-card">
+
+                <h3>
+                    {{ notification[1] }}
+                </h3>
+
+
+                <p>
+                    {{ notification[2] }}
+                </p>
+
+
+                <p>
+                    <strong>Type:</strong>
+                    {{ notification[3] }}
+                </p>
+
+
+                <p>
+                    <strong>Date:</strong>
+                    {{ notification[5] }}
+                </p>
+
+
+                {% if notification[4] == "Unread" %}
+
+                <span class="notification-unread">
+                    Unread
+                </span>
+
+                <a href="/mark_notification_read/{{ notification[0] }}">
+                    Mark as Read
+                </a>
+
+                {% else %}
+
+                <span class="notification-read">
+                    Read
+                </span>
+
+                {% endif %}
+
+            </div>
+
+            {% endfor %}
+
+
+            {% else %}
+
+            <p>
+                No notifications available.
+            </p>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add User</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+      'google_translate_element'
+    );
+  }
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+    <div class="form-container">
+
+        <div class="form-box">
+            <h1> Add New User</h1>
+            <form method="POST">
+
+                <label>Full Name</label>
+                <input
+                    type="text"
+                    name="full_name"
+                    placeholder="Enter full name"
+                    required>
+
+                <label>Email</label>
+                <input
+                    type="email"
+                    name="email"
+                    placeholder="Enter email"
+                    required>
+
+                <label>Password</label>
+                <input
+                    type="password"
+                    name="password"
+                    placeholder="Enter password"
+                    required>
+
+                <label>Role</label>
+
+                <select name="role" required>
+
+                    <option value="">-- Select Role --</option>
+                    <option value="admin">Admin</option>
+                    <option value="doctor">Doctor</option>
+                    <option value="nurse">Nurse</option>
+                    <option value="patient">Patient</option>
+
+                </select>
+                <button type="submit">
+                    Create User
+                </button>
+            </form>
+            <br>
+            <a href="/dashboard" class="back-btn">
+                ← Back to Dashboard
+            </a>
+        </div>
+
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Dashboard</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+
+<body>
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+      'google_translate_element'
+    );
+  }
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+
+<!-- =========================
+     TOP NAVBAR
+========================= -->
+
+<div class="topbar">
+
+    <div class="logo">
+         Hospital Management System
+    </div>
+
+    <div class="welcome">
+        Welcome {{ session["user"] }}
+    </div>
+
+</div>
+
+
+<!-- =========================
+     SIDEBAR
+========================= -->
+
+<div class="sidebar">
+
+    <h2>Menu</h2>
+
+    <a href="/dashboard"> Dashboard</a>
+
+    <a href="/view_users"> Users</a>
+
+    <a href="/view_doctors"> Doctors</a>
+
+    <a href="/view_nurses"> Nurses</a>
+
+    <a href="/view_patients"> Patients</a>
+
+    <a href="/admin_appointments"> Appointments</a>
+
+    <a href="/add_ehr">Add EHR</a>
+
+    <a href="/view_ehr">View EHR</a>
+
+    <a href="/add_consultation">Add Consultation</a>
+
+    <a href="/view_consultation">View Consultation</a>
+
+    <a href="/add_prescription">Add Prescription</a>
+
+    <a href="/view_prescriptions">View Prescriptions</a>
+
+    <a href="/add_lab">Add Lab Test</a>
+
+    <a href="/view_lab">View Lab Reports</a>
+
+    <a href="/search_patient_history">
+        Patient Medical History
+    </a>
+
+    <a href="/billing_dashboard">
+        Billing
+    </a>
+
+    <a href="/notifications">
+        Notifications
+    </a>
+
+    <a href="/reports_dashboard">
+        Reports & Analytics
+    </a>
+
+    <a href="/api_dashboard">
+        REST API Dashboard
+    </a>
+
+    <a href="/admin_feedback">
+         Feedback
+    </a>
+
+    <a href="/logout">
+         Logout
+    </a>
+
+</div>
+
+
+<!-- =========================
+     MAIN CONTENT
+========================= -->
+
+<div class="main-content">
+
+    <h1> Admin Dashboard</h1>
+
+
+    <!-- =========================
+         MAIN DASHBOARD CARDS
+    ========================= -->
+
+    <div class="dashboard-section">
+
+
+        <div class="dashboard-card">
+
+            <h2> Doctors</h2>
+
+            <h1>{{ total_doctors }}</h1>
+
+            <a href="/add_doctor" class="btn-primary">
+                Add Doctor
+            </a>
+
+            <br><br>
+
+            <a href="/view_doctors" class="btn-primary">
+                View Doctors
+            </a>
+
+        </div>
+
+
+        <div class="dashboard-card">
+
+            <h2> Nurses</h2>
+
+            <h1>{{ total_nurses }}</h1>
+
+            <a href="/add_nurse" class="btn-primary">
+                Add Nurse
+            </a>
+
+            <br><br>
+
+            <a href="/view_nurses" class="btn-primary">
+                View Nurses
+            </a>
+
+        </div>
+
+
+        <div class="dashboard-card">
+
+            <h2> Patients</h2>
+
+            <h1>{{ total_patients }}</h1>
+
+            <a href="/add_patient" class="btn-primary">
+                Add Patient
+            </a>
+
+            <br><br>
+
+            <a href="/view_patients" class="btn-primary">
+                View Patients
+            </a>
+
+        </div>
+
+
+        <div class="dashboard-card">
+
+            <h2> Appointments</h2>
+
+            <h1>{{ total_appointments }}</h1>
+
+            <a href="/admin_appointments" class="btn-primary">
+                View Appointments
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         APPOINTMENT STATUS
+    ========================= -->
+
+    <div class="dashboard-section">
+
+
+        <div class="dashboard-card">
+
+            <h2> Pending</h2>
+
+            <h1>{{ pending }}</h1>
+
+        </div>
+
+
+        <div class="dashboard-card">
+
+            <h2> Approved</h2>
+
+            <h1>{{ approved }}</h1>
+
+        </div>
+
+
+        <div class="dashboard-card">
+
+            <h2> Rejected</h2>
+
+            <h1>{{ rejected }}</h1>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         ANALYTICS
+    ========================= -->
+
+    <h1> Hospital Analytics</h1>
+
+
+    <div class="dashboard-section">
+
+
+        <!-- =========================
+             PATIENT DEMOGRAPHICS
+        ========================= -->
+
+        <h1> Patient Demographics</h1>
+
+
+        <div class="dashboard-section">
+
+
+            <!-- Gender Distribution -->
+
+            <div class="chart-card">
+
+                <h2> Gender Distribution</h2>
+
+                <canvas id="genderChart"></canvas>
+
+            </div>
+
+
+            <!-- Age Distribution -->
+
+            <div class="chart-card">
+
+                <h2> Age Distribution</h2>
+
+                <canvas id="ageChart"></canvas>
+
+            </div>
+
+        </div>
+
+
+        <!-- Today's Appointments -->
+
+        <div class="dashboard-card">
+
+            <h2> Today's Appointments</h2>
+
+            <h1>{{ today_appointments }}</h1>
+
+            <p>
+                Appointments scheduled for today
+            </p>
+
+        </div>
+
+
+        <!-- Completed Consultations -->
+
+        <div class="dashboard-card">
+
+            <h2> Completed Consultations</h2>
+
+            <h1>{{ completed_consultations }}</h1>
+
+            <p>
+                Completed appointments
+            </p>
+
+        </div>
+
+
+        <!-- Cancelled Appointments -->
+
+        <div class="dashboard-card">
+
+            <h2> Cancelled Appointments</h2>
+
+            <h1>{{ cancelled_appointments }}</h1>
+
+            <p>
+                Cancelled appointments
+            </p>
+
+        </div>
+
+
+        <!-- Pending Lab Reports -->
+
+        <div class="dashboard-card">
+
+            <h2> Pending Lab Reports</h2>
+
+            <h1>{{ pending_lab_reports }}</h1>
+
+            <p>
+                Laboratory reports awaiting completion
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         DOCTOR SPECIALIZATION
+    ========================= -->
+
+    <div class="chart-card">
+
+        <h2>
+             Doctors by Specialization
+        </h2>
+
+        <canvas id="specializationChart"></canvas>
+
+    </div>
+
+
+    <!-- =========================
+         MONTHLY PATIENTS
+    ========================= -->
+
+    <div class="chart-card">
+
+        <h2>
+             Monthly Patient Registrations
+        </h2>
+
+        <canvas id="monthlyPatientsChart"></canvas>
+
+    </div>
+
+
+    <!-- =========================
+         APPOINTMENT TRENDS
+    ========================= -->
+
+    <div class="chart-card">
+
+        <h2>
+             Appointment Trends
+        </h2>
+
+        <canvas id="appointmentTrendChart"></canvas>
+
+    </div>
+
+
+    <!-- =========================
+         DOCTOR CONSULTATIONS
+    ========================= -->
+
+    <div class="chart-card">
+
+        <h2>
+             Doctor-wise Consultation Count
+        </h2>
+
+        <canvas id="doctorConsultationChart"></canvas>
+
+    </div>
+
+
+    <!-- =================================================
+         DOWNLOAD REPORTS
+    ================================================= -->
+
+    <div class="reports-section">
+
+        <h1> Download Reports</h1>
+
+        <p>
+            Generate and download hospital reports in PDF format.
+        </p>
+
+
+        <div class="report-buttons">
+
+
+            <!-- =========================
+                 PATIENT REPORT
+            ========================= -->
+
+            <a href="/download_report/patients"
+               class="report-btn">
+
+                 Download Patient Report
+
+            </a>
+
+
+            <!-- =========================
+                 DOCTOR REPORT
+            ========================= -->
+
+            <a href="/download_report/doctors"
+               class="report-btn">
+
+                 Download Doctor Report
+
+            </a>
+
+
+            <!-- =========================
+                 APPOINTMENT REPORT
+            ========================= -->
+
+            <a href="/download_report/appointments"
+               class="report-btn">
+
+                 Download Appointment Report
+
+            </a>
+
+
+            <!-- =========================
+                 BILLING REPORT
+            ========================= -->
+
+            <a href="/download_report/billing"
+               class="report-btn">
+
+                 Download Billing Report
+
+            </a>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- =================================================
+         RECENT ACTIVITY LOGS
+    ================================================= -->
+
+    <div class="chart-card activity-card">
+
+        <h2>
+             Recent Activity
+        </h2>
+
+
+        <table class="activity-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>User</th>
+
+                    <th>Role</th>
+
+                    <th>Action</th>
+
+                    <th>Date & Time</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for log in activity_logs %}
+
+                <tr>
+
+                    <td>
+                        {{ log[0] }}
+                    </td>
+
+                    <td>
+                        {{ log[1] }}
+                    </td>
+
+                    <td>
+                        {{ log[2] }}
+                    </td>
+
+                    <td>
+                        {{ log[3] }}
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+</div>
+
+
+<!-- =========================
+     CHART.JS
+========================= -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<!-- =========================
+     SPECIALIZATION CHART
+========================= -->
+
+<script>
+
+const specializationData =
+    {{ specialization_data | tojson }};
+
+const specializationLabels =
+    specializationData.map(
+        item => item[0]
+    );
+
+const specializationValues =
+    specializationData.map(
+        item => item[1]
+    );
+
+
+new Chart(
+    document.getElementById("specializationChart"),
+    {
+
+        type: "pie",
+
+        data: {
+
+            labels: specializationLabels,
+
+            datasets: [{
+
+                data: specializationValues
+
+            }]
+
+        }
+
+    }
+);
+
+</script>
+
+
+<!-- =========================
+     MONTHLY PATIENT CHART
+========================= -->
+
+<script>
+
+const monthlyPatientData =
+    {{ monthly_patients | tojson }};
+
+const monthLabels =
+    monthlyPatientData.map(
+        item => item[0]
+    );
+
+const patientValues =
+    monthlyPatientData.map(
+        item => item[1]
+    );
+
+
+new Chart(
+    document.getElementById("monthlyPatientsChart"),
+    {
+
+        type: "line",
+
+        data: {
+
+            labels: monthLabels,
+
+            datasets: [{
+
+                label: "Patient Registrations",
+
+                data: patientValues,
+
+                fill: false,
+
+                tension: 0.3
+
+            }]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            scales: {
+
+                y: {
+
+                    beginAtZero: true,
+
+                    ticks: {
+
+                        stepSize: 1
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+);
+
+</script>
+
+
+<!-- =========================
+     DOCTOR CONSULTATION CHART
+========================= -->
+
+<script>
+
+const doctorConsultationData =
+    {{ doctor_consultations | tojson }};
+
+
+const doctorLabels =
+    doctorConsultationData.map(
+        item => item[0]
+    );
+
+
+const consultationValues =
+    doctorConsultationData.map(
+        item => item[1]
+    );
+
+
+new Chart(
+    document.getElementById(
+        "doctorConsultationChart"
+    ),
+    {
+
+        type: "bar",
+
+        data: {
+
+            labels: doctorLabels,
+
+            datasets: [{
+
+                label: "Consultations",
+
+                data: consultationValues
+
+            }]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            scales: {
+
+                y: {
+
+                    beginAtZero: true,
+
+                    ticks: {
+
+                        stepSize: 1
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+);
+
+</script>
+
+
+<!-- =========================
+     APPOINTMENT TREND CHART
+========================= -->
+
+<script>
+
+const appointmentData =
+    {{ monthly_appointments | tojson }};
+
+
+const appointmentMonths =
+    appointmentData.map(
+        item => item[0]
+    );
+
+
+const appointmentValues =
+    appointmentData.map(
+        item => item[1]
+    );
+
+
+new Chart(
+    document.getElementById(
+        "appointmentTrendChart"
+    ),
+    {
+
+        type: "line",
+
+        data: {
+
+            labels: appointmentMonths,
+
+            datasets: [{
+
+                label: "Appointments",
+
+                data: appointmentValues,
+
+                fill: false,
+
+                tension: 0.3
+
+            }]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            scales: {
+
+                y: {
+
+                    beginAtZero: true,
+
+                    ticks: {
+
+                        stepSize: 1
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    }
+);
+
+</script>
+
+
+<!-- =========================
+     GENDER DISTRIBUTION
+========================= -->
+
+<script>
+
+const genderData =
+    {{ gender_data | tojson }};
+
+
+const genderLabels =
+    genderData.map(
+        item => item[0]
+    );
+
+
+const genderValues =
+    genderData.map(
+        item => item[1]
+    );
+
+
+new Chart(
+    document.getElementById("genderChart"),
+    {
+
+        type: "doughnut",
+
+        data: {
+
+            labels: genderLabels,
+
+            datasets: [{
+
+                data: genderValues
+
+            }]
+
+        },
+
+        options: {
+
+            responsive: true
+
+        }
+
+    }
+);
+
+</script>
+
+
+<!-- =========================
+     AGE DISTRIBUTION
+========================= -->
+
+<script>
+
+const ageData =
+    {{ age_data | tojson }};
+
+
+const ageLabels =
+    ageData.map(
+        item => item[0]
+    );
+
+
+const ageValues =
+    ageData.map(
+        item => item[1]
+    );
+
+
+new Chart(
+    document.getElementById("ageChart"),
+    {
+
+        type: "bar",
+
+        data: {
+
+            labels: ageLabels,
+
+            datasets: [{
+
+                label: "Number of Patients",
+
+                data: ageValues
+
+            }]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            scales: {
+
+                y: {
+
+                    beginAtZero: true
+
+                }
+
+            }
+
+        }
+
+    }
+);
+
+</script>
+
+
+</body>
+
+</html>
+

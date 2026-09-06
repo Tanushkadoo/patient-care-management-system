@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dispense Medicine</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+      'google_translate_element'
+    );
+  }
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<div class="form-container">
+
+<div class="form-box">
+
+<h1>Dispense Medicine</h1>
+
+<form method="POST">
+
+<label>Select Medicine</label>
+
+<select name="medicine_id" required>
+
+<option value="">Select Medicine</option>
+
+{% for medicine in medicines %}
+
+<option value="{{ medicine[0] }}">
+    {{ medicine[1] }}
+</option>
+
+{% endfor %}
+
+</select>
+
+<label>Select Patient</label>
+
+<select name="patient_id" required>
+
+<option value="">Select Patient</option>
+
+{% for patient in patients %}
+
+<option value="{{ patient[0] }}">
+    {{ patient[1] }}
+</option>
+
+{% endfor %}
+
+</select>
+
+<label>Quantity</label>
+
+<input
+type="number"
+name="quantity"
+min="1"
+required>
+
+<label>Dispensed Date</label>
+
+<input
+type="date"
+name="dispensed_date"
+required>
+
+<button type="submit">
+
+Dispense Medicine
+
+</button>
+
+</form>
+
+<a href="/pharmacist_dashboard"
+class="back-btn">
+
+← Back
+
+</a>
+
+</div>
+
+</div>
+
+</body>
+</html>

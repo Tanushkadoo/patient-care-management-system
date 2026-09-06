@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search Patient</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+      'google_translate_element'
+    );
+  }
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<div class="form-container">
+
+    <div class="form-box">
+
+        <h2>Search Patient</h2>
+
+        <form method="POST">
+
+            <label>Search By</label>
+
+            <select name="search_by" required>
+
+                <option value="id">Patient ID</option>
+
+                <option value="name">Patient Name</option>
+
+                <option value="phone">Phone Number</option>
+
+                <option value="aadhaar">Aadhaar Number</option>
+
+            </select>
+
+            <br><br>
+
+            <label>Enter Value</label>
+
+            <input
+                type="text"
+                name="keyword"
+                placeholder="Enter search value"
+                required>
+
+            <br><br>
+
+            <button type="submit">
+                Search
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% if patients %}
+
+<div class="table-container">
+
+<table>
+
+<tr>
+    <th>ID</th>
+    <th>Name</th>
+    <th>Age</th>
+    <th>Disease</th>
+    <th>Phone</th>
+    <th>Gender</th>
+    <th>Blood Group</th>
+    <th>Address</th>
+    <th>Aadhaar</th>
+</tr>
+
+{% for patient in patients %}
+
+<tr>
+
+    <td>{{ patient[0] }}</td>
+    <td>{{ patient[1] }}</td>
+    <td>{{ patient[2] }}</td>
+    <td>{{ patient[3] }}</td>
+    <td>{{ patient[4] }}</td>
+    <td>{{ patient[5] }}</td>
+    <td>{{ patient[6] }}</td>
+    <td>{{ patient[7] }}</td>
+    <td>{{ patient[8] }}</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+</div>
+
+{% elif request.method == "POST" %}
+
+<h3 style="text-align:center;">
+    No Patient Found.
+</h3>
+
+{% endif %}
+
+<br>
+
+<div style="text-align:center;">
+    <a href="/dashboard">
+        Back to Dashboard
+    </a>
+</div>
+
+</body>
+</html>

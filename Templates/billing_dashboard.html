@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billing Dashboard</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+      'google_translate_element'
+    );
+  }
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<h1 style="text-align:center; margin-top:30px;">
+    Billing Dashboard
+</h1>
+
+<div style="display:flex; flex-wrap:wrap; justify-content:center; gap:30px; margin-top:40px;">
+
+    <!-- Generate Bill -->
+    <div class="card">
+        <h2>Generate Bill</h2>
+
+        <a href="/generate_bill">
+            <button>Open</button>
+        </a>
+    </div>
+
+    <!-- View Bills -->
+    <div class="card">
+        <h2>View Bills</h2>
+
+        <a href="/view_bills">
+            <button>Open</button>
+        </a>
+    </div>
+
+    <!-- Payment Status -->
+    <div class="card">
+        <h2>Payment Status</h2>
+
+        <a href="/payment_status">
+            <button>Open</button>
+        </a>
+    </div>
+
+    
+
+</div>
+
+<br><br>
+
+<div style="text-align:center;">
+    <a href="/dashboard">
+        <button>Back to Dashboard</button>
+    </a>
+</div>
+
+</body>
+</html>

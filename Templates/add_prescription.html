@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Prescription</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+      'google_translate_element'
+    );
+  }
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<div class="form-container">
+
+<div class="form-box">
+
+<h1>Add Prescription</h1>
+
+<form method="POST">
+
+<label>Select Patient</label>
+
+<select name="patient_id" required>
+
+<option value="">-- Select Patient --</option>
+
+{% for patient in patients %}
+<option value="{{ patient[0] }}">{{ patient[1] }}</option>
+{% endfor %}
+
+</select>
+
+<label>Select Doctor</label>
+
+<select name="doctor_id" required>
+
+<option value="">-- Select Doctor --</option>
+
+{% for doctor in doctors %}
+<option value="{{ doctor[0] }}">{{ doctor[1] }}</option>
+{% endfor %}
+
+</select>
+
+<label>Medicine Name</label>
+<input type="text" name="medicine_name" required>
+
+<label>Dosage</label>
+<input type="text" name="dosage" required>
+
+<label>Frequency</label>
+<input type="text" name="frequency" required>
+
+<label>Duration</label>
+<input type="text" name="duration" required>
+
+<label>Instructions</label>
+<textarea name="instructions" rows="4"></textarea>
+
+<label>Prescribed Date</label>
+<input type="date" name="prescribed_date" required>
+
+<button type="submit">
+Save Prescription
+</button>
+
+</form>
+
+<a href="/dashboard" class="back-btn">
+← Back to Dashboard
+</a>
+
+</div>
+
+</div>
+
+</body>
+</html>

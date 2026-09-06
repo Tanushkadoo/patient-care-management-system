@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nearby Hospitals</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+
+    <style>
+        #map {
+            height: 500px;
+            width: 100%;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        #status {
+            margin-top: 10px;
+            font-size: 15px;
+        }
+        #hospital-list {
+            margin-top: 20px;
+        }
+        .hospital-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 10px;
+        }
+        .hospital-card h4 {
+            margin: 0 0 5px 0;
+        }
+        .hospital-card p {
+            margin: 2px 0;
+            color: #555;
+            font-size: 14px;
+        }
+        #retry-btn {
+            display: none;
+            margin-top: 10px;
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+      'google_translate_element'
+    );
+  }
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<div style="max-width: 900px; margin: 20px auto; padding: 0 20px;">
+
+    <h2>Find Nearby Hospitals</h2>
+    <p>We'll use your device's location to show hospitals near you.</p>
+
+    <div id="status">Requesting your location...</div>
+    <button id="retry-btn" onclick="findLocation()">Try Again</button>
+
+    <div id="map"></div>
+
+    <div id="hospital-list"></div>
+
+</div>
+
+<script>
+    let map;
+    let markersLayer;
+
+    function initMap(lat, lon) {
+        if (typeof L === "undefined") {
+            document.getElementById("status").innerText =
+                "Could not load the map library. Your network may be blocking cdnjs.cloudflare.com. Please try a different network or contact support.";
+            document.getElementById("retry-btn").style.display = "inline-block";
+            return;
+        }
+
+        if (map) {
+            map.remove();
+        }
+        map = L.map('map').setView([lat, lon], 14);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        L.marker([lat, lon])
+            .addTo(map)
+            .bindPopup("You are here")
+            .openPopup();
+
+        markersLayer = L.layerGroup().addTo(map);
+
+        fetchNearbyHospitals(lat, lon);
+    }
+
+    function fetchNearbyHospitals(lat, lon) {
+        document.getElementById("status").innerText = "Searching for nearby hospitals...";
+
+        const radiusMeters = 10000; // 10 km search radius
+
+        const query = `
+            [out:json][timeout:25];
+            (
+              node["amenity"="hospital"](around:${radiusMeters},${lat},${lon});
+              way["amenity"="hospital"](around:${radiusMeters},${lat},${lon});
+              node["amenity"="clinic"](around:${radiusMeters},${lat},${lon});
+            );
+            out center;
+        `;
+
+        fetch("https://overpass-api.de/api/interpreter", {
+            method: "POST",
+            body: query
+        })
+        .then(response => response.json())
+        .then(data => {
+            displayHospitals(data.elements, lat, lon);
+        })
+        .catch(err => {
+            document.getElementById("status").innerText =
+                "Could not load hospital data right now. Please try again.";
+            document.getElementById("retry-btn").style.display = "inline-block";
+            console.error(err);
+        });
+    }
+
+    function distanceKm(lat1, lon1, lat2, lon2) {
+        const R = 6371;
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a =
+            Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+            Math.sin(dLon/2) * Math.sin(dLon/2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        return R * c;
+    }
+
+    function displayHospitals(elements, userLat, userLon) {
+        const listDiv = document.getElementById("hospital-list");
+        listDiv.innerHTML = "";
+
+        if (!elements || elements.length === 0) {
+            document.getElementById("status").innerText =
+                "No hospitals found within 10 km. Try a different location.";
+            return;
+        }
+
+        const results = elements.map(el => {
+            const lat = el.lat || (el.center && el.center.lat);
+            const lon = el.lon || (el.center && el.center.lon);
+            const name = (el.tags && el.tags.name) || "Unnamed Hospital/Clinic";
+            const dist = distanceKm(userLat, userLon, lat, lon);
+            return { lat, lon, name, dist, tags: el.tags || {} };
+        }).filter(r => r.lat && r.lon)
+          .sort((a, b) => a.dist - b.dist);
+
+        document.getElementById("status").innerText =
+            `Found ${results.length} hospital(s)/clinic(s) within 10 km.`;
+
+        results.forEach(r => {
+            L.marker([r.lat, r.lon])
+                .addTo(markersLayer)
+                .bindPopup(`<b>${r.name}</b><br>${r.dist.toFixed(1)} km away`);
+
+            const card = document.createElement("div");
+            card.className = "hospital-card";
+            card.innerHTML = `
+                <h4>${r.name}</h4>
+                <p>Distance: ${r.dist.toFixed(1)} km</p>
+                ${r.tags.phone ? `<p>Phone: ${r.tags.phone}</p>` : ""}
+                ${r.tags["addr:street"] ? `<p>Address: ${r.tags["addr:street"]}</p>` : ""}
+            `;
+            listDiv.appendChild(card);
+        });
+    }
+
+    function findLocation() {
+        document.getElementById("retry-btn").style.display = "none";
+        document.getElementById("status").innerText = "Requesting your location...";
+
+        if (!navigator.geolocation) {
+            document.getElementById("status").innerText =
+                "Your browser does not support location services.";
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            function(position) {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+                initMap(lat, lon);
+            },
+            function(error) {
+                let message = "Location access denied or unavailable. Please allow location access and try again.";
+                if (error.code === 3) {
+                    message = "Location request timed out. Please check your connection and try again.";
+                }
+                document.getElementById("status").innerText = message;
+                document.getElementById("retry-btn").style.display = "inline-block";
+            },
+            {
+                timeout: 10000,
+                maximumAge: 0
+            }
+        );
+    }
+
+    window.onload = findLocation;
+</script>
+
+</body>
+</html>

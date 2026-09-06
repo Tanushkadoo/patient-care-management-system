@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Reports & Analytics</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+      'google_translate_element'
+    );
+  }
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<div class="form-container">
+
+<div class="form-box">
+
+<h2>Reports & Analytics</h2>
+
+<br>
+
+<a href="/patient_report">
+    <button>Patient Report</button>
+</a>
+
+<br><br>
+
+<a href="/doctor_report">
+    <button>Doctor Report</button>
+</a>
+
+<br><br>
+
+<a href="/appointment_report">
+    <button>Appointment Report</button>
+</a>
+
+<br><br>
+
+<a href="/billing_report">
+    <button>Billing Report</button>
+</a>
+
+<br><br>
+
+<a href="/analytics_dashboard">
+    <button>Analytics Dashboard</button>
+</a>
+
+</div>
+
+</div>
+
+</body>
+</html>

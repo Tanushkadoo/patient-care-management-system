@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit EHR</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+      'google_translate_element'
+    );
+  }
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<div class="form-container">
+
+    <div class="form-box">
+
+        <h1>Edit Electronic Health Record</h1>
+
+        <form method="POST">
+
+            <label>Medical History</label>
+            <textarea name="medical_history" rows="4">{{ ehr[2] }}</textarea>
+
+            <label>Allergies</label>
+            <textarea name="allergies" rows="4">{{ ehr[3] }}</textarea>
+
+            <label>Diagnosis</label>
+            <textarea name="diagnosis" rows="4">{{ ehr[4] }}</textarea>
+
+            <label>Medications</label>
+            <textarea name="medications" rows="4">{{ ehr[5] }}</textarea>
+
+            <button type="submit">
+                Update EHR
+            </button>
+
+        </form>
+
+        <a href="/view_ehr" class="back-btn">
+            ← Back
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

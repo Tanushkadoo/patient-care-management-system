@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Consultation</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+      'google_translate_element'
+    );
+  }
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<div class="form-container">
+
+<div class="form-box">
+
+<h1>Add Consultation</h1>
+
+<form method="POST">
+
+<label>Select Patient</label>
+
+<select name="patient_id" required>
+
+<option value="">-- Select Patient --</option>
+
+{% for patient in patients %}
+<option value="{{ patient[0] }}">{{ patient[1] }}</option>
+{% endfor %}
+
+</select>
+
+<label>Select Doctor</label>
+
+<select name="doctor_id" required>
+
+<option value="">-- Select Doctor --</option>
+
+{% for doctor in doctors %}
+<option value="{{ doctor[0] }}">{{ doctor[1] }}</option>
+{% endfor %}
+
+</select>
+
+<label>Symptoms</label>
+<textarea name="symptoms" rows="4" required></textarea>
+
+<label>Diagnosis</label>
+<textarea name="diagnosis" rows="4" required></textarea>
+
+<label>Treatment</label>
+<textarea name="treatment" rows="4" required></textarea>
+
+<label>Consultation Date</label>
+<input type="date" name="consultation_date" required>
+
+<button type="submit">
+Save Consultation
+</button>
+
+</form>
+
+<a href="/dashboard" class="back-btn">
+← Back to Dashboard
+</a>
+
+</div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Appointment Report</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+      'google_translate_element'
+    );
+  }
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<div class="report-page">
+
+    <h1>Appointment Report</h1>
+
+    <p class="page-subtitle">
+        Appointment details and scheduling information
+    </p>
+
+    <div class="report-table-container">
+
+        <table class="report-table">
+
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Patient</th>
+                    <th>Doctor</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for appointment in appointments %}
+
+                <tr>
+
+                    <td>
+                        {{ appointment[0] }}
+                    </td>
+
+                    <td>
+                        {{ appointment[1] }}
+                    </td>
+
+                    <td>
+                        {{ appointment[2] }}
+                    </td>
+
+                    <td>
+                        {{ appointment[3] }}
+                    </td>
+
+                    <td>
+                        {{ appointment[4] }}
+                    </td>
+
+                    <td>
+
+                        {% if appointment[5] == 'Completed' %}
+
+                            <span class="report-status status-success">
+                                Completed
+                            </span>
+
+                        {% elif appointment[5] == 'Pending' %}
+
+                            <span class="report-status status-warning">
+                                Pending
+                            </span>
+
+                        {% elif appointment[5] == 'Cancelled' %}
+
+                            <span class="report-status status-danger">
+                                Cancelled
+                            </span>
+
+                        {% else %}
+
+                            {{ appointment[5] }}
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <br>
+
+    <a href="/reports_dashboard" class="report-btn report-btn-primary">
+        ← Back to Reports
+    </a>
+
+</div>
+
+</body>
+
+</html>

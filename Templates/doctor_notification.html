@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Doctor Notification</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+
+<body>
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+      'google_translate_element'
+    );
+  }
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+    <div class="topbar">
+
+        <div class="logo">
+             Hospital Management System
+        </div>
+
+        <div class="welcome">
+            Welcome {{ session["user"] }}
+        </div>
+
+    </div>
+
+
+    <div class="sidebar">
+
+        <h2>Menu</h2>
+
+        <a href="/dashboard">
+             Dashboard
+        </a>
+
+        <a href="/doctor_notification">
+             Doctor Notification
+        </a>
+
+        <a href="/view_notifications">
+             Notification History
+        </a>
+
+        <a href="/logout">
+             Logout
+        </a>
+
+    </div>
+
+
+    <div class="main-content">
+
+        <h1> Send Doctor Notification</h1>
+
+
+        <div class="dashboard-card">
+
+            <form method="POST">
+
+                <label>
+                    Select Doctor
+                </label>
+
+                <br><br>
+
+                <select name="doctor_id" required>
+
+                    <option value="">
+                        -- Select Doctor --
+                    </option>
+
+                    {% for doctor in doctors %}
+
+                        <option value="{{ doctor[0] }}">
+                            {{ doctor[1] }}
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+                <br><br>
+
+
+                <label>
+                    Notification Message
+                </label>
+
+                <br><br>
+
+                <textarea
+                    name="message"
+                    rows="5"
+                    cols="50"
+                    placeholder="Enter notification message..."
+                    required></textarea>
+
+                <br><br>
+
+
+                <button type="submit"
+                        class="btn-primary">
+
+                     Send Notification
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

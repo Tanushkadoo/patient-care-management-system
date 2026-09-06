@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Generate Bill</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+      'google_translate_element'
+    );
+  }
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<div class="billing-page">
+
+    <h1> Generate Bill</h1>
+
+    <p class="billing-subtitle">
+        Create a new bill for a patient
+    </p>
+
+
+    <div class="billing-card">
+
+        <form method="POST" class="billing-form">
+
+            <div>
+                <label>Patient ID</label>
+
+                <input
+                    type="number"
+                    name="patient_id"
+                    placeholder="Enter patient ID"
+                    required>
+            </div>
+
+
+            <div>
+                <label>Amount</label>
+
+                <input
+                    type="number"
+                    name="amount"
+                    step="0.01"
+                    placeholder="Enter amount"
+                    required>
+            </div>
+
+
+            <div class="full-width">
+
+                <label>Description</label>
+
+                <textarea
+                    name="description"
+                    rows="4"
+                    placeholder="Enter billing description"></textarea>
+
+            </div>
+
+
+            <div>
+
+                <label>Payment Status</label>
+
+                <select name="payment_status">
+
+                    <option value="Pending">
+                        Pending
+                    </option>
+
+                    <option value="Paid">
+                        Paid
+                    </option>
+
+                    <option value="Failed">
+                        Failed
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="full-width">
+
+                <button
+                    type="submit"
+                    class="billing-btn">
+
+                    Generate Bill
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <a href="/dashboard"
+       class="billing-back">
+
+        ← Back to Dashboard
+
+    </a>
+
+</div>
+
+</body>
+</html>

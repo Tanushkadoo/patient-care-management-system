@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>REST API Dashboard</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+
+<body>
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+      'google_translate_element'
+    );
+  }
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<!-- =====================================
+     SIDEBAR
+===================================== -->
+
+<div class="sidebar">
+
+    <h2>REST APIs</h2>
+
+    <a href="/dashboard"> Dashboard</a>
+
+    <a href="/api_dashboard"> API Dashboard</a>
+
+    <a href="/logout"> Logout</a>
+
+</div>
+
+
+<!-- =====================================
+     MAIN CONTENT
+===================================== -->
+
+<div class="main-content">
+
+<div class="api-dashboard">
+
+    <h1> REST API Dashboard</h1>
+
+
+    <!-- =====================================
+         API STATISTICS
+    ===================================== -->
+
+    <div class="api-stats">
+
+        <div class="api-stat-card">
+
+            <h3>Total APIs</h3>
+
+            <h2>{{ total }}</h2>
+
+        </div>
+
+
+        <div class="api-stat-card">
+
+            <h3>Active APIs</h3>
+
+            <h2>{{ active }}</h2>
+
+        </div>
+
+
+        <div class="api-stat-card">
+
+            <h3>Average Response</h3>
+
+            <h2 id="responseTime">
+                0 ms
+            </h2>
+
+        </div>
+
+
+        <div class="api-stat-card">
+
+            <h3>Success Rate</h3>
+
+            <h2>100%</h2>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================
+         AVAILABLE APIs
+    ===================================== -->
+
+    <div class="api-endpoints">
+
+        <h2> Available APIs</h2>
+
+
+        <input
+            type="text"
+            id="searchAPI"
+            placeholder="Search API..."
+            onkeyup="searchTable()">
+
+
+        <br><br>
+
+
+        <table id="apiTable" class="api-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>#</th>
+
+                    <th>API Name</th>
+
+                    <th>Endpoint</th>
+
+                    <th>Methods</th>
+
+                    <th>Status</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for api in apis %}
+
+                <tr>
+
+                    <td>
+                        {{ loop.index }}
+                    </td>
+
+
+                    <td>
+                        {{ api[0] }}
+                    </td>
+
+
+                    <td>
+                        {{ api[1] }}
+                    </td>
+
+
+                    <td class="method-buttons">
+
+                        <!-- GET -->
+
+                        <button
+                            type="button"
+                            class="api-method method-get"
+                            onclick="selectAPI('{{ api[1] }}', 'GET')">
+
+                            GET
+
+                        </button>
+
+
+                        <!-- POST -->
+
+                        <button
+                            type="button"
+                            class="api-method method-post"
+                            onclick="selectAPI('{{ api[1] }}', 'POST')">
+
+                            POST
+
+                        </button>
+
+
+                        <!-- PUT -->
+
+                        <button
+                            type="button"
+                            class="api-method method-put"
+                            onclick="selectAPI('{{ api[1] }}', 'PUT')">
+
+                            PUT
+
+                        </button>
+
+
+                        <!-- DELETE -->
+
+                        <button
+                            type="button"
+                            class="api-method method-delete"
+                            onclick="selectAPI('{{ api[1] }}', 'DELETE')">
+
+                            DELETE
+
+                        </button>
+
+                    </td>
+
+
+                    <td>
+
+                        <span class="api-active">
+                            Active
+                        </span>
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <!-- =====================================
+         API TESTER
+    ===================================== -->
+
+    <div class="api-tester">
+
+        <h2> API Tester</h2>
+
+
+        <div class="tester-controls">
+
+            <label>
+                <b>Select API:</b>
+            </label>
+
+
+            <select id="apiSelect">
+
+                <option value="/api/patients">
+                    Patients
+                </option>
+
+                <option value="/api/doctors">
+                    Doctors
+                </option>
+
+                <option value="/api/nurses">
+                    Nurses
+                </option>
+
+                <option value="/api/medicines">
+                    Medicines
+                </option>
+
+                <option value="/api/bills">
+                    Billing
+                </option>
+
+            </select>
+
+
+            <label>
+                <b>Method:</b>
+            </label>
+
+
+            <select id="methodSelect">
+
+                <option value="GET">
+                    GET
+                </option>
+
+                <option value="POST">
+                    POST
+                </option>
+
+                <option value="PUT">
+                    PUT
+                </option>
+
+                <option value="DELETE">
+                    DELETE
+                </option>
+
+            </select>
+
+
+            <button
+                type="button"
+                onclick="showForm()">
+
+                Select
+
+            </button>
+
+        </div>
+
+
+        <!-- =====================================
+             PATIENT FORM
+        ===================================== -->
+
+        <div
+            id="patientForm"
+            class="patient-api-form"
+            style="display:none;">
+
+            <h2 id="formTitle">
+                Patient Information
+            </h2>
+
+
+            <!-- ID -->
+
+            <div id="idField">
+
+                <label>
+                    Patient ID
+                </label>
+
+                <input
+                    type="number"
+                    id="recordId"
+                    placeholder="Enter Patient ID">
+
+            </div>
+
+
+            <!-- PATIENT DETAILS -->
+
+            <div id="patientDetails">
+
+                <div class="form-grid">
+
+                    <div>
+
+                        <label>
+                            Full Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="patient_name"
+                            placeholder="Full Name">
+
+                    </div>
+
+
+                    <div>
+
+                        <label>
+                            Age
+                        </label>
+
+                        <input
+                            type="number"
+                            id="age"
+                            placeholder="Age">
+
+                    </div>
+
+
+                    <div>
+
+                        <label>
+                            Disease
+                        </label>
+
+                        <input
+                            type="text"
+                            id="disease"
+                            placeholder="Disease">
+
+                    </div>
+
+
+                    <div>
+
+                        <label>
+                            Phone
+                        </label>
+
+                        <input
+                            type="text"
+                            id="phone"
+                            placeholder="Phone">
+
+                    </div>
+
+
+                    <div>
+
+                        <label>
+                            Gender
+                        </label>
+
+                        <select id="gender">
+
+                            <option value="">
+                                Select Gender
+                            </option>
+
+                            <option value="Male">
+                                Male
+                            </option>
+
+                            <option value="Female">
+                                Female
+                            </option>
+
+                            <option value="Other">
+                                Other
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div>
+
+                        <label>
+                            Blood Group
+                        </label>
+
+                        <input
+                            type="text"
+                            id="blood_group"
+                            placeholder="Blood Group">
+
+                    </div>
+
+
+                    <div>
+
+                        <label>
+                            Address
+                        </label>
+
+                        <input
+                            type="text"
+                            id="address"
+                            placeholder="Address">
+
+                    </div>
+
+
+                    <div>
+
+                        <label>
+                            Aadhaar Number
+                        </label>
+
+                        <input
+                            type="text"
+                            id="aadhaar_number"
+                            placeholder="Aadhaar Number">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ACTION BUTTON -->
+
+            <button
+                type="button"
+                id="actionButton"
+                class="test-api-button"
+                onclick="testAPI()">
+
+                Test API
+
+            </button>
+
+        </div>
+
+
+        <!-- =====================================
+             JSON RESPONSE
+        ===================================== -->
+
+        <div class="api-information">
+
+            <h2> JSON Response</h2>
+
+
+            <pre
+                id="jsonResponse"
+                class="json-response">No response yet.</pre>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================
+         API INFORMATION
+    ===================================== -->
+
+    <div class="api-information">
+
+        <h2>ℹ API Information</h2>
+
+
+        <p>
+
+            <b>Endpoint:</b>
+
+            <span id="endpointName">
+                -
+            </span>
+
+        </p>
+
+
+        <p>
+
+            <b>Method:</b>
+
+            <span id="methodDisplay">
+                -
+            </span>
+
+        </p>
+
+
+        <p>
+
+            <b>Status:</b>
+
+            <span class="api-active">
+                Active
+            </span>
+
+        </p>
+
+
+        <p>
+
+            <b>Response Time:</b>
+
+            <span id="responseDisplay">
+                0 ms
+            </span>
+
+        </p>
+
+
+        <p>
+
+            <b>Last Tested:</b>
+
+            <span id="lastTested">
+                Never
+            </span>
+
+        </p>
+
+    </div>
+
+
+    <!-- =====================================
+         RESPONSE TIME GRAPH
+    ===================================== -->
+
+    <div class="api-information">
+
+        <h2> Response Time Graph</h2>
+
+        <canvas id="responseChart"></canvas>
+
+    </div>
+
+
+</div>
+
+</div>
+
+
+<!-- =====================================
+     JAVASCRIPT
+===================================== -->
+
+<script>
+
+
+/* =====================================
+   SEARCH API TABLE
+===================================== */
+
+function searchTable() {
+
+    const input =
+        document.getElementById("searchAPI");
+
+    const filter =
+        input.value.toLowerCase();
+
+    const table =
+        document.getElementById("apiTable");
+
+    const rows =
+        table.getElementsByTagName("tr");
+
+
+    for (let i = 1; i < rows.length; i++) {
+
+        const text =
+            rows[i].innerText.toLowerCase();
+
+        rows[i].style.display =
+            text.includes(filter)
+            ? ""
+            : "none";
+
+    }
+
+}
+
+
+/* =====================================
+   RESPONSE TIME
+===================================== */
+
+let responseTimes = [];
+
+
+const ctx =
+    document
+    .getElementById("responseChart")
+    .getContext("2d");
+
+
+const responseChart =
+    new Chart(ctx, {
+
+        type: "line",
+
+        data: {
+
+            labels: [],
+
+            datasets: [{
+
+                label: "Response Time (ms)",
+
+                data: [],
+
+                tension: 0.3
+
+            }]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            scales: {
+
+                y: {
+
+                    beginAtZero: true
+
+                }
+
+            }
+
+        }
+
+    });
+
+
+/* =====================================
+   SELECT API BUTTON
+===================================== */
+
+function selectAPI(endpoint, method) {
+
+    document
+        .getElementById("apiSelect")
+        .value = endpoint;
+
+
+    document
+        .getElementById("methodSelect")
+        .value = method;
+
+
+    document
+        .getElementById("endpointName")
+        .innerText = endpoint;
+
+
+    document
+        .getElementById("methodDisplay")
+        .innerText = method;
+
+
+    showForm();
+
+
+    document
+        .querySelector(".api-tester")
+        .scrollIntoView({
+
+            behavior: "smooth"
+
+        });
+
+}
+
+
+/* =====================================
+   SHOW CORRECT FORM
+===================================== */
+
+function showForm() {
+
+    const method =
+        document
+        .getElementById("methodSelect")
+        .value;
+
+
+    const endpoint =
+        document
+        .getElementById("apiSelect")
+        .value;
+
+
+    document
+        .getElementById("patientForm")
+        .style.display = "block";
+
+
+    document
+        .getElementById("endpointName")
+        .innerText = endpoint;
+
+
+    document
+        .getElementById("methodDisplay")
+        .innerText = method;
+
+
+    const idField =
+        document.getElementById("idField");
+
+
+    const patientDetails =
+        document.getElementById("patientDetails");
+
+
+    const formTitle =
+        document.getElementById("formTitle");
+
+
+    const actionButton =
+        document.getElementById("actionButton");
+
+
+    /* =========================
+       GET
+    ========================= */
+
+    if (method === "GET") {
+
+        formTitle.innerText =
+            " Get Patient Information";
+
+
+        idField.style.display =
+            "block";
+
+
+        patientDetails.style.display =
+            "none";
+
+
+        actionButton.innerText =
+            "Get Patient";
+
+
+        return;
+
+    }
+
+
+    /* =========================
+       POST
+    ========================= */
+
+    if (method === "POST") {
+
+        formTitle.innerText =
+            " Add New Patient";
+
+
+        idField.style.display =
+            "none";
+
+
+        patientDetails.style.display =
+            "block";
+
+
+        actionButton.innerText =
+            "Add Patient";
+
+
+        clearForm();
+
+        return;
+
+    }
+
+
+    /* =========================
+       PUT
+    ========================= */
+
+    if (method === "PUT") {
+
+        formTitle.innerText =
+            " Update Patient";
+
+
+        idField.style.display =
+            "block";
+
+
+        patientDetails.style.display =
+            "block";
+
+
+        actionButton.innerText =
+            "Update Patient";
+
+
+        return;
+
+    }
+
+
+    /* =========================
+       DELETE
+    ========================= */
+
+    if (method === "DELETE") {
+
+        formTitle.innerText =
+            " Delete Patient";
+
+
+        idField.style.display =
+            "block";
+
+
+        patientDetails.style.display =
+            "none";
+
+
+        actionButton.innerText =
+            "Delete Patient";
+
+
+        return;
+
+    }
+
+}
+
+
+/* =====================================
+   CLEAR FORM
+===================================== */
+
+function clearForm() {
+
+    document.getElementById("patient_name").value = "";
+
+    document.getElementById("age").value = "";
+
+    document.getElementById("disease").value = "";
+
+    document.getElementById("phone").value = "";
+
+    document.getElementById("gender").value = "";
+
+    document.getElementById("blood_group").value = "";
+
+    document.getElementById("address").value = "";
+
+    document.getElementById("aadhaar_number").value = "";
+
+}
+
+
+/* =====================================
+   CREATE PATIENT JSON
+===================================== */
+
+function getPatientData() {
+
+    return {
+
+        patient_name:
+            document.getElementById("patient_name").value,
+
+        age:
+            document.getElementById("age").value,
+
+        disease:
+            document.getElementById("disease").value,
+
+        phone:
+            document.getElementById("phone").value,
+
+        gender:
+            document.getElementById("gender").value,
+
+        blood_group:
+            document.getElementById("blood_group").value,
+
+        address:
+            document.getElementById("address").value,
+
+        aadhaar_number:
+            document.getElementById("aadhaar_number").value
+
+    };
+
+}
+
+
+/* =====================================
+   TEST API
+===================================== */
+
+async function testAPI() {
+
+    const baseEndpoint =
+        document
+        .getElementById("apiSelect")
+        .value;
+
+
+    const method =
+        document
+        .getElementById("methodSelect")
+        .value;
+
+
+    const id =
+        document
+        .getElementById("recordId")
+        .value;
+
+
+    let endpoint =
+        baseEndpoint;
+
+
+    /* =========================
+       GET / PUT / DELETE ID
+    ========================= */
+
+    if (
+        method === "GET" ||
+        method === "PUT" ||
+        method === "DELETE"
+    ) {
+
+        if (id === "") {
+
+            alert(
+                "Please enter a Patient ID."
+            );
+
+            return;
+
+        }
+
+        endpoint =
+            baseEndpoint + "/" + id;
+
+    }
+
+
+    /* =========================
+       SHOW API INFORMATION
+    ========================= */
+
+    document
+        .getElementById("endpointName")
+        .innerText = endpoint;
+
+
+    document
+        .getElementById("methodDisplay")
+        .innerText = method;
+
+
+    /* =========================
+       START TIMER
+    ========================= */
+
+    const startTime =
+        performance.now();
+
+
+    try {
+
+        const options = {
+
+            method: method,
+
+            headers: {
+
+                "Content-Type":
+                    "application/json"
+
+            }
+
+        };
+
+
+        /* =========================
+           POST / PUT BODY
+        ========================= */
+
+        if (
+            method === "POST" ||
+            method === "PUT"
+        ) {
+
+            const patientData =
+                getPatientData();
+
+
+            options.body =
+                JSON.stringify(
+                    patientData
+                );
+
+        }
+
+
+        /* =========================
+           SEND REQUEST
+        ========================= */
+
+        const response =
+            await fetch(
+                endpoint,
+                options
+            );
+
+
+        const endTime =
+            performance.now();
+
+
+        const responseTime =
+            Math.round(
+                endTime - startTime
+            );
+
+
+        /* =========================
+           RESPONSE
+        ========================= */
+
+        let data;
+
+
+        try {
+
+            data =
+                await response.json();
+
+        } catch {
+
+            data = {
+
+                message:
+                    "Server returned no JSON response."
+
+            };
+
+        }
+
+
+        document
+            .getElementById("jsonResponse")
+            .innerText =
+                JSON.stringify(
+                    data,
+                    null,
+                    4
+                );
+
+
+        /* =========================
+           RESPONSE TIME
+        ========================= */
+
+        document
+            .getElementById("responseTime")
+            .innerText =
+                responseTime + " ms";
+
+
+        document
+            .getElementById("responseDisplay")
+            .innerText =
+                responseTime + " ms";
+
+
+        document
+            .getElementById("lastTested")
+            .innerText =
+                new Date()
+                .toLocaleTimeString();
+
+
+        /* =========================
+           GET RESPONSE
+           FILL PATIENT FORM
+        ========================= */
+
+        if (
+            method === "GET" &&
+            response.ok &&
+            data
+        ) {
+
+            document.getElementById(
+                "patientForm"
+            ).style.display = "block";
+
+
+            document.getElementById(
+                "patientDetails"
+            ).style.display = "block";
+
+
+            document.getElementById(
+                "formTitle"
+            ).innerText =
+                " Patient Information";
+
+
+            if (data.patient_name) {
+
+                document.getElementById(
+                    "patient_name"
+                ).value =
+                    data.patient_name;
+
+            }
+
+
+            if (data.age !== undefined) {
+
+                document.getElementById(
+                    "age"
+                ).value =
+                    data.age;
+
+            }
+
+
+            if (data.disease) {
+
+                document.getElementById(
+                    "disease"
+                ).value =
+                    data.disease;
+
+            }
+
+
+            if (data.phone) {
+
+                document.getElementById(
+                    "phone"
+                ).value =
+                    data.phone;
+
+            }
+
+
+            if (data.gender) {
+
+                document.getElementById(
+                    "gender"
+                ).value =
+                    data.gender;
+
+            }
+
+
+            if (data.blood_group) {
+
+                document.getElementById(
+                    "blood_group"
+                ).value =
+                    data.blood_group;
+
+            }
+
+
+            if (data.address) {
+
+                document.getElementById(
+                    "address"
+                ).value =
+                    data.address;
+
+            }
+
+
+            if (data.aadhaar_number) {
+
+                document.getElementById(
+                    "aadhaar_number"
+                ).value =
+                    data.aadhaar_number;
+
+            }
+
+        }
+
+
+        /* =========================
+           RESPONSE TIME GRAPH
+        ========================= */
+
+        responseTimes.push(
+            responseTime
+        );
+
+
+        if (
+            responseTimes.length > 10
+        ) {
+
+            responseTimes.shift();
+
+        }
+
+
+        responseChart.data.labels =
+            responseTimes.map(
+                function(value, index) {
+
+                    return "Test " +
+                        (index + 1);
+
+                }
+            );
+
+
+        responseChart
+            .data
+            .datasets[0]
+            .data =
+                responseTimes;
+
+
+        responseChart.update();
+
+
+    } catch (error) {
+
+        document
+            .getElementById("jsonResponse")
+            .innerText =
+                JSON.stringify({
+
+                    error:
+                        error.toString()
+
+                }, null, 4);
+
+    }
+
+}
+
+
+/* =====================================
+   API CHANGE
+===================================== */
+
+document
+    .getElementById("apiSelect")
+    .addEventListener(
+        "change",
+        function() {
+
+            document
+                .getElementById("recordId")
+                .value = "";
+
+            clearForm();
+
+            document
+                .getElementById("patientForm")
+                .style.display = "none";
+
+        }
+    );
+
+
+/* =====================================
+   METHOD CHANGE
+===================================== */
+
+document
+    .getElementById("methodSelect")
+    .addEventListener(
+        "change",
+        function() {
+
+            showForm();
+
+        }
+    );
+
+
+</script>
+
+
+</body>
+
+</html>

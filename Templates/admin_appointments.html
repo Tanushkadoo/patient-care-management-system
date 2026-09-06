@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment Management</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+      'google_translate_element'
+    );
+  }
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <div class="page-container">
+        <div class="page-header">
+            <h1> Appointment Management</h1>
+
+        </div>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Appointment ID</th>
+                    <th>Patient Name</th>
+                    <th>Doctor Name</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Status</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+                {% for appointment in appointments %}
+                <tr>
+                    <td>{{ appointment[0] }}</td>
+                    <td>{{ appointment[1] }}</td>
+                    <td>{{ appointment[2] }}</td>
+                    <td>{{ appointment[3] }}</td>
+                    <td>{{ appointment[4] }}</td>
+                    <td>
+
+                        {% if appointment[5] == "Approved" %}
+                            <span class="status-approved">
+                                 Approved
+                            </span>
+
+                        {% elif appointment[5] == "Pending" %}
+                            <span class="status-pending">
+                                 Pending
+                            </span>
+                        {% else %}
+                            <span class="status-rejected">
+                                 Rejected
+                            </span>
+
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <br>
+        <a href="/dashboard" class="back-btn">
+            ← Back to Dashboard
+        </a>
+    </div>
+
+</body>
+
+</html>

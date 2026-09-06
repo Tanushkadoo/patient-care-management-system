@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Prescription</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+      'google_translate_element'
+    );
+  }
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<div class="form-container">
+
+<div class="form-box">
+
+<h1>Edit Prescription</h1>
+
+<form method="POST">
+
+<label>Select Patient</label>
+
+<select name="patient_id" required>
+
+{% for patient in patients %}
+
+<option value="{{ patient[0] }}"
+{% if patient[0] == prescription[1] %}selected{% endif %}>
+{{ patient[1] }}
+</option>
+
+{% endfor %}
+
+</select>
+
+<label>Select Doctor</label>
+
+<select name="doctor_id" required>
+
+{% for doctor in doctors %}
+
+<option value="{{ doctor[0] }}"
+{% if doctor[0] == prescription[2] %}selected{% endif %}>
+{{ doctor[1] }}
+</option>
+
+{% endfor %}
+
+</select>
+
+<label>Medicine Name</label>
+<input type="text"
+name="medicine_name"
+value="{{ prescription[3] }}"
+required>
+
+<label>Dosage</label>
+<input type="text"
+name="dosage"
+value="{{ prescription[4] }}"
+required>
+
+<label>Frequency</label>
+<input type="text"
+name="frequency"
+value="{{ prescription[5] }}"
+required>
+
+<label>Duration</label>
+<input type="text"
+name="duration"
+value="{{ prescription[6] }}"
+required>
+
+<label>Instructions</label>
+<textarea name="instructions" rows="4">{{ prescription[7] }}</textarea>
+
+<label>Prescribed Date</label>
+<input type="date"
+name="prescribed_date"
+value="{{ prescription[8] }}"
+required>
+
+<button type="submit">
+Update Prescription
+</button>
+
+</form>
+
+<a href="/view_prescription" class="back-btn">
+← Back
+</a>
+
+</div>
+
+</div>
+
+</body>
+</html>

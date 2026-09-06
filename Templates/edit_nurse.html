@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Nurse</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+      'google_translate_element'
+    );
+  }
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<div class="form-container">
+
+    <h1> Edit Nurse</h1>
+
+    <form method="POST">
+
+        <label>Nurse Name</label>
+        <input type="text"
+               name="nurse_name"
+               value="{{ nurse[1] }}"
+               required>
+
+        <label>Department</label>
+        <input type="text"
+               name="department"
+               value="{{ nurse[2] }}"
+               required>
+
+        <label>Shift</label>
+        <input type="text"
+               name="shift"
+               value="{{ nurse[3] }}"
+               required>
+
+        <label>Phone</label>
+        <input type="text"
+               name="phone"
+               value="{{ nurse[4] }}"
+               required>
+
+        <label>Experience (Years)</label>
+        <input type="number"
+               name="experience"
+               value="{{ nurse[5] }}"
+               required>
+
+        <button type="submit" class="btn-primary">
+            Update Nurse
+        </button>
+
+    </form>
+
+    <a href="/view_nurses" class="back-link">
+        ← Back to Nurses
+    </a>
+
+</div>
+
+</body>
+</html>

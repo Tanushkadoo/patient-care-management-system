@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctors Management</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+      'google_translate_element'
+    );
+  }
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <div class="page-container">
+        <div class="page-header">
+            <h1> Doctors Management</h1>
+            <a href="/add_doctor" class="btn-primary">
+                + Add Doctor
+            </a>
+
+        </div>
+
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Specialization</th>
+                    <th>Phone</th>
+                    <th>Experience</th>
+                    <th>Available From</th>
+                    <th>Available To</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                {% for doctor in doctors %}
+
+                <tr>
+                    <td>{{ doctor[0] }}</td>
+                    <td>{{ doctor[1] }}</td>
+                    <td>{{ doctor[2] }}</td>
+                    <td>{{ doctor[3] }}</td>
+                    <td>{{ doctor[4] }} Years</td>
+                    <td>{{ doctor[6] }}</td>
+                    <td>{{ doctor[7] }}</td>
+
+                    <td>
+                        <a href="/edit_doctor/{{ doctor[0] }}"
+                           class="edit-btn">
+                           Edit
+                        </a>
+
+                        <a href="/delete_doctor/{{ doctor[0] }}"
+                           class="delete-btn"
+                           onclick="return confirm('Are you sure you want to delete this doctor?')">
+                           Delete
+                        </a>
+                    </td>
+                </tr>
+
+                {% endfor %}
+            </tbody>
+        </table>
+        <br>
+        <a href="/dashboard" class="back-btn">
+            ← Back to Dashboard
+        </a>
+    </div>
+
+</body>
+
+</html>

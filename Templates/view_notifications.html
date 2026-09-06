@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Notification History</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+      'google_translate_element'
+    );
+  }
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<div class="table-container">
+
+<h2>Notification History</h2>
+
+<table>
+
+<tr>
+
+    <th>ID</th>
+    <th>Patient</th>
+    <th>Title</th>
+    <th>Message</th>
+    <th>Type</th>
+    <th>Status</th>
+    <th>Date</th>
+    <th>Action</th>
+
+</tr>
+
+{% for notification in notifications %}
+
+<tr>
+
+    <td>{{ notification[0] }}</td>
+    <td>{{ notification[1] }}</td>
+    <td>{{ notification[2] }}</td>
+    <td>{{ notification[3] }}</td>
+    <td>{{ notification[4] }}</td>
+    <td>{{ notification[5] }}</td>
+    <td>{{ notification[6] }}</td>
+    <td>
+
+    {% if notification[5] == "Unread" %}
+
+    <a href="/mark_notification_read/{{ notification[0] }}">
+        <button>Mark Read</button>
+    </a>
+
+    {% else %}
+
+     Read
+
+    {% endif %}
+
+    </td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+<br>
+
+<a href="/notifications">
+    Back
+</a>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Lab Test</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+      'google_translate_element'
+    );
+  }
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<div class="form-container">
+
+<div class="form-box">
+
+<h1>Add Laboratory Test</h1>
+
+<form method="POST">
+
+<label>Select Patient</label>
+
+<select name="patient_id" required>
+
+<option value="">-- Select Patient --</option>
+
+{% for patient in patients %}
+<option value="{{ patient[0] }}">{{ patient[1] }}</option>
+{% endfor %}
+
+</select>
+
+<label>Select Doctor</label>
+
+<select name="doctor_id" required>
+
+<option value="">-- Select Doctor --</option>
+
+{% for doctor in doctors %}
+<option value="{{ doctor[0] }}">{{ doctor[1] }}</option>
+{% endfor %}
+
+</select>
+
+<label>Test Name</label>
+<input type="text" name="test_name" required>
+
+<label>Test Date</label>
+<input type="date" name="test_date" required>
+
+<label>Result</label>
+<textarea name="result" rows="4"></textarea>
+
+<label>Status</label>
+
+<select name="status" required>
+<option value="Pending">Pending</option>
+<option value="Completed">Completed</option>
+</select>
+
+<button type="submit">
+Save Lab Test
+</button>
+
+</form>
+
+<a href="/dashboard" class="back-btn">
+← Back to Dashboard
+</a>
+
+</div>
+
+</div>
+
+</body>
+</html>

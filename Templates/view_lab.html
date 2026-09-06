@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View Lab Reports</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+      'google_translate_element'
+    );
+  }
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<div class="page-container">
+
+<div class="page-header">
+
+<h1>Laboratory Reports</h1>
+
+</div>
+
+<table class="data-table">
+
+<tr>
+
+<th>ID</th>
+<th>Patient</th>
+<th>Doctor</th>
+<th>Test Name</th>
+<th>Test Date</th>
+<th>Result</th>
+<th>Status</th>
+
+{% if session["role"] in ["admin","doctor"] %}
+<th>Action</th>
+{% endif %}
+
+</tr>
+
+{% for lab in lab_reports %}
+
+<tr>
+
+<td>{{ lab[0] }}</td>
+<td>{{ lab[1] }}</td>
+<td>{{ lab[2] }}</td>
+<td>{{ lab[3] }}</td>
+<td>{{ lab[4] }}</td>
+<td>{{ lab[5] }}</td>
+
+<td>
+
+{% if lab[6] == "Completed" %}
+<span class="status-approved">Completed</span>
+{% else %}
+<span class="status-pending">Pending</span>
+{% endif %}
+
+</td>
+
+{% if session["role"] in ["admin","doctor"] %}
+
+<td>
+
+<a href="/edit_lab/{{ lab[0] }}" class="edit-btn">
+Edit
+</a>
+
+</td>
+
+{% endif %}
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+<br>
+
+<a href="/dashboard" class="back-btn">
+← Back to Dashboard
+</a>
+
+</div>
+
+</body>
+</html>

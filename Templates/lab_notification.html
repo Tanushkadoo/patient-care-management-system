@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lab Report Notification</title>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+      'google_translate_element'
+    );
+  }
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<div class="form-container">
+
+<div class="form-box">
+
+<h2>Lab Report Notification</h2>
+
+<form method="POST">
+
+<label>Select Patient</label>
+
+<select name="patient_id" required>
+
+{% for patient in patients %}
+
+<option value="{{ patient[0] }}">
+{{ patient[1] }}
+</option>
+
+{% endfor %}
+
+</select>
+
+<br><br>
+
+<label>Lab Report Message</label>
+
+<textarea
+name="message"
+rows="5"
+required></textarea>
+
+<br><br>
+
+<button type="submit">
+Send Notification
+</button>
+
+</form>
+
+</div>
+
+</div>
+
+</body>
+</html>

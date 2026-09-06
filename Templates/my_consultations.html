@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Consultations</title>
+</head>
+<body>
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+      'google_translate_element'
+    );
+  }
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<h2>My Consultation History</h2>
+
+{% if consultations %}
+
+<table border="1" cellpadding="10">
+
+<tr>
+    <th>ID</th>
+    <th>Doctor</th>
+    <th>Symptoms</th>
+    <th>Diagnosis</th>
+    <th>Treatment</th>
+    <th>Date</th>
+</tr>
+
+{% for consultation in consultations %}
+
+<tr>
+
+    <td>{{ consultation[0] }}</td>
+    <td>{{ consultation[1] }}</td>
+    <td>{{ consultation[2] }}</td>
+    <td>{{ consultation[3] }}</td>
+    <td>{{ consultation[4] }}</td>
+    <td>{{ consultation[5] }}</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+{% else %}
+
+<h3>No Consultation Records Found.</h3>
+
+{% endif %}
+
+<br>
+
+<a href="/dashboard">Back to Dashboard</a>
+
+</body>
+</html>

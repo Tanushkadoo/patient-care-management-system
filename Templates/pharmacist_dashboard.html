@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Pharmacist Dashboard</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+      'google_translate_element'
+    );
+  }
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<div class="topbar">
+
+    <div class="logo">
+        Hospital Management System
+    </div>
+
+    <div class="welcome">
+        Welcome {{ session["user"] }}
+    </div>
+
+</div>
+
+<div class="sidebar">
+
+    <h2>Pharmacist</h2>
+
+    <a href="/pharmacist_dashboard">Dashboard</a>
+
+    <a href="/add_medicine">Add Medicine</a>
+
+    <a href="/view_medicines">Medicine Inventory</a>
+
+    <a href="/dispense_medicine">Dispense Medicine</a>
+
+    <a href="/stock_update">Stock Update</a>
+
+    <a href="/search_medicine">Search Medicine</a>
+
+    <a href="/low_stock">Low Stock Alert</a>
+
+    <a href="/expired_medicines">Expired Medicines</a>
+
+    <a href="/medicine_reports">Reports</a>
+    <a href="/search_medicine" class="btn-primary">
+    Open
+</a>
+
+    <a href="/logout">Logout</a>
+
+</div>
+
+<div class="main-content">
+
+    <h1>Pharmacist Dashboard</h1>
+
+    <div class="dashboard-section">
+
+        <div class="dashboard-card">
+            <h2>Add Medicine</h2>
+            <a href="/add_medicine" class="btn-primary">Open</a>
+        </div>
+
+        <div class="dashboard-card">
+            <h2>Medicine Inventory</h2>
+            <a href="/view_medicines" class="btn-primary">Open</a>
+        </div>
+
+        <div class="dashboard-card">
+            <h2>Dispense Medicine</h2>
+            <a href="/dispense_medicine" class="btn-primary">Open</a>
+        </div>
+
+        <div class="dashboard-card">
+            <h2>Stock Update</h2>
+            <a href="/stock_update" class="btn-primary">Open</a>
+        </div>
+
+        <div class="dashboard-card">
+            <h2>Search Medicine</h2>
+            <a href="/search_medicine" class="btn-primary">Open</a>
+        </div>
+
+        <div class="dashboard-card">
+            <h2>Reports</h2>
+            <a href="/medicine_reports" class="btn-primary">Open</a>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
