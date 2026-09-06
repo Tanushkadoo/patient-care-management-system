@@ -4,183 +4,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rural Healthcare System</title>
-
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='style.css') }}">
+    <title>Kavach</title>
 
     <style>
         * {
             box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
-            margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
-            color: #222;
-            background: #ffffff;
-            line-height: 1.5;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            color: #1a1a1a;
+            line-height: 1.6;
         }
 
         .site-nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 16px 32px;
-            border-bottom: 1px solid #e0e0e0;
+            padding: 18px 40px;
         }
 
-        .site-nav .brand {
-            font-size: 20px;
-            font-weight: bold;
+        .brand {
+            font-size: 19px;
+            font-weight: 700;
         }
 
-        .site-nav .nav-links a {
-            margin-left: 20px;
+        .nav-links a {
+            margin-left: 24px;
             text-decoration: none;
-            color: #222;
+            color: #1a1a1a;
             font-size: 15px;
+            font-weight: 500;
         }
 
-        .site-nav .nav-links a.cta {
-            background: #2c6e49;
+        .nav-links a.cta {
+            background: #1a1a1a;
             color: white;
-            padding: 8px 16px;
-            border-radius: 4px;
+            padding: 9px 18px;
+            border-radius: 24px;
         }
 
-        .intro {
-            max-width: 800px;
-            margin: 50px auto 30px auto;
-            padding: 0 20px;
+        .hero-split {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            padding: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+        }
+
+        .hero-left {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .hero-left h1 {
+            font-size: 42px;
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+
+        .hero-left p {
+            font-size: 17px;
+            color: #555;
+            margin-bottom: 28px;
+            max-width: 460px;
+        }
+
+        .hero-actions a {
+            display: inline-block;
+            padding: 13px 26px;
+            border-radius: 24px;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 600;
+            margin-right: 12px;
+        }
+
+        .hero-actions .primary {
+            background: #1a1a1a;
+            color: white;
+        }
+
+        .hero-actions .secondary {
+            background: transparent;
+            color: #1a1a1a;
+            border: 1px solid #1a1a1a;
+        }
+
+        .hero-right {
+            flex: 1;
+            min-width: 280px;
+            background: #f0f4f2;
+            border-radius: 16px;
+            padding: 30px;
+        }
+
+        .hero-right h3 {
+            font-size: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #2c6e49;
+            margin-bottom: 16px;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 14px 0;
+            border-bottom: 1px solid #dde5e1;
+        }
+
+        .stat-row:last-child {
+            border-bottom: none;
+        }
+
+        .stat-row span:first-child {
+            color: #555;
+            font-size: 14px;
+        }
+
+        .stat-row span:last-child {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .band {
+            background: #1a1a1a;
+            color: white;
+            padding: 60px 40px;
             text-align: center;
         }
 
-        .intro h1 {
-            font-size: 32px;
+        .band h2 {
+            font-size: 26px;
             margin-bottom: 12px;
         }
 
-        .intro p {
-            font-size: 17px;
-            color: #444;
+        .band p {
+            color: #ccc;
+            max-width: 600px;
+            margin: 0 auto;
         }
 
-        .about-section {
-            max-width: 900px;
-            margin: 40px auto;
-            padding: 0 20px;
+        .feature-strip {
+            max-width: 1100px;
+            margin: 60px auto;
+            padding: 0 40px;
         }
 
-        .about-section h2 {
-            font-size: 24px;
-            margin-bottom: 10px;
+        .feature-strip-row {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
         }
 
-        .about-section p {
-            font-size: 16px;
-            color: #333;
+        .feature-strip-item {
+            flex: 1;
+            min-width: 240px;
+            padding: 24px 0;
+            border-top: 2px solid #1a1a1a;
         }
 
-        .benefits-list {
-            list-style: none;
-            padding: 0;
-            margin: 20px 0 0 0;
-        }
-
-        .benefits-list li {
-            padding: 12px 0 12px 32px;
-            border-bottom: 1px solid #eee;
-            font-size: 16px;
-            position: relative;
-        }
-
-        .benefits-list li:before {
-            content: "\2713";
-            position: absolute;
-            left: 0;
-            color: #2c6e49;
-            font-weight: bold;
-        }
-
-        .features-section {
-            max-width: 1000px;
-            margin: 50px auto;
-            padding: 0 20px;
-        }
-
-        .features-section h2 {
-            font-size: 24px;
-            text-align: center;
-            margin-bottom: 24px;
-        }
-
-        .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
-        }
-
-        .feature-box {
-            border: 1px solid #e0e0e0;
-            border-radius: 6px;
-            padding: 20px;
-        }
-
-        .feature-box h3 {
-            margin: 0 0 8px 0;
-            font-size: 17px;
-        }
-
-        .feature-box p {
-            margin: 0;
-            font-size: 14px;
-            color: #555;
-        }
-
-        .cta-section {
-            background: #f4f7f5;
-            text-align: center;
-            padding: 50px 20px;
-            margin-top: 50px;
-        }
-
-        .cta-section h2 {
-            font-size: 24px;
+        .feature-strip-item .num {
+            font-size: 13px;
+            color: #999;
             margin-bottom: 8px;
         }
 
-        .cta-section p {
-            color: #444;
-            margin-bottom: 24px;
+        .feature-strip-item h4 {
+            font-size: 17px;
+            margin-bottom: 8px;
         }
 
-        .cta-buttons a {
-            display: inline-block;
-            padding: 12px 28px;
-            margin: 0 8px;
-            border-radius: 4px;
-            text-decoration: none;
-            font-size: 16px;
-        }
-
-        .cta-buttons .btn-primary {
-            background: #2c6e49;
-            color: white;
-        }
-
-        .cta-buttons .btn-secondary {
-            background: white;
-            color: #2c6e49;
-            border: 1px solid #2c6e49;
+        .feature-strip-item p {
+            font-size: 14px;
+            color: #666;
         }
 
         footer {
             text-align: center;
-            padding: 24px;
+            padding: 30px;
             font-size: 13px;
-            color: #777;
-            border-top: 1px solid #eee;
+            color: #999;
         }
     </style>
 
@@ -198,9 +207,8 @@
 </script>
 <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
-    <!-- Navbar -->
     <nav class="site-nav">
-        <div class="brand">Rural Healthcare System</div>
+        <div class="brand" style="color: #000; font-weight: bold;">Kavach</div>
         <div class="nav-links">
             <a href="/">Home</a>
             <a href="/login">Login</a>
@@ -208,86 +216,92 @@
         </div>
     </nav>
 
-    <!-- Intro -->
-    <section class="intro">
-        <h1>Healthcare access, made simple</h1>
+    <!-- Split Hero -->
+    <section class="hero-split">
+        <div class="hero-left">
+            <h1>Healthcare that reaches you, wherever you are</h1>
+            <p>
+                Book appointments, manage records, and connect with
+                doctors and nurses — built for rural and
+                underserved communities.
+            </p>
+            <div class="hero-actions">
+                <a href="/register" class="primary">Get Started</a>
+                <a href="/login" class="secondary">Login</a>
+            </div>
+        </div>
+
+        <div class="hero-right">
+            <h3>What you get</h3>
+            <div class="stat-row">
+                <span>Appointment booking</span>
+                <span>Online</span>
+            </div>
+            <div class="stat-row">
+                <span>Medical records</span>
+                <span>Always accessible</span>
+            </div>
+            <div class="stat-row">
+                <span>Nearby hospitals</span>
+                <span>Live location</span>
+            </div>
+            <div class="stat-row">
+                <span>Language support</span>
+                <span>10+ languages</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Explanation band -->
+    <section class="band">
+        <h2>One system, every role</h2>
         <p>
-            A system built to connect patients, doctors, and nurses in
-            rural and underserved areas — so getting care is easier,
-            not harder.
+            Patients, doctors, nurses, and administrators each get
+            a dashboard built for what they actually need to do —
+            no paperwork, no confusion.
         </p>
     </section>
 
-    <!-- About / What the system does -->
-    <section class="about-section">
-        <h2>What this system does</h2>
-        <p>
-            This platform brings hospital record-keeping, appointment
-            booking, and patient care online — reducing paperwork,
-            long waits, and miscommunication between patients and
-            healthcare providers.
-        </p>
-
-        <ul class="benefits-list">
-            <li>Book doctor appointments without visiting in person</li>
-            <li>Access your medical history, prescriptions, and lab reports anytime</li>
-            <li>Find nearby hospitals and clinics using your location</li>
-            <li>Use the site in your own language</li>
-            <li>Doctors and nurses can manage patient records digitally, reducing errors</li>
-        </ul>
-    </section>
-
-    <!-- Features -->
-    <section class="features-section">
-        <h2>Key Features</h2>
-        <div class="feature-grid">
-
-            <div class="feature-box">
-                <h3>Doctor Management</h3>
-                <p>Add, update and manage doctor records and availability.</p>
+    <!-- Feature strip -->
+    <section class="feature-strip">
+        <div class="feature-strip-row">
+            <div class="feature-strip-item">
+                <div class="num">01</div>
+                <h4>Doctor Management</h4>
+                <p>Manage doctor records, specializations, and availability.</p>
             </div>
-
-            <div class="feature-box">
-                <h3>Patient Records</h3>
-                <p>Securely store and access patient history and treatment details.</p>
+            <div class="feature-strip-item">
+                <div class="num">02</div>
+                <h4>Patient Records</h4>
+                <p>Secure, always-accessible medical history and prescriptions.</p>
             </div>
-
-            <div class="feature-box">
-                <h3>Appointment Booking</h3>
-                <p>Book, approve, or reschedule appointments easily.</p>
+            <div class="feature-strip-item">
+                <div class="num">03</div>
+                <h4>Appointments</h4>
+                <p>Book, approve, and track appointments in one place.</p>
             </div>
-
-            <div class="feature-box">
-                <h3>Nearby Hospitals</h3>
+        </div>
+        <div class="feature-strip-row" style="margin-top: 24px;">
+            <div class="feature-strip-item">
+                <div class="num">04</div>
+                <h4>Nearby Hospitals</h4>
                 <p>Find hospitals and clinics near you using live location.</p>
             </div>
-
-            <div class="feature-box">
-                <h3>Multi-language Support</h3>
-                <p>Use the platform comfortably in your preferred language.</p>
+            <div class="feature-strip-item">
+                <div class="num">05</div>
+                <h4>Multi-language</h4>
+                <p>Use the platform comfortably in your own language.</p>
             </div>
-
-            <div class="feature-box">
-                <h3>Dashboards</h3>
-                <p>Role-based dashboards for patients, doctors, nurses, and admins.</p>
+            <div class="feature-strip-item">
+                <div class="num">06</div>
+                <h4>Dashboards</h4>
+                <p>Role-based views for every type of user.</p>
             </div>
-
         </div>
     </section>
 
-    <!-- CTA -->
-    <section class="cta-section">
-        <h2>Ready to get started?</h2>
-        <p>Create an account or log in to access your dashboard.</p>
-        <div class="cta-buttons">
-            <a href="/register" class="btn-primary">Register</a>
-            <a href="/login" class="btn-secondary">Login</a>
-        </div>
-    </section>
-
-    <!-- Footer -->
     <footer>
-        <p>&copy; 2026 Rural Healthcare System | Computer Engineering Project</p>
+        <p>&copy; 2026 Kavach | Computer Engineering Project</p>
     </footer>
 
 </body>
