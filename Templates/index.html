@@ -2,15 +2,187 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Hospital Management System</title>
+    <title>Rural Healthcare System</title>
 
     <link rel="stylesheet"
           href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            color: #222;
+            background: #ffffff;
+            line-height: 1.5;
+        }
+
+        .site-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 32px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .site-nav .brand {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .site-nav .nav-links a {
+            margin-left: 20px;
+            text-decoration: none;
+            color: #222;
+            font-size: 15px;
+        }
+
+        .site-nav .nav-links a.cta {
+            background: #2c6e49;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+        }
+
+        .intro {
+            max-width: 800px;
+            margin: 50px auto 30px auto;
+            padding: 0 20px;
+            text-align: center;
+        }
+
+        .intro h1 {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+
+        .intro p {
+            font-size: 17px;
+            color: #444;
+        }
+
+        .about-section {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .about-section h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .about-section p {
+            font-size: 16px;
+            color: #333;
+        }
+
+        .benefits-list {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0 0 0;
+        }
+
+        .benefits-list li {
+            padding: 12px 0 12px 32px;
+            border-bottom: 1px solid #eee;
+            font-size: 16px;
+            position: relative;
+        }
+
+        .benefits-list li:before {
+            content: "\2713";
+            position: absolute;
+            left: 0;
+            color: #2c6e49;
+            font-weight: bold;
+        }
+
+        .features-section {
+            max-width: 1000px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+
+        .features-section h2 {
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .feature-box {
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 20px;
+        }
+
+        .feature-box h3 {
+            margin: 0 0 8px 0;
+            font-size: 17px;
+        }
+
+        .feature-box p {
+            margin: 0;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .cta-section {
+            background: #f4f7f5;
+            text-align: center;
+            padding: 50px 20px;
+            margin-top: 50px;
+        }
+
+        .cta-section h2 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .cta-section p {
+            color: #444;
+            margin-bottom: 24px;
+        }
+
+        .cta-buttons a {
+            display: inline-block;
+            padding: 12px 28px;
+            margin: 0 8px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .cta-buttons .btn-primary {
+            background: #2c6e49;
+            color: white;
+        }
+
+        .cta-buttons .btn-secondary {
+            background: white;
+            color: #2c6e49;
+            border: 1px solid #2c6e49;
+        }
+
+        footer {
+            text-align: center;
+            padding: 24px;
+            font-size: 13px;
+            color: #777;
+            border-top: 1px solid #eee;
+        }
+    </style>
 
 </head>
 
@@ -27,106 +199,95 @@
 <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
     <!-- Navbar -->
-
-    <nav class="home-navbar">
-
-        <div class="home-logo">
-
-             Hospital Management System
-
-        </div>
-
-        <div class="home-links">
-
+    <nav class="site-nav">
+        <div class="brand">Rural Healthcare System</div>
+        <div class="nav-links">
             <a href="/">Home</a>
-
             <a href="/login">Login</a>
-
-            <a href="/register">Register</a>
-
+            <a href="/register" class="cta">Register</a>
         </div>
-
     </nav>
 
-
-
-    <!-- Hero Section -->
-
-    <section class="hero">
-
-        <div class="hero-text">
-
-            <h1>Welcome to Hospital Management System</h1>
-
-            <p>
-
-                A simple and efficient way to manage doctors,
-                patients, nurses and appointments.
-
-            </p>
-
-            <a href="/login" class="btn">Login</a>
-
-            <a href="/register" class="btn btn-secondary">Register</a>
-
-        </div>
-
+    <!-- Intro -->
+    <section class="intro">
+        <h1>Healthcare access, made simple</h1>
+        <p>
+            A system built to connect patients, doctors, and nurses in
+            rural and underserved areas — so getting care is easier,
+            not harder.
+        </p>
     </section>
 
+    <!-- About / What the system does -->
+    <section class="about-section">
+        <h2>What this system does</h2>
+        <p>
+            This platform brings hospital record-keeping, appointment
+            booking, and patient care online — reducing paperwork,
+            long waits, and miscommunication between patients and
+            healthcare providers.
+        </p>
 
+        <ul class="benefits-list">
+            <li>Book doctor appointments without visiting in person</li>
+            <li>Access your medical history, prescriptions, and lab reports anytime</li>
+            <li>Find nearby hospitals and clinics using your location</li>
+            <li>Use the site in your own language</li>
+            <li>Doctors and nurses can manage patient records digitally, reducing errors</li>
+        </ul>
+    </section>
 
     <!-- Features -->
+    <section class="features-section">
+        <h2>Key Features</h2>
+        <div class="feature-grid">
 
-    <section class="features">
-
-        <h2>Our Features</h2>
-
-        <div class="feature-container">
-
-            <div class="feature-card">
-
-                <h3> Doctor Management</h3>
-
-                <p>Add, update and manage doctor records.</p>
-
+            <div class="feature-box">
+                <h3>Doctor Management</h3>
+                <p>Add, update and manage doctor records and availability.</p>
             </div>
 
-            <div class="feature-card">
-
-                <h3> Patient Management</h3>
-
-                <p>Maintain patient details securely.</p>
-
+            <div class="feature-box">
+                <h3>Patient Records</h3>
+                <p>Securely store and access patient history and treatment details.</p>
             </div>
 
-            <div class="feature-card">
-
-                <h3> Appointment Booking</h3>
-
-                <p>Book and manage appointments easily.</p>
-
+            <div class="feature-box">
+                <h3>Appointment Booking</h3>
+                <p>Book, approve, or reschedule appointments easily.</p>
             </div>
 
-            <div class="feature-card">
+            <div class="feature-box">
+                <h3>Nearby Hospitals</h3>
+                <p>Find hospitals and clinics near you using live location.</p>
+            </div>
 
-                <h3> Dashboard</h3>
+            <div class="feature-box">
+                <h3>Multi-language Support</h3>
+                <p>Use the platform comfortably in your preferred language.</p>
+            </div>
 
-                <p>View hospital statistics in one place.</p>
-
+            <div class="feature-box">
+                <h3>Dashboards</h3>
+                <p>Role-based dashboards for patients, doctors, nurses, and admins.</p>
             </div>
 
         </div>
-
     </section>
 
-
+    <!-- CTA -->
+    <section class="cta-section">
+        <h2>Ready to get started?</h2>
+        <p>Create an account or log in to access your dashboard.</p>
+        <div class="cta-buttons">
+            <a href="/register" class="btn-primary">Register</a>
+            <a href="/login" class="btn-secondary">Login</a>
+        </div>
+    </section>
 
     <!-- Footer -->
-
     <footer>
-
-        <p>© 2026 Hospital Management System | Computer Engineering Project</p>
-
+        <p>&copy; 2026 Rural Healthcare System | Computer Engineering Project</p>
     </footer>
 
 </body>
