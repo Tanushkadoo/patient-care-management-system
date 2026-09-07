@@ -2,164 +2,101 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Registration Portal for Smart India Hackathon Hospital Management System">
-    <title>SIH Portal | Register - Hospital Management System</title>
-    
-    <!-- Link to your external stylesheet -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Register</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
 </head>
 
 <body>
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement(
+      {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+      'google_translate_element'
+    );
+  }
+</script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
-    <!-- Accessibility & Translation Header (Crucial for SIH scaling to rural areas) -->
-    <header class="sih-header">
-        <div class="logo-container">
-            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Hospital Logo" class="logo" onerror="this.style.display='none'">
-            <h1>Swasthya - Hospital Management System</h1>
-            <p class="subtitle">Smart India Hackathon Initiative</p>
-        </div>
-        
-        <div id="google_translate_element" class="translator-widget" aria-label="Language Translator"></div>
-        <script type="text/javascript">
-            function googleTranslateElementInit() {
-                new google.translate.TranslateElement(
-                    {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
-                    'google_translate_element'
-                );
-            }
-        </script>
-        <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-    </header>
+    <div class="login-container">
 
-    <main class="registration-main">
-        
-        <div class="form-wrapper">
-            <h2>User Registration Portal</h2>
-            <p class="mandatory-note"><span class="asterisk">*</span> indicates mandatory fields</p>
+        <div class="login-box">
 
-            <!-- Registration Form with extensive SIH-level data fields -->
-            <form action="/register" method="POST" id="sih-register-form">
-                
-                <!-- Section 1: Role & Identity -->
-                <fieldset class="form-section">
-                    <legend>1. Profile Type</legend>
-                    
-                    <div class="input-group">
-                        <label for="role">Registering As <span class="asterisk">*</span></label>
-                        <select id="role" name="role" required>
-                            <option value="" disabled selected>-- Select Profile Type --</option>
-                            <option value="patient">Patient / Citizen</option>
-                            <option value="doctor">Medical Practitioner</option>
-                            <option value="nurse">Nursing Staff</option>
-                            <option value="admin">Hospital Admin</option>
-                        </select>
-                    </div>
-                </fieldset>
+            <h1> Hospital Management System</h1>
 
-                <!-- Section 2: Personal Information -->
-                <fieldset class="form-section">
-                    <legend>2. Personal Details</legend>
-                    
-                    <div class="input-group">
-                        <label for="full_name">Full Name (As per Aadhar) <span class="asterisk">*</span></label>
-                        <input type="text" id="full_name" name="full_name" placeholder="Enter full name" required>
-                    </div>
+            <h2>Create Account</h2>
 
-                    <div class="input-row">
-                        <div class="input-group">
-                            <label for="dob">Date of Birth <span class="asterisk">*</span></label>
-                            <input type="date" id="dob" name="dob" max="2026-12-31" required>
-                        </div>
+            <form action="/register" method="POST">
 
-                        <div class="input-group">
-                            <label for="gender">Gender <span class="asterisk">*</span></label>
-                            <select id="gender" name="gender" required>
-                                <option value="" disabled selected>-- Select --</option>
-                                <option value="male">Male</option>
-                                <option value="female">Female</option>
-                                <option value="other">Transgender / Other</option>
-                            </select>
-                        </div>
-                        
-                        <div class="input-group">
-                            <label for="blood_group">Blood Group</label>
-                            <select id="blood_group" name="blood_group">
-                                <option value="" disabled selected>-- Select --</option>
-                                <option value="A+">A+</option>
-                                <option value="A-">A-</option>
-                                <option value="B+">B+</option>
-                                <option value="B-">B-</option>
-                                <option value="O+">O+</option>
-                                <option value="O-">O-</option>
-                                <option value="AB+">AB+</option>
-                                <option value="AB-">AB-</option>
-                            </select>
-                        </div>
-                    </div>
-                </fieldset>
+                <label>Name</label>
 
-                <!-- Section 3: Government Integration (Huge for SIH) -->
-                <fieldset class="form-section govt-integration">
-                    <legend>3. Health & National IDs</legend>
-                    
-                    <div class="input-group">
-                        <label for="abha_id">ABHA Number (Ayushman Bharat Health Account)</label>
-                        <input type="text" id="abha_id" name="abha_id" placeholder="14-digit ABHA Number" pattern="[0-9]{14}" title="Please enter a valid 14-digit ABHA ID">
-                        <small>Optional, but recommended for unified health records.</small>
-                    </div>
+                <input
+                    type="text"
+                    name="full_name"
+                    placeholder="Enter your name"
+                    required>
 
-                    <div class="input-group">
-                        <label for="phone">Mobile Number <span class="asterisk">*</span></label>
-                        <div class="phone-input">
-                            <span class="country-code">+91</span>
-                            <input type="tel" id="phone" name="phone" placeholder="10-digit mobile number" pattern="[0-9]{10}" required>
-                        </div>
-                    </div>
-                </fieldset>
+                <label>Email</label>
 
-                <!-- Section 4: Account Security -->
-                <fieldset class="form-section">
-                    <legend>4. Security Credentials</legend>
-                    
-                    <div class="input-group">
-                        <label for="email">Email Address <span class="asterisk">*</span></label>
-                        <input type="email" id="email" name="email" placeholder="example@domain.com" required>
-                    </div>
+                <input
+                    type="email"
+                    name="email"
+                    placeholder="Enter your email"
+                    required>
 
-                    <div class="input-row">
-                        <div class="input-group">
-                            <label for="password">Create Password <span class="asterisk">*</span></label>
-                            <input type="password" id="password" name="password" minlength="8" placeholder="Minimum 8 characters" required>
-                        </div>
+                <label>Password</label>
 
-                        <div class="input-group">
-                            <label for="confirm_password">Confirm Password <span class="asterisk">*</span></label>
-                            <input type="password" id="confirm_password" name="confirm_password" placeholder="Re-enter password" required>
-                        </div>
-                    </div>
-                </fieldset>
+                <input
+                    type="password"
+                    name="password"
+                    placeholder="Enter your password"
+                    required>
 
-                <!-- Consent and Submit -->
-                <div class="form-actions">
-                    <div class="checkbox-group">
-                        <input type="checkbox" id="terms" name="terms" required>
-                        <label for="terms">I agree to the <a href="/terms">Terms of Service</a> and <a href="/privacy">Data Privacy Policy</a> (compliant with NDHM guidelines) <span class="asterisk">*</span></label>
-                    </div>
+                <label>Role</label>
 
-                    <button type="submit" class="sih-submit-btn">Complete Registration</button>
-                </div>
+                <select name="role" required>
 
-            </form>
+                    <option value="">-- Select Role --</option>
 
-            <div class="auth-footer">
-                <p>Already registered with us? <a href="/login" class="login-link">Login to your account</a></p>
-                <a href="/" class="back-link">← Return to Home</a>
-            </div>
+                    <option value="patient">Patient</option>
 
-        </div>
-    </main>
+                    <option value="doctor">Doctor</option>
+
+                    <option value="nurse">Nurse</option>
+
+                </select>
+
+                <button type="submit">
+                    Register
+                </button>
+
+            </form>
+
+            <p>
+
+                Already have an account?
+
+                <a href="/login">Login</a>
+
+            </p>
+
+            <br>
+
+            <a href="/">← Back to Home</a>
+
+        </div>
+
+    </div>
 
 </body>
+
 </html>
+just change the design
