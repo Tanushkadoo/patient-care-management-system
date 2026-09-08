@@ -1,17 +1,186 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Doctor Dashboard</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Doctor Dashboard</title>
 
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:        #FBF8F2;
+    --surface:   #FFFFFF;
+    --ink:       #2A2A28;
+    --ink-soft:  #635F55;
+    --line:      #E4DDCF;
+    --teal:      #1D4A43;
+    --teal-dark: #123430;
+    --teal-tint: #E8EFEC;
+    --gold:      #E3A23D;
+    --gold-dark: #B97F26;
+    --red:       #C1443C;
+    --red-tint:  #FBEAE8;
+    --radius-sm: 10px;
+    --radius-lg: 18px;
+    --shadow:    0 1px 2px rgba(30,25,15,0.06), 0 6px 20px rgba(30,25,15,0.05);
+  }
+
+  *{ box-sizing:border-box; }
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Atkinson Hyperlegible', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    font-size:17px;
+    line-height:1.5;
+  }
+  a{ color:inherit; }
+  button{ font-family:inherit; }
+
+  .skip-link{
+    position:absolute; left:-999px; top:auto;
+    background:var(--teal); color:#fff; padding:10px 16px; border-radius:0 0 8px 0; z-index:100;
+  }
+  .skip-link:focus{ left:0; top:0; }
+  :focus-visible{ outline:3px solid var(--gold); outline-offset:2px; }
+
+  /* ===== Top bar ===== */
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:12px; padding:16px 20px;
+    background:var(--teal); color:#fff;
+  }
+  .topbar .brand{ display:flex; align-items:center; gap:10px; font-weight:700; font-size:1.05rem; }
+  .topbar .greeting{ font-weight:400; opacity:0.92; font-size:0.95rem; }
+  .topbar-right{ display:flex; align-items:center; gap:10px; }
+  .lang-select{
+    appearance:none; background:rgba(255,255,255,0.14); color:#fff;
+    border:1px solid rgba(255,255,255,0.35); border-radius:999px;
+    padding:8px 32px 8px 14px; font-size:0.9rem; font-family:inherit;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 12px center;
+  }
+  .icon-btn{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:40px; height:40px; border-radius:50%;
+    background:rgba(255,255,255,0.14); border:1px solid rgba(255,255,255,0.35);
+    color:#fff; text-decoration:none;
+  }
+  #google_translate_element{ position:absolute; width:1px; height:1px; overflow:hidden; }
+
+  /* ===== Alert strip (only shown when there's something urgent) ===== */
+  .alert-strip{
+    display:flex; align-items:center; justify-content:space-between; gap:14px;
+    background:#FEF6E7; border-bottom:1px solid #F1DFB2; padding:12px 20px;
+  }
+  .alert-strip .msg{ display:flex; align-items:center; gap:10px; color:var(--gold-dark); font-weight:700; }
+  .alert-strip .sub{ display:block; font-weight:400; color:var(--ink-soft); font-size:0.85rem; }
+  .alert-strip a.btn{ white-space:nowrap; }
+
+  /* ===== Shell ===== */
+  .shell{ display:flex; min-height:100vh; }
+  .rail{ display:none; }
+  .main{ flex:1; min-width:0; }
+  .content{ max-width:960px; margin:0 auto; padding:24px 20px 60px; }
+
+  section{ margin-bottom:36px; }
+  .section-head{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-bottom:14px; }
+  .section-head h2{ margin:0; font-size:1.15rem; }
+  .section-head a{ font-size:0.9rem; color:var(--teal); text-decoration:underline; }
+
+  .btn{
+    display:inline-block; text-decoration:none; text-align:center;
+    padding:10px 18px; border-radius:999px; font-weight:700; font-size:0.95rem;
+    border:1px solid transparent; cursor:pointer;
+  }
+  .btn-primary{ background:var(--gold); color:var(--teal-dark); }
+  .btn-primary:hover{ background:var(--gold-dark); }
+  .btn-outline{ background:transparent; border-color:var(--teal); color:var(--teal); }
+  .btn-outline:hover{ background:var(--teal-tint); }
+
+  /* ===== Today's schedule ===== */
+  .schedule-list{ background:var(--surface); border:1px solid var(--line); border-radius:var(--radius-lg); overflow:hidden; box-shadow:var(--shadow); }
+  .schedule-row{
+    display:flex; align-items:center; gap:14px;
+    padding:14px 18px; border-bottom:1px solid var(--line);
+  }
+  .schedule-row:last-child{ border-bottom:none; }
+  .schedule-time{ flex:0 0 auto; width:76px; font-weight:700; color:var(--teal); }
+  .schedule-who{ flex:1; min-width:0; }
+  .schedule-who .name{ font-weight:700; }
+  .schedule-status{ font-size:0.8rem; font-weight:700; padding:3px 10px; border-radius:999px; white-space:nowrap; }
+  .schedule-status.pending{ background:#FCEFD8; color:var(--gold-dark); }
+  .schedule-status.approved{ background:var(--teal-tint); color:var(--teal); }
+  .schedule-status.completed{ background:#EFEFEA; color:var(--ink-soft); }
+  .schedule-empty{ padding:26px 18px; text-align:center; color:var(--ink-soft); }
+
+  /* ===== Quick actions ===== */
+  .actions-row{ display:flex; gap:12px; overflow-x:auto; padding-bottom:6px; scroll-snap-type:x proximity; -webkit-overflow-scrolling:touch; }
+  .actions-row::-webkit-scrollbar{ height:6px; }
+  .actions-row::-webkit-scrollbar-thumb{ background:var(--line); border-radius:4px; }
+  .action-tile{
+    scroll-snap-align:start; flex:0 0 auto; width:108px;
+    display:flex; flex-direction:column; align-items:center; gap:8px;
+    text-decoration:none; color:var(--ink);
+    padding:14px 8px; background:var(--surface); border:1px solid var(--line); border-radius:var(--radius-sm);
+  }
+  .action-tile:hover{ border-color:var(--teal); }
+  .action-tile .ico{ width:44px; height:44px; border-radius:50%; background:var(--teal-tint); color:var(--teal); display:flex; align-items:center; justify-content:center; }
+  .action-tile span.label{ font-size:0.85rem; text-align:center; line-height:1.25; }
+
+  /* ===== Stats ===== */
+  .stats-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+  .stat{ background:var(--surface); border:1px solid var(--line); border-radius:var(--radius-sm); padding:16px; text-align:left; }
+  .stat .num{ font-size:1.6rem; font-weight:700; color:var(--teal); }
+  .stat .label{ color:var(--ink-soft); font-size:0.85rem; margin-top:2px; }
+
+  /* ===== Notifications ===== */
+  .notif-list{ background:var(--surface); border:1px solid var(--line); border-radius:var(--radius-lg); overflow:hidden; }
+  .notif{ display:flex; gap:14px; padding:16px 18px; border-left:4px solid transparent; border-bottom:1px solid var(--line); }
+  .notif:last-child{ border-bottom:none; }
+  .notif.unread{ border-left-color:var(--gold); background:#FFFCF6; }
+  .notif .dot{ flex:0 0 auto; width:10px; height:10px; border-radius:50%; margin-top:6px; background:var(--line); }
+  .notif.unread .dot{ background:var(--gold-dark); }
+  .notif .body{ flex:1; min-width:0; }
+  .notif h3{ margin:0 0 4px; font-size:1rem; }
+  .notif p{ margin:0 0 6px; color:var(--ink-soft); font-size:0.95rem; }
+  .notif .meta{ font-size:0.82rem; color:var(--ink-soft); display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+  .tag{ display:inline-block; padding:2px 9px; border-radius:999px; font-size:0.78rem; font-weight:700; }
+  .tag.unread{ background:#FCEFD8; color:var(--gold-dark); }
+  .tag.read{ background:var(--teal-tint); color:var(--teal); }
+  .mark-link{ font-size:0.85rem; color:var(--teal); text-decoration:underline; white-space:nowrap; }
+  .notif-empty{ padding:28px 18px; text-align:center; color:var(--ink-soft); }
+
+  /* ===== Quick links ===== */
+  .link-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .link-card{ background:var(--surface); border:1px solid var(--line); border-radius:var(--radius-sm); padding:16px; display:flex; flex-direction:column; gap:8px; }
+  .link-card h3{ margin:0; font-size:0.98rem; }
+  .link-card p{ margin:0; color:var(--ink-soft); font-size:0.88rem; }
+
+  @media (min-width:860px){
+    .shell{ align-items:stretch; }
+    .rail{ display:flex; flex-direction:column; gap:2px; width:220px; flex-shrink:0; background:var(--teal-dark); color:#fff; padding:20px 12px; }
+    .rail a{ display:flex; align-items:center; gap:12px; padding:10px 12px; border-radius:10px; text-decoration:none; color:#EAF2F0; font-size:0.95rem; }
+    .rail a:hover, .rail a.active{ background:rgba(255,255,255,0.12); }
+    .rail .rail-title{ color:#9FC2BA; font-size:0.78rem; margin:10px 12px 6px; }
+    .content{ padding:32px 32px 60px; }
+  }
+  @media (max-width:520px){
+    .link-grid{ grid-template-columns:1fr; }
+    .alert-strip{ flex-direction:column; align-items:stretch; }
+  }
+  @media (prefers-reduced-motion: reduce){ *{ scroll-behavior:auto !important; } }
+</style>
 </head>
-
 <body>
+
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
 <div id="google_translate_element"></div>
-<script type="text/javascript">
+<script>
   function googleTranslateElementInit() {
     new google.translate.TranslateElement(
       {pageLanguage: 'en', includedLanguages: 'hi,mr,ta,te,bn,gu,kn,ml,pa,ur', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
@@ -19,156 +188,243 @@
     );
   }
 </script>
-<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
-    <!-- Top Navbar -->
-    <div class="topbar">
+<header class="topbar">
+  <div class="brand">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7.5-4.6-10-9.1C.5 8.4 2.7 4 6.6 4c2 0 3.6 1.1 4.4 2.6C11.8 5.1 13.4 4 15.4 4c3.9 0 6.1 4.4 4.6 7.9C19.5 16.4 12 21 12 21Z"/><path d="M8 12h2l1.5-3L13 15l1.5-3H16"/></svg>
+    <span>Doctor Dashboard</span>
+  </div>
+  <div class="topbar-right">
+    <span class="greeting">Welcome, Dr. {{ session["user"] }}</span>
+    <select class="lang-select" aria-label="Choose language" onchange="if(this.value){document.cookie='googtrans=/en/'+this.value+';path=/'; location.reload();}">
+      <option value="">English</option>
+      <option value="hi">हिन्दी</option>
+      <option value="mr">मराठी</option>
+      <option value="ta">தமிழ்</option>
+      <option value="te">తెలుగు</option>
+      <option value="bn">বাংলা</option>
+      <option value="gu">ગુજરાતી</option>
+    </select>
+    <a class="icon-btn" href="/logout" title="Logout" aria-label="Logout">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+    </a>
+  </div>
+</header>
 
-        <div class="logo">
-             Hospital Management System
+{% if pending_lab_count is defined and pending_lab_count and pending_lab_count > 0 %}
+<div class="alert-strip">
+  <div class="msg">
+    {{ pending_lab_count }} lab report{{ 's' if pending_lab_count != 1 else '' }} waiting on your review
+    <span class="sub" style="font-weight:400;">Patients are waiting on these results</span>
+  </div>
+  <a class="btn btn-primary" href="/view_lab">Review now</a>
+</div>
+{% endif %}
+
+<div class="shell">
+
+  <nav class="rail" aria-label="Main menu">
+    <a href="/dashboard" class="active">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+      Dashboard
+    </a>
+    <a href="/doctor_appointments">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 14"/></svg>
+      Appointments
+    </a>
+    <a href="/view_patients">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Patients
+    </a>
+    <a href="/view_nurses">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      Nurses
+    </a>
+    <div class="rail-title">Records</div>
+    <a href="/add_ehr">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="12" x2="12" y2="18"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
+      Add EHR
+    </a>
+    <a href="/view_ehr">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      View EHR
+    </a>
+    <a href="/add_consultation">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4v6a6 6 0 0 0 12 0V4"/><circle cx="18" cy="15" r="3"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/></svg>
+      Add consultation
+    </a>
+    <a href="/view_consultation">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4v6a6 6 0 0 0 12 0V4"/><circle cx="18" cy="15" r="3"/></svg>
+      View consultations
+    </a>
+    <a href="/add_prescription">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="7" rx="3.5"/><line x1="12" y1="8" x2="12" y2="18"/></svg>
+      Add prescription
+    </a>
+    <a href="/view_prescriptions">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="7" rx="3.5"/><line x1="12" y1="11" x2="12" y2="18"/></svg>
+      View prescriptions
+    </a>
+    <a href="/add_lab">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 2v6L4 20a1 1 0 0 0 1 2h14a1 1 0 0 0 1-2L15 8V2"/><line x1="9" y1="2" x2="15" y2="2"/><line x1="12" y1="12" x2="12" y2="12.01"/></svg>
+      Add lab test
+    </a>
+    <a href="/view_lab">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 2v6L4 20a1 1 0 0 0 1 2h14a1 1 0 0 0 1-2L15 8V2"/><line x1="9" y1="2" x2="15" y2="2"/></svg>
+      View lab reports
+    </a>
+    <a href="/search_patient_history">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      Patient history
+    </a>
+    <div class="rail-title">Account</div>
+    <a href="/logout">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Logout
+    </a>
+  </nav>
+
+  <main class="main">
+    <div class="content" id="main-content">
+
+      <!-- Today's schedule -->
+      <section aria-labelledby="schedule-heading">
+        <div class="section-head">
+          <h2 id="schedule-heading">Today's schedule</h2>
+          <a href="/doctor_appointments">See all appointments</a>
         </div>
 
-        <div class="welcome">
-            Welcome Dr. {{ session["user"] }}
+        <div class="schedule-list">
+          {% if today_appointments %}
+            {% for appt in today_appointments %}
+            <div class="schedule-row">
+              <div class="schedule-time">{{ appt[1] }}</div>
+              <div class="schedule-who">
+                <div class="name">{{ appt[0] }}</div>
+              </div>
+              <span class="schedule-status {{ appt[2]|lower }}">{{ appt[2] }}</span>
+            </div>
+            {% endfor %}
+          {% else %}
+            <div class="schedule-empty">No appointments scheduled for today.</div>
+          {% endif %}
+        </div>
+      </section>
+
+      <!-- Quick actions -->
+      <section aria-labelledby="actions-heading">
+        <div class="section-head">
+          <h2 id="actions-heading">Quick actions</h2>
+        </div>
+        <div class="actions-row">
+          <a class="action-tile" href="/add_consultation">
+            <span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4v6a6 6 0 0 0 12 0V4"/><circle cx="18" cy="15" r="3"/></svg></span>
+            <span class="label">Add<br>consultation</span>
+          </a>
+          <a class="action-tile" href="/add_prescription">
+            <span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="7" rx="3.5"/><line x1="12" y1="8" x2="12" y2="18"/></svg></span>
+            <span class="label">Add<br>prescription</span>
+          </a>
+          <a class="action-tile" href="/add_lab">
+            <span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 2v6L4 20a1 1 0 0 0 1 2h14a1 1 0 0 0 1-2L15 8V2"/><line x1="9" y1="2" x2="15" y2="2"/></svg></span>
+            <span class="label">Order<br>lab test</span>
+          </a>
+          <a class="action-tile" href="/add_ehr">
+            <span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
+            <span class="label">Update<br>EHR</span>
+          </a>
+          <a class="action-tile" href="/view_patients">
+            <span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></span>
+            <span class="label">My<br>patients</span>
+          </a>
+          <a class="action-tile" href="/search_patient_history">
+            <span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+            <span class="label">Search<br>history</span>
+          </a>
+          <a class="action-tile" href="/view_nurses">
+            <span class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></span>
+            <span class="label">Nurses</span>
+          </a>
+        </div>
+      </section>
+
+      <!-- Caseload -->
+      <section aria-labelledby="stats-heading">
+        <div class="section-head">
+          <h2 id="stats-heading">Your caseload</h2>
+        </div>
+        <div class="stats-grid">
+          <div class="stat">
+            <div class="num">{{ patient_count|default(0) }}</div>
+            <div class="label">Patients under your care</div>
+          </div>
+          <div class="stat">
+            <div class="num">{{ pending_appointment_count|default(0) }}</div>
+            <div class="label">Pending appointment requests</div>
+          </div>
+          <div class="stat">
+            <div class="num">{{ unread_count|default(notifications|selectattr('4','equalto','Unread')|list|length if notifications is defined else 0) }}</div>
+            <div class="label">Unread notifications</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Notifications -->
+      <section aria-labelledby="notif-heading" id="notifications">
+        <div class="section-head">
+          <h2 id="notif-heading">Notifications</h2>
         </div>
 
-    </div>
-
-    <!-- Sidebar -->
-    <div class="sidebar">
-
-        <h2>Menu</h2>
-
-        <a href="/dashboard"> Dashboard</a>
-
-        <a href="/view_nurses"> Nurses</a>
-
-        <a href="/view_patients"> Patients</a>
-
-        <a href="/doctor_appointments"> Appointments</a>
-
-        <a href="/add_ehr">Add EHR</a>
-        <a href="/view_ehr">View EHR</a>
-        <a href="/add_consultation">Add Consultation</a><br>
-        <a href="/view_consultation">View Consultation</a><br>
-        <a href="/add_prescription">Add Prescription</a>
-        <a href="/view_prescriptions">View Prescriptions</a>
-        <a href="/add_lab">Add Lab Test</a>
-        <a href="/view_lab">View Lab Reports</a>
-        <a href="/search_patient_history">Patient Medical History</a>
-        <a href="/logout"> Logout</a>
-
-    </div>
-
-    <!-- Main Content -->
-    <div class="main-content">
-
-        <h1> Doctor Dashboard</h1>
-
-        <div class="dashboard-section">
-
-            <!-- Nurses -->
-            <div class="dashboard-card">
-
-                <h2> Nurses</h2>
-
-                <a href="/add_nurse" class="btn-primary">
-                    Add Nurse
-                </a>
-
-                <br><br>
-
-                <a href="/view_nurses" class="btn-primary">
-                    View Nurses
-                </a>
-
-            </div>
-
-            <!-- Patients -->
-            <div class="dashboard-card">
-
-                <h2> Patients</h2>
-
-                <a href="/add_patient" class="btn-primary">
-                    Add Patient
-                </a>
-
-                <br><br>
-
-                <a href="/view_patients" class="btn-primary">
-                    View Patients
-                </a>
-
-            </div>
-
-            <!-- Appointments -->
-            <div class="dashboard-card">
-
-                <h2> Appointments</h2>
-
-                <a href="/doctor_appointments" class="btn-primary">
-                    View Appointments
-                </a>
-
-            </div>
-
-        </div>
-
-    </div>
-    <div id="notifications" class="notification-section">
-
-    <h2> My Notifications</h2>
-
-    {% if notifications %}
-
-        {% for notification in notifications %}
-
-            <div class="notification-card">
-
+        <div class="notif-list">
+          {% if notifications %}
+            {% for notification in notifications %}
+            <div class="notif {{ 'unread' if notification[4] == 'Unread' else '' }}">
+              <span class="dot" aria-hidden="true"></span>
+              <div class="body">
                 <h3>{{ notification[1] }}</h3>
-
                 <p>{{ notification[2] }}</p>
-
-                <p>
-                    <strong>Type:</strong>
-                    {{ notification[3] }}
-                </p>
-
-                <p>
-                    <strong>Date:</strong>
-                    {{ notification[5] }}
-                </p>
-
-                {% if notification[4] == "Unread" %}
-
-                    <span class="notification-unread">
-                        Unread
-                    </span>
-
-                    <a href="/mark_notification_read/{{ notification[0] }}">
-                        Mark as Read
-                    </a>
-
-                {% else %}
-
-                    <span class="notification-read">
-                        Read
-                    </span>
-
-                {% endif %}
-
+                <div class="meta">
+                  <span>{{ notification[3] }}</span>
+                  <span>{{ notification[5] }}</span>
+                  {% if notification[4] == "Unread" %}
+                    <span class="tag unread">Unread</span>
+                    <a class="mark-link" href="/mark_notification_read/{{ notification[0] }}">Mark as read</a>
+                  {% else %}
+                    <span class="tag read">Read</span>
+                  {% endif %}
+                </div>
+              </div>
             </div>
+            {% endfor %}
+          {% else %}
+            <div class="notif-empty">No notifications right now.</div>
+          {% endif %}
+        </div>
+      </section>
 
-        {% endfor %}
+      <!-- Quick links -->
+      <section aria-labelledby="links-heading">
+        <div class="section-head">
+          <h2 id="links-heading">Quick links</h2>
+        </div>
+        <div class="link-grid">
+          <div class="link-card">
+            <h3>Patient medical history</h3>
+            <p>Search any patient's full record before a consultation.</p>
+            <a class="btn btn-outline" href="/search_patient_history" style="align-self:flex-start;">Search history</a>
+          </div>
+          <div class="link-card">
+            <h3>Lab reports</h3>
+            <p>Review results awaiting your sign-off.</p>
+            <a class="btn btn-outline" href="/view_lab" style="align-self:flex-start;">View lab reports</a>
+          </div>
+        </div>
+      </section>
 
-    {% else %}
-
-        <p>No notifications available.</p>
-
-    {% endif %}
-
+    </div>
+  </main>
 </div>
 
 </body>
-
 </html>
