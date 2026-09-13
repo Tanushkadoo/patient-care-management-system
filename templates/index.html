@@ -640,8 +640,8 @@
       </ul>
 
       <div class="nav-actions">
-        <a href="#" class="btn-outline">Login</a>
-        <a href="#" class="btn-primary">Register</a>
+        <a href="{{ url_for('login') }}" class="btn-outline">Login</a>
+        <a href="{{ url_for('register') }}" class="btn-primary">Register</a>
       </div>
     </div>
   </header>
@@ -832,7 +832,7 @@
               <span>Receive reminders and follow-up notifications</span>
             </div>
           </div>
-          <a href="#" class="btn-role">Register as Patient <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg></a>
+          <a href="{{ url_for('register') }}?role=patient" class="btn-role">Register as Patient <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg></a>
         </div>
         <div class="role-stat-card">
           <div class="role-stat-value">2 min</div>
@@ -862,7 +862,7 @@
               <span>Track patient outcomes over time</span>
             </div>
           </div>
-          <a href="#" class="btn-role">Register as Doctor <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg></a>
+          <a href="{{ url_for('register') }}?role=doctor" class="btn-role">Register as Doctor <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg></a>
         </div>
         <div class="role-stat-card">
           <div class="role-stat-value">40%</div>
@@ -892,7 +892,7 @@
               <span>Flag urgent cases directly to on-duty doctors</span>
             </div>
           </div>
-          <a href="#" class="btn-role">Register as Nurse <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg></a>
+          <a href="{{ url_for('register') }}?role=nurse" class="btn-role">Register as Nurse <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg></a>
         </div>
         <div class="role-stat-card">
           <div class="role-stat-value">Real-time</div>
@@ -922,7 +922,7 @@
               <span>Audit records and generate compliance reports</span>
             </div>
           </div>
-          <a href="#" class="btn-role">Register as Administrator <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg></a>
+          <a href="{{ url_for('register') }}?role=administrator" class="btn-role">Register as Administrator <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg></a>
         </div>
         <div class="role-stat-card">
           <div class="role-stat-value">360°</div>
