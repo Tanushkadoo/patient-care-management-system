@@ -169,26 +169,18 @@ body.av2 .av2-lang-pill {
     cursor: default;
 }
 
-body.av2 .av2-caret {
-    font-size: 10px;
-    margin-left: 4px;
-}
-
-body.av2 .av2-icon-pill {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
+body.av2 .av2-logout-pill {
+    padding: 6px 16px;
+    border-radius: 20px;
     background: rgba(255,255,255,0.12);
     border: 1px solid rgba(255,255,255,0.25);
     color: #fff;
     text-decoration: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
+    font-size: 13px;
+    font-weight: 600;
 }
 
-body.av2 .av2-icon-pill:hover {
+body.av2 .av2-logout-pill:hover {
     background: rgba(255,255,255,0.22);
 }
 
@@ -269,13 +261,6 @@ body.av2 .av2-nav-item {
     font-size: 14px;
     margin-bottom: 3px;
     transition: background 0.15s ease, color 0.15s ease;
-}
-
-body.av2 .av2-nav-icon {
-    font-size: 15px;
-    width: 18px;
-    text-align: center;
-    flex-shrink: 0;
 }
 
 body.av2 .av2-nav-item:hover {
@@ -363,14 +348,14 @@ body.av2 .av2-quick-grid {
 body.av2 .av2-quick-item {
     flex: 0 0 auto;
     width: 96px;
+    min-height: 76px;
     background: var(--av2-card);
     border: 1px solid var(--av2-border);
     border-radius: 12px;
     padding: 16px 10px;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 10px;
+    justify-content: center;
     text-align: center;
     text-decoration: none;
     color: var(--av2-text);
@@ -383,17 +368,6 @@ body.av2 .av2-quick-item {
 body.av2 .av2-quick-item:hover {
     transform: translateY(-3px);
     box-shadow: 0 6px 14px rgba(18, 51, 40, 0.10);
-}
-
-body.av2 .av2-quick-icon {
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    background: var(--av2-card-alt);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
 }
 
 /* ---- Glance / stat grid ---- */
@@ -418,12 +392,6 @@ body.av2 .av2-glance-card {
     padding: 20px;
     box-shadow: 0 3px 10px rgba(18, 51, 40, 0.06);
     text-align: left;
-}
-
-body.av2 .av2-glance-icon {
-    display: inline-block;
-    margin-bottom: 8px;
-    color: var(--av2-green);
 }
 
 body.av2 .av2-glance-value {
@@ -593,14 +561,13 @@ body.av2 .reports-section h1 {
 <div class="av2-topbar">
 
     <div class="av2-topbar-left">
-        <span class="av2-logo-icon">&#9877;</span>
         <span class="av2-logo-text">Hospital Admin Dashboard</span>
     </div>
 
     <div class="av2-topbar-right">
         <span class="av2-namaste">Namaste, {{ session["user"] }}</span>
-        <span class="av2-lang-pill">English <span class="av2-caret">&#9662;</span></span>
-        <a href="/logout" class="av2-icon-pill" title="Logout">&#9211;</a>
+        <span class="av2-lang-pill">English</span>
+        <a href="/logout" class="av2-logout-pill">Logout</a>
     </div>
 
 </div>
@@ -618,7 +585,7 @@ body.av2 .reports-section h1 {
     </div>
 
     <a href="/admin_appointments" class="av2-alert-btn">
-        &#128203; Review appointments
+        Review appointments
     </a>
 
 </div>
@@ -632,91 +599,49 @@ body.av2 .reports-section h1 {
 
 <div class="av2-sidebar">
 
-    <a href="/dashboard" class="av2-nav-item active">
-        <span class="av2-nav-icon">&#9638;</span> Dashboard
-    </a>
+    <a href="/dashboard" class="av2-nav-item active">Dashboard</a>
 
-    <a href="/view_users" class="av2-nav-item">
-        <span class="av2-nav-icon">&#128101;</span> Users
-    </a>
+    <a href="/view_users" class="av2-nav-item">Users</a>
 
-    <a href="/view_doctors" class="av2-nav-item">
-        <span class="av2-nav-icon">&#129658;</span> Doctors
-    </a>
+    <a href="/view_doctors" class="av2-nav-item">Doctors</a>
 
-    <a href="/view_nurses" class="av2-nav-item">
-        <span class="av2-nav-icon">&#10084;</span> Nurses
-    </a>
+    <a href="/view_nurses" class="av2-nav-item">Nurses</a>
 
-    <a href="/view_patients" class="av2-nav-item">
-        <span class="av2-nav-icon">&#128100;</span> Patients
-    </a>
+    <a href="/view_patients" class="av2-nav-item">Patients</a>
 
-    <a href="/admin_appointments" class="av2-nav-item">
-        <span class="av2-nav-icon">&#128197;</span> Appointments
-    </a>
+    <a href="/admin_appointments" class="av2-nav-item">Appointments</a>
 
-    <a href="/add_ehr" class="av2-nav-item">
-        <span class="av2-nav-icon">&#128221;</span> Add EHR
-    </a>
+    <a href="/add_ehr" class="av2-nav-item">Add EHR</a>
 
-    <a href="/view_ehr" class="av2-nav-item">
-        <span class="av2-nav-icon">&#128196;</span> View EHR
-    </a>
+    <a href="/view_ehr" class="av2-nav-item">View EHR</a>
 
-    <a href="/add_consultation" class="av2-nav-item">
-        <span class="av2-nav-icon">&#10133;</span> Add Consultation
-    </a>
+    <a href="/add_consultation" class="av2-nav-item">Add Consultation</a>
 
-    <a href="/view_consultation" class="av2-nav-item">
-        <span class="av2-nav-icon">&#128172;</span> View Consultation
-    </a>
+    <a href="/view_consultation" class="av2-nav-item">View Consultation</a>
 
-    <a href="/add_prescription" class="av2-nav-item">
-        <span class="av2-nav-icon">&#128138;</span> Add Prescription
-    </a>
+    <a href="/add_prescription" class="av2-nav-item">Add Prescription</a>
 
-    <a href="/view_prescriptions" class="av2-nav-item">
-        <span class="av2-nav-icon">&#128137;</span> View Prescriptions
-    </a>
+    <a href="/view_prescriptions" class="av2-nav-item">View Prescriptions</a>
 
-    <a href="/add_lab" class="av2-nav-item">
-        <span class="av2-nav-icon">&#129514;</span> Add Lab Test
-    </a>
+    <a href="/add_lab" class="av2-nav-item">Add Lab Test</a>
 
-    <a href="/view_lab" class="av2-nav-item">
-        <span class="av2-nav-icon">&#128300;</span> View Lab Reports
-    </a>
+    <a href="/view_lab" class="av2-nav-item">View Lab Reports</a>
 
-    <a href="/search_patient_history" class="av2-nav-item">
-        <span class="av2-nav-icon">&#128214;</span> Patient History
-    </a>
+    <a href="/search_patient_history" class="av2-nav-item">Patient History</a>
 
-    <a href="/billing_dashboard" class="av2-nav-item">
-        <span class="av2-nav-icon">&#128179;</span> Billing
-    </a>
+    <a href="/billing_dashboard" class="av2-nav-item">Billing</a>
 
-    <a href="/notifications" class="av2-nav-item">
-        <span class="av2-nav-icon">&#128276;</span> Notifications
-    </a>
+    <a href="/notifications" class="av2-nav-item">Notifications</a>
 
-    <a href="/reports_dashboard" class="av2-nav-item">
-        <span class="av2-nav-icon">&#128202;</span> Reports & Analytics
-    </a>
+    <a href="/reports_dashboard" class="av2-nav-item">Reports & Analytics</a>
 
-    <a href="/api_dashboard" class="av2-nav-item">
-        <span class="av2-nav-icon">&#128268;</span> REST API Dashboard
-    </a>
+    <a href="/api_dashboard" class="av2-nav-item">REST API Dashboard</a>
 
-    <a href="/admin_feedback" class="av2-nav-item">
-        <span class="av2-nav-icon">&#128172;</span> Feedback
-    </a>
+    <a href="/admin_feedback" class="av2-nav-item">Feedback</a>
 
     <div class="av2-nav-label">Account</div>
 
-    <a href="/logout" class="av2-nav-item">
-        <span class="av2-nav-icon">&#9211;</span> Logout
-    </a>
+    <a href="/logout" class="av2-nav-item">Logout</a>
 
 </div>
 
@@ -757,42 +682,34 @@ body.av2 .reports-section h1 {
     <div class="av2-quick-grid">
 
         <a href="/add_doctor" class="av2-quick-item">
-            <span class="av2-quick-icon">&#129658;</span>
             <span>Add<br>doctor</span>
         </a>
 
         <a href="/add_nurse" class="av2-quick-item">
-            <span class="av2-quick-icon">&#10084;</span>
             <span>Add<br>nurse</span>
         </a>
 
         <a href="/add_patient" class="av2-quick-item">
-            <span class="av2-quick-icon">&#128100;</span>
             <span>Add<br>patient</span>
         </a>
 
         <a href="/admin_appointments" class="av2-quick-item">
-            <span class="av2-quick-icon">&#128197;</span>
             <span>Appointments</span>
         </a>
 
         <a href="/billing_dashboard" class="av2-quick-item">
-            <span class="av2-quick-icon">&#128179;</span>
             <span>Billing</span>
         </a>
 
         <a href="/view_lab" class="av2-quick-item">
-            <span class="av2-quick-icon">&#129514;</span>
             <span>Lab<br>reports</span>
         </a>
 
         <a href="/reports_dashboard" class="av2-quick-item">
-            <span class="av2-quick-icon">&#128202;</span>
             <span>Reports</span>
         </a>
 
         <a href="/admin_feedback" class="av2-quick-item">
-            <span class="av2-quick-icon">&#128172;</span>
             <span>Feedback</span>
         </a>
 
@@ -808,25 +725,21 @@ body.av2 .reports-section h1 {
     <div class="av2-glance-grid">
 
         <div class="av2-glance-card">
-            <span class="av2-glance-icon">&#129658;</span>
             <div class="av2-glance-value">{{ total_doctors }}</div>
             <div class="av2-glance-label">Doctors</div>
         </div>
 
         <div class="av2-glance-card">
-            <span class="av2-glance-icon">&#10084;</span>
             <div class="av2-glance-value">{{ total_nurses }}</div>
             <div class="av2-glance-label">Nurses</div>
         </div>
 
         <div class="av2-glance-card">
-            <span class="av2-glance-icon">&#128100;</span>
             <div class="av2-glance-value">{{ total_patients }}</div>
             <div class="av2-glance-label">Patients</div>
         </div>
 
         <div class="av2-glance-card">
-            <span class="av2-glance-icon">&#128197;</span>
             <div class="av2-glance-value">{{ total_appointments }}</div>
             <div class="av2-glance-label">Appointments</div>
         </div>
