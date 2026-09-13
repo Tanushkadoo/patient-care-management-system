@@ -14,8 +14,8 @@
 </head>
 
 
-<body>
-<div id="google_translate_element"></div>
+<body class="av2">
+<div id="google_translate_element" class="av2-translate"></div>
 <script type="text/javascript">
   function googleTranslateElementInit() {
     new google.translate.TranslateElement(
@@ -31,81 +31,132 @@
      TOP NAVBAR
 ========================= -->
 
-<div class="topbar">
+<div class="av2-topbar">
 
-    <div class="logo">
-         Hospital Management System
+    <div class="av2-topbar-left">
+        <span class="av2-logo-icon">&#9877;</span>
+        <span class="av2-logo-text">Hospital Admin Dashboard</span>
     </div>
 
-    <div class="welcome">
-        Welcome {{ session["user"] }}
+    <div class="av2-topbar-right">
+        <span class="av2-namaste">Namaste, {{ session["user"] }}</span>
+        <span class="av2-lang-pill">English <span class="av2-caret">&#9662;</span></span>
+        <a href="/logout" class="av2-icon-pill" title="Logout">&#9211;</a>
     </div>
 
 </div>
 
 
 <!-- =========================
+     URGENT / ALERT BANNER
+========================= -->
+
+<div class="av2-alertbar">
+
+    <div class="av2-alertbar-text">
+        <strong>{{ pending }} approval{{ 's' if pending != 1 else '' }} need attention</strong>
+        <span>Appointments are waiting for admin review</span>
+    </div>
+
+    <a href="/admin_appointments" class="av2-alert-btn">
+        &#128203; Review appointments
+    </a>
+
+</div>
+
+
+<div class="av2-body">
+
+<!-- =========================
      SIDEBAR
 ========================= -->
 
-<div class="sidebar">
+<div class="av2-sidebar">
 
-    <h2>Menu</h2>
-
-    <a href="/dashboard"> Dashboard</a>
-
-    <a href="/view_users"> Users</a>
-
-    <a href="/view_doctors"> Doctors</a>
-
-    <a href="/view_nurses"> Nurses</a>
-
-    <a href="/view_patients"> Patients</a>
-
-    <a href="/admin_appointments"> Appointments</a>
-
-    <a href="/add_ehr">Add EHR</a>
-
-    <a href="/view_ehr">View EHR</a>
-
-    <a href="/add_consultation">Add Consultation</a>
-
-    <a href="/view_consultation">View Consultation</a>
-
-    <a href="/add_prescription">Add Prescription</a>
-
-    <a href="/view_prescriptions">View Prescriptions</a>
-
-    <a href="/add_lab">Add Lab Test</a>
-
-    <a href="/view_lab">View Lab Reports</a>
-
-    <a href="/search_patient_history">
-        Patient Medical History
+    <a href="/dashboard" class="av2-nav-item active">
+        <span class="av2-nav-icon">&#9638;</span> Dashboard
     </a>
 
-    <a href="/billing_dashboard">
-        Billing
+    <a href="/view_users" class="av2-nav-item">
+        <span class="av2-nav-icon">&#128101;</span> Users
     </a>
 
-    <a href="/notifications">
-        Notifications
+    <a href="/view_doctors" class="av2-nav-item">
+        <span class="av2-nav-icon">&#129658;</span> Doctors
     </a>
 
-    <a href="/reports_dashboard">
-        Reports & Analytics
+    <a href="/view_nurses" class="av2-nav-item">
+        <span class="av2-nav-icon">&#10084;</span> Nurses
     </a>
 
-    <a href="/api_dashboard">
-        REST API Dashboard
+    <a href="/view_patients" class="av2-nav-item">
+        <span class="av2-nav-icon">&#128100;</span> Patients
     </a>
 
-    <a href="/admin_feedback">
-         Feedback
+    <a href="/admin_appointments" class="av2-nav-item">
+        <span class="av2-nav-icon">&#128197;</span> Appointments
     </a>
 
-    <a href="/logout">
-         Logout
+    <a href="/add_ehr" class="av2-nav-item">
+        <span class="av2-nav-icon">&#128221;</span> Add EHR
+    </a>
+
+    <a href="/view_ehr" class="av2-nav-item">
+        <span class="av2-nav-icon">&#128196;</span> View EHR
+    </a>
+
+    <a href="/add_consultation" class="av2-nav-item">
+        <span class="av2-nav-icon">&#10133;</span> Add Consultation
+    </a>
+
+    <a href="/view_consultation" class="av2-nav-item">
+        <span class="av2-nav-icon">&#128172;</span> View Consultation
+    </a>
+
+    <a href="/add_prescription" class="av2-nav-item">
+        <span class="av2-nav-icon">&#128138;</span> Add Prescription
+    </a>
+
+    <a href="/view_prescriptions" class="av2-nav-item">
+        <span class="av2-nav-icon">&#128137;</span> View Prescriptions
+    </a>
+
+    <a href="/add_lab" class="av2-nav-item">
+        <span class="av2-nav-icon">&#129514;</span> Add Lab Test
+    </a>
+
+    <a href="/view_lab" class="av2-nav-item">
+        <span class="av2-nav-icon">&#128300;</span> View Lab Reports
+    </a>
+
+    <a href="/search_patient_history" class="av2-nav-item">
+        <span class="av2-nav-icon">&#128214;</span> Patient History
+    </a>
+
+    <a href="/billing_dashboard" class="av2-nav-item">
+        <span class="av2-nav-icon">&#128179;</span> Billing
+    </a>
+
+    <a href="/notifications" class="av2-nav-item">
+        <span class="av2-nav-icon">&#128276;</span> Notifications
+    </a>
+
+    <a href="/reports_dashboard" class="av2-nav-item">
+        <span class="av2-nav-icon">&#128202;</span> Reports & Analytics
+    </a>
+
+    <a href="/api_dashboard" class="av2-nav-item">
+        <span class="av2-nav-icon">&#128268;</span> REST API Dashboard
+    </a>
+
+    <a href="/admin_feedback" class="av2-nav-item">
+        <span class="av2-nav-icon">&#128172;</span> Feedback
+    </a>
+
+    <div class="av2-nav-label">Account</div>
+
+    <a href="/logout" class="av2-nav-item">
+        <span class="av2-nav-icon">&#9211;</span> Logout
     </a>
 
 </div>
@@ -115,85 +166,110 @@
      MAIN CONTENT
 ========================= -->
 
-<div class="main-content">
-
-    <h1> Admin Dashboard</h1>
+<div class="av2-main">
 
 
     <!-- =========================
-         MAIN DASHBOARD CARDS
+         TODAY'S OVERVIEW
     ========================= -->
 
-    <div class="dashboard-section">
+    <h2 class="av2-section-title">Today's overview</h2>
 
+    <div class="av2-overview-card">
 
-        <div class="dashboard-card">
-
-            <h2> Doctors</h2>
-
-            <h1>{{ total_doctors }}</h1>
-
-            <a href="/add_doctor" class="btn-primary">
-                Add Doctor
-            </a>
-
-            <br><br>
-
-            <a href="/view_doctors" class="btn-primary">
-                View Doctors
-            </a>
-
+        <div class="av2-overview-text">
+            You have <strong>{{ today_appointments }}</strong> appointment(s) scheduled for today,
+            and <strong>{{ pending }}</strong> awaiting approval.
         </div>
 
+        <a href="/admin_appointments" class="av2-btn-primary">
+            View appointments
+        </a>
 
-        <div class="dashboard-card">
+    </div>
 
-            <h2> Nurses</h2>
 
-            <h1>{{ total_nurses }}</h1>
+    <!-- =========================
+         WHAT DO YOU NEED?
+    ========================= -->
 
-            <a href="/add_nurse" class="btn-primary">
-                Add Nurse
-            </a>
+    <h2 class="av2-section-title">What do you need?</h2>
 
-            <br><br>
+    <div class="av2-quick-grid">
 
-            <a href="/view_nurses" class="btn-primary">
-                View Nurses
-            </a>
+        <a href="/add_doctor" class="av2-quick-item">
+            <span class="av2-quick-icon">&#129658;</span>
+            <span>Add<br>doctor</span>
+        </a>
 
+        <a href="/add_nurse" class="av2-quick-item">
+            <span class="av2-quick-icon">&#10084;</span>
+            <span>Add<br>nurse</span>
+        </a>
+
+        <a href="/add_patient" class="av2-quick-item">
+            <span class="av2-quick-icon">&#128100;</span>
+            <span>Add<br>patient</span>
+        </a>
+
+        <a href="/admin_appointments" class="av2-quick-item">
+            <span class="av2-quick-icon">&#128197;</span>
+            <span>Appointments</span>
+        </a>
+
+        <a href="/billing_dashboard" class="av2-quick-item">
+            <span class="av2-quick-icon">&#128179;</span>
+            <span>Billing</span>
+        </a>
+
+        <a href="/view_lab" class="av2-quick-item">
+            <span class="av2-quick-icon">&#129514;</span>
+            <span>Lab<br>reports</span>
+        </a>
+
+        <a href="/reports_dashboard" class="av2-quick-item">
+            <span class="av2-quick-icon">&#128202;</span>
+            <span>Reports</span>
+        </a>
+
+        <a href="/admin_feedback" class="av2-quick-item">
+            <span class="av2-quick-icon">&#128172;</span>
+            <span>Feedback</span>
+        </a>
+
+    </div>
+
+
+    <!-- =========================
+         HOSPITAL AT A GLANCE
+    ========================= -->
+
+    <h2 class="av2-section-title">Hospital at a glance</h2>
+
+    <div class="av2-glance-grid">
+
+        <div class="av2-glance-card">
+            <span class="av2-glance-icon">&#129658;</span>
+            <div class="av2-glance-value">{{ total_doctors }}</div>
+            <div class="av2-glance-label">Doctors</div>
         </div>
 
-
-        <div class="dashboard-card">
-
-            <h2> Patients</h2>
-
-            <h1>{{ total_patients }}</h1>
-
-            <a href="/add_patient" class="btn-primary">
-                Add Patient
-            </a>
-
-            <br><br>
-
-            <a href="/view_patients" class="btn-primary">
-                View Patients
-            </a>
-
+        <div class="av2-glance-card">
+            <span class="av2-glance-icon">&#10084;</span>
+            <div class="av2-glance-value">{{ total_nurses }}</div>
+            <div class="av2-glance-label">Nurses</div>
         </div>
 
+        <div class="av2-glance-card">
+            <span class="av2-glance-icon">&#128100;</span>
+            <div class="av2-glance-value">{{ total_patients }}</div>
+            <div class="av2-glance-label">Patients</div>
+        </div>
 
-        <div class="dashboard-card">
-
-            <h2> Appointments</h2>
-
-            <h1>{{ total_appointments }}</h1>
-
-            <a href="/admin_appointments" class="btn-primary">
-                View Appointments
-            </a>
-
+        <div class="av2-glance-card">
+            <span class="av2-glance-icon">&#128197;</span>
+            <div class="av2-glance-value">{{ total_appointments }}</div>
+            <div class="av2-glance-label">Appointments</div>
         </div>
 
     </div>
@@ -203,32 +279,88 @@
          APPOINTMENT STATUS
     ========================= -->
 
-    <div class="dashboard-section">
+    <h2 class="av2-section-title">Appointment status</h2>
+
+    <div class="av2-glance-grid av2-glance-grid-3">
+
+        <div class="av2-glance-card">
+            <div class="av2-glance-value av2-value-warning">{{ pending }}</div>
+            <div class="av2-glance-label">Pending</div>
+        </div>
+
+        <div class="av2-glance-card">
+            <div class="av2-glance-value av2-value-success">{{ approved }}</div>
+            <div class="av2-glance-label">Approved</div>
+        </div>
+
+        <div class="av2-glance-card">
+            <div class="av2-glance-value av2-value-danger">{{ rejected }}</div>
+            <div class="av2-glance-label">Rejected</div>
+        </div>
+
+    </div>
 
 
-        <div class="dashboard-card">
+    <!-- =========================
+         NOTIFICATIONS
+    ========================= -->
 
-            <h2> Pending</h2>
+    <h2 class="av2-section-title">Notifications</h2>
 
-            <h1>{{ pending }}</h1>
+    <div class="av2-notif-box">
+
+        {% if pending_lab_reports and pending_lab_reports > 0 %}
+
+            {{ pending_lab_reports }} laboratory report(s) are awaiting completion.
+
+        {% elif pending and pending > 0 %}
+
+            {{ pending }} appointment(s) are waiting for your approval.
+
+        {% else %}
+
+            No notifications right now &mdash; we'll let you know when something needs your attention.
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- =========================
+         SYSTEM SHORTCUTS
+    ========================= -->
+
+    <h2 class="av2-section-title">System shortcuts</h2>
+
+    <div class="av2-schemes-grid">
+
+        <div class="av2-scheme-card">
+
+            <h3>Download reports</h3>
+
+            <p>
+                Generate and download patient, doctor, appointment
+                and billing reports in PDF format.
+            </p>
+
+            <a href="/reports_dashboard" class="av2-scheme-btn">
+                Open reports
+            </a>
 
         </div>
 
+        <div class="av2-scheme-card">
 
-        <div class="dashboard-card">
+            <h3>REST API access</h3>
 
-            <h2> Approved</h2>
+            <p>
+                View live API endpoints, test requests and monitor
+                integration status for this hospital system.
+            </p>
 
-            <h1>{{ approved }}</h1>
-
-        </div>
-
-
-        <div class="dashboard-card">
-
-            <h2> Rejected</h2>
-
-            <h1>{{ rejected }}</h1>
+            <a href="/api_dashboard" class="av2-scheme-btn">
+                Open API dashboard
+            </a>
 
         </div>
 
@@ -239,289 +371,105 @@
          ANALYTICS
     ========================= -->
 
-    <h1> Hospital Analytics</h1>
+    <h2 class="av2-section-title">Hospital analytics</h2>
 
+    <div class="av2-glance-grid">
+
+        <div class="av2-glance-card">
+            <div class="av2-glance-value">{{ completed_consultations }}</div>
+            <div class="av2-glance-label">Completed consultations</div>
+        </div>
+
+        <div class="av2-glance-card">
+            <div class="av2-glance-value">{{ cancelled_appointments }}</div>
+            <div class="av2-glance-label">Cancelled appointments</div>
+        </div>
+
+        <div class="av2-glance-card">
+            <div class="av2-glance-value">{{ pending_lab_reports }}</div>
+            <div class="av2-glance-label">Pending lab reports</div>
+        </div>
+
+    </div>
+
+
+    <!-- Patient Demographics -->
 
     <div class="dashboard-section">
 
-
-        <!-- =========================
-             PATIENT DEMOGRAPHICS
-        ========================= -->
-
-        <h1> Patient Demographics</h1>
-
-
-        <div class="dashboard-section">
-
-
-            <!-- Gender Distribution -->
-
-            <div class="chart-card">
-
-                <h2> Gender Distribution</h2>
-
-                <canvas id="genderChart"></canvas>
-
-            </div>
-
-
-            <!-- Age Distribution -->
-
-            <div class="chart-card">
-
-                <h2> Age Distribution</h2>
-
-                <canvas id="ageChart"></canvas>
-
-            </div>
-
+        <div class="chart-card">
+            <h2>Gender Distribution</h2>
+            <canvas id="genderChart"></canvas>
         </div>
 
-
-        <!-- Today's Appointments -->
-
-        <div class="dashboard-card">
-
-            <h2> Today's Appointments</h2>
-
-            <h1>{{ today_appointments }}</h1>
-
-            <p>
-                Appointments scheduled for today
-            </p>
-
-        </div>
-
-
-        <!-- Completed Consultations -->
-
-        <div class="dashboard-card">
-
-            <h2> Completed Consultations</h2>
-
-            <h1>{{ completed_consultations }}</h1>
-
-            <p>
-                Completed appointments
-            </p>
-
-        </div>
-
-
-        <!-- Cancelled Appointments -->
-
-        <div class="dashboard-card">
-
-            <h2> Cancelled Appointments</h2>
-
-            <h1>{{ cancelled_appointments }}</h1>
-
-            <p>
-                Cancelled appointments
-            </p>
-
-        </div>
-
-
-        <!-- Pending Lab Reports -->
-
-        <div class="dashboard-card">
-
-            <h2> Pending Lab Reports</h2>
-
-            <h1>{{ pending_lab_reports }}</h1>
-
-            <p>
-                Laboratory reports awaiting completion
-            </p>
-
+        <div class="chart-card">
+            <h2>Age Distribution</h2>
+            <canvas id="ageChart"></canvas>
         </div>
 
     </div>
 
 
-    <!-- =========================
-         DOCTOR SPECIALIZATION
-    ========================= -->
+    <!-- Doctor Specialization -->
 
     <div class="chart-card">
-
-        <h2>
-             Doctors by Specialization
-        </h2>
-
+        <h2>Doctors by Specialization</h2>
         <canvas id="specializationChart"></canvas>
-
     </div>
 
 
-    <!-- =========================
-         MONTHLY PATIENTS
-    ========================= -->
+    <!-- Monthly Patients -->
 
     <div class="chart-card">
-
-        <h2>
-             Monthly Patient Registrations
-        </h2>
-
+        <h2>Monthly Patient Registrations</h2>
         <canvas id="monthlyPatientsChart"></canvas>
-
     </div>
 
 
-    <!-- =========================
-         APPOINTMENT TRENDS
-    ========================= -->
+    <!-- Appointment Trends -->
 
     <div class="chart-card">
-
-        <h2>
-             Appointment Trends
-        </h2>
-
+        <h2>Appointment Trends</h2>
         <canvas id="appointmentTrendChart"></canvas>
+    </div>
 
+
+    <!-- Doctor Consultations -->
+
+    <div class="chart-card">
+        <h2>Doctor-wise Consultation Count</h2>
+        <canvas id="doctorConsultationChart"></canvas>
     </div>
 
 
     <!-- =========================
-         DOCTOR CONSULTATIONS
+         RECENT ACTIVITY
     ========================= -->
-
-    <div class="chart-card">
-
-        <h2>
-             Doctor-wise Consultation Count
-        </h2>
-
-        <canvas id="doctorConsultationChart"></canvas>
-
-    </div>
-
-
-    <!-- =================================================
-         DOWNLOAD REPORTS
-    ================================================= -->
-
-    <div class="reports-section">
-
-        <h1> Download Reports</h1>
-
-        <p>
-            Generate and download hospital reports in PDF format.
-        </p>
-
-
-        <div class="report-buttons">
-
-
-            <!-- =========================
-                 PATIENT REPORT
-            ========================= -->
-
-            <a href="/download_report/patients"
-               class="report-btn">
-
-                 Download Patient Report
-
-            </a>
-
-
-            <!-- =========================
-                 DOCTOR REPORT
-            ========================= -->
-
-            <a href="/download_report/doctors"
-               class="report-btn">
-
-                 Download Doctor Report
-
-            </a>
-
-
-            <!-- =========================
-                 APPOINTMENT REPORT
-            ========================= -->
-
-            <a href="/download_report/appointments"
-               class="report-btn">
-
-                 Download Appointment Report
-
-            </a>
-
-
-            <!-- =========================
-                 BILLING REPORT
-            ========================= -->
-
-            <a href="/download_report/billing"
-               class="report-btn">
-
-                 Download Billing Report
-
-            </a>
-
-
-        </div>
-
-    </div>
-
-
-    <!-- =================================================
-         RECENT ACTIVITY LOGS
-    ================================================= -->
 
     <div class="chart-card activity-card">
 
-        <h2>
-             Recent Activity
-        </h2>
-
+        <h2>Recent Activity</h2>
 
         <table class="activity-table">
 
             <thead>
-
                 <tr>
-
                     <th>User</th>
-
                     <th>Role</th>
-
                     <th>Action</th>
-
                     <th>Date & Time</th>
-
                 </tr>
-
             </thead>
-
 
             <tbody>
 
                 {% for log in activity_logs %}
 
                 <tr>
-
-                    <td>
-                        {{ log[0] }}
-                    </td>
-
-                    <td>
-                        {{ log[1] }}
-                    </td>
-
-                    <td>
-                        {{ log[2] }}
-                    </td>
-
-                    <td>
-                        {{ log[3] }}
-                    </td>
-
+                    <td>{{ log[0] }}</td>
+                    <td>{{ log[1] }}</td>
+                    <td>{{ log[2] }}</td>
+                    <td>{{ log[3] }}</td>
                 </tr>
 
                 {% endfor %}
@@ -535,6 +483,8 @@
 
 </div>
 
+</div>
+
 
 <!-- =========================
      CHART.JS
@@ -543,388 +493,134 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 
-<!-- =========================
-     SPECIALIZATION CHART
-========================= -->
-
 <script>
 
-const specializationData =
-    {{ specialization_data | tojson }};
+const specializationData = {{ specialization_data | tojson }};
+const specializationLabels = specializationData.map(item => item[0]);
+const specializationValues = specializationData.map(item => item[1]);
 
-const specializationLabels =
-    specializationData.map(
-        item => item[0]
-    );
-
-const specializationValues =
-    specializationData.map(
-        item => item[1]
-    );
-
-
-new Chart(
-    document.getElementById("specializationChart"),
-    {
-
-        type: "pie",
-
-        data: {
-
-            labels: specializationLabels,
-
-            datasets: [{
-
-                data: specializationValues
-
-            }]
-
-        }
-
+new Chart(document.getElementById("specializationChart"), {
+    type: "pie",
+    data: {
+        labels: specializationLabels,
+        datasets: [{ data: specializationValues }]
     }
-);
+});
 
 </script>
 
 
-<!-- =========================
-     MONTHLY PATIENT CHART
-========================= -->
-
 <script>
 
-const monthlyPatientData =
-    {{ monthly_patients | tojson }};
+const monthlyPatientData = {{ monthly_patients | tojson }};
+const monthLabels = monthlyPatientData.map(item => item[0]);
+const patientValues = monthlyPatientData.map(item => item[1]);
 
-const monthLabels =
-    monthlyPatientData.map(
-        item => item[0]
-    );
-
-const patientValues =
-    monthlyPatientData.map(
-        item => item[1]
-    );
-
-
-new Chart(
-    document.getElementById("monthlyPatientsChart"),
-    {
-
-        type: "line",
-
-        data: {
-
-            labels: monthLabels,
-
-            datasets: [{
-
-                label: "Patient Registrations",
-
-                data: patientValues,
-
-                fill: false,
-
-                tension: 0.3
-
-            }]
-
-        },
-
-        options: {
-
-            responsive: true,
-
-            maintainAspectRatio: false,
-
-            scales: {
-
-                y: {
-
-                    beginAtZero: true,
-
-                    ticks: {
-
-                        stepSize: 1
-
-                    }
-
-                }
-
-            }
-
-        }
-
+new Chart(document.getElementById("monthlyPatientsChart"), {
+    type: "line",
+    data: {
+        labels: monthLabels,
+        datasets: [{
+            label: "Patient Registrations",
+            data: patientValues,
+            fill: false,
+            tension: 0.3
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
     }
-);
+});
 
 </script>
 
 
-<!-- =========================
-     DOCTOR CONSULTATION CHART
-========================= -->
-
 <script>
 
-const doctorConsultationData =
-    {{ doctor_consultations | tojson }};
+const doctorConsultationData = {{ doctor_consultations | tojson }};
+const doctorLabels = doctorConsultationData.map(item => item[0]);
+const consultationValues = doctorConsultationData.map(item => item[1]);
 
-
-const doctorLabels =
-    doctorConsultationData.map(
-        item => item[0]
-    );
-
-
-const consultationValues =
-    doctorConsultationData.map(
-        item => item[1]
-    );
-
-
-new Chart(
-    document.getElementById(
-        "doctorConsultationChart"
-    ),
-    {
-
-        type: "bar",
-
-        data: {
-
-            labels: doctorLabels,
-
-            datasets: [{
-
-                label: "Consultations",
-
-                data: consultationValues
-
-            }]
-
-        },
-
-        options: {
-
-            responsive: true,
-
-            maintainAspectRatio: false,
-
-            scales: {
-
-                y: {
-
-                    beginAtZero: true,
-
-                    ticks: {
-
-                        stepSize: 1
-
-                    }
-
-                }
-
-            }
-
-        }
-
+new Chart(document.getElementById("doctorConsultationChart"), {
+    type: "bar",
+    data: {
+        labels: doctorLabels,
+        datasets: [{ label: "Consultations", data: consultationValues }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
     }
-);
+});
 
 </script>
 
 
-<!-- =========================
-     APPOINTMENT TREND CHART
-========================= -->
-
 <script>
 
-const appointmentData =
-    {{ monthly_appointments | tojson }};
+const appointmentData = {{ monthly_appointments | tojson }};
+const appointmentMonths = appointmentData.map(item => item[0]);
+const appointmentValues = appointmentData.map(item => item[1]);
 
-
-const appointmentMonths =
-    appointmentData.map(
-        item => item[0]
-    );
-
-
-const appointmentValues =
-    appointmentData.map(
-        item => item[1]
-    );
-
-
-new Chart(
-    document.getElementById(
-        "appointmentTrendChart"
-    ),
-    {
-
-        type: "line",
-
-        data: {
-
-            labels: appointmentMonths,
-
-            datasets: [{
-
-                label: "Appointments",
-
-                data: appointmentValues,
-
-                fill: false,
-
-                tension: 0.3
-
-            }]
-
-        },
-
-        options: {
-
-            responsive: true,
-
-            maintainAspectRatio: false,
-
-            scales: {
-
-                y: {
-
-                    beginAtZero: true,
-
-                    ticks: {
-
-                        stepSize: 1
-
-                    }
-
-                }
-
-            }
-
-        }
-
+new Chart(document.getElementById("appointmentTrendChart"), {
+    type: "line",
+    data: {
+        labels: appointmentMonths,
+        datasets: [{
+            label: "Appointments",
+            data: appointmentValues,
+            fill: false,
+            tension: 0.3
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
     }
-);
+});
 
 </script>
 
 
-<!-- =========================
-     GENDER DISTRIBUTION
-========================= -->
-
 <script>
 
-const genderData =
-    {{ gender_data | tojson }};
+const genderData = {{ gender_data | tojson }};
+const genderLabels = genderData.map(item => item[0]);
+const genderValues = genderData.map(item => item[1]);
 
-
-const genderLabels =
-    genderData.map(
-        item => item[0]
-    );
-
-
-const genderValues =
-    genderData.map(
-        item => item[1]
-    );
-
-
-new Chart(
-    document.getElementById("genderChart"),
-    {
-
-        type: "doughnut",
-
-        data: {
-
-            labels: genderLabels,
-
-            datasets: [{
-
-                data: genderValues
-
-            }]
-
-        },
-
-        options: {
-
-            responsive: true
-
-        }
-
-    }
-);
+new Chart(document.getElementById("genderChart"), {
+    type: "doughnut",
+    data: {
+        labels: genderLabels,
+        datasets: [{ data: genderValues }]
+    },
+    options: { responsive: true }
+});
 
 </script>
 
 
-<!-- =========================
-     AGE DISTRIBUTION
-========================= -->
-
 <script>
 
-const ageData =
-    {{ age_data | tojson }};
+const ageData = {{ age_data | tojson }};
+const ageLabels = ageData.map(item => item[0]);
+const ageValues = ageData.map(item => item[1]);
 
-
-const ageLabels =
-    ageData.map(
-        item => item[0]
-    );
-
-
-const ageValues =
-    ageData.map(
-        item => item[1]
-    );
-
-
-new Chart(
-    document.getElementById("ageChart"),
-    {
-
-        type: "bar",
-
-        data: {
-
-            labels: ageLabels,
-
-            datasets: [{
-
-                label: "Number of Patients",
-
-                data: ageValues
-
-            }]
-
-        },
-
-        options: {
-
-            responsive: true,
-
-            scales: {
-
-                y: {
-
-                    beginAtZero: true
-
-                }
-
-            }
-
-        }
-
+new Chart(document.getElementById("ageChart"), {
+    type: "bar",
+    data: {
+        labels: ageLabels,
+        datasets: [{ label: "Number of Patients", data: ageValues }]
+    },
+    options: {
+        responsive: true,
+        scales: { y: { beginAtZero: true } }
     }
-);
+});
 
 </script>
 
@@ -932,4 +628,3 @@ new Chart(
 </body>
 
 </html>
-
