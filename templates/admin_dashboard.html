@@ -8,14 +8,541 @@
 
     <title>Admin Dashboard</title>
 
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='style.css') }}">
+    <style>
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+
+:root {
+    --color-primary: rgb(21, 21, 21);
+    --color-line: #DCE4EE;
+    --color-text: #253645;
+    --color-text-muted: #5B6B7A;
+    --color-success: #1E9E5C;
+    --color-warning: #DB9427;
+    --color-danger: #D6494B;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Manrope', Helvetica, Arial, sans-serif;
+}
+
+/* ---- Shared chart / table components used on this page ---- */
+
+.dashboard-section {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    margin-top: 40px;
+}
+
+.chart-card {
+    background: white;
+    width: 500px;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 6px 15px rgba(16, 35, 61, .12);
+    overflow-x: auto;
+}
+
+.chart-card h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: var(--color-text);
+}
+
+.chart-card canvas {
+    width: 100% !important;
+    height: 320px !important;
+}
+
+.activity-card {
+    width: 90%;
+    max-width: 1100px;
+    margin: 30px auto;
+    box-sizing: border-box;
+}
+
+.activity-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    table-layout: fixed;
+}
+
+.activity-table th,
+.activity-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid var(--color-line);
+    word-break: break-word;
+}
+
+.activity-table th {
+    font-weight: bold;
+}
+
+.activity-table th:nth-child(1),
+.activity-table td:nth-child(1) { width: 15%; }
+
+.activity-table th:nth-child(2),
+.activity-table td:nth-child(2) { width: 12%; }
+
+.activity-table th:nth-child(3),
+.activity-table td:nth-child(3) { width: 43%; }
+
+.activity-table th:nth-child(4),
+.activity-table td:nth-child(4) { width: 30%; }
+
+}
+
+/* =========================================================
+   ADMIN DASHBOARD V2 — scoped to body.av2
+   Matches the "My Health Dashboard" reference layout:
+   dark green top bar, pink alert strip, dark sidebar with
+   icon nav, rounded white cards on a warm-gray canvas.
+   ========================================================= */
+
+body.av2 {
+    background: var(--av2-bg, #e9e6e1);
+    font-family: 'Manrope', Helvetica, Arial, sans-serif;
+}
+
+body.av2 {
+    --av2-green: #123328;
+    --av2-green-dark: #0b241c;
+    --av2-bg: #e9e6e1;
+    --av2-pink: #ecdada;
+    --av2-pink-text: #7a2b2b;
+    --av2-maroon: #8a3b3b;
+    --av2-maroon-dark: #74302f;
+    --av2-orange: #d9a34a;
+    --av2-orange-dark: #c78f34;
+    --av2-card: #ffffff;
+    --av2-card-alt: #f2f0eb;
+    --av2-border: #dcdad2;
+    --av2-text: #22302a;
+    --av2-text-muted: #6b756e;
+}
+
+/* ---- Top bar ---- */
+
+body.av2 .av2-topbar {
+    height: 56px;
+    background: var(--av2-green);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+}
+
+body.av2 .av2-topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+body.av2 .av2-logo-icon {
+    font-size: 18px;
+}
+
+body.av2 .av2-topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 14px;
+}
+
+body.av2 .av2-lang-pill {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.25);
+    padding: 6px 14px;
+    border-radius: 20px;
+    cursor: default;
+}
+
+body.av2 .av2-logout-pill {
+    padding: 6px 16px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.25);
+    color: #fff;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+body.av2 .av2-logout-pill:hover {
+    background: rgba(255,255,255,0.22);
+}
+
+/* ---- Alert / urgent bar ---- */
+
+body.av2 .av2-alertbar {
+    background: var(--av2-pink);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+body.av2 .av2-alertbar-text {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    color: var(--av2-pink-text);
+    flex-wrap: wrap;
+}
+
+body.av2 .av2-alertbar-text strong {
+    font-size: 14px;
+    margin-right: 10px;
+}
+
+body.av2 .av2-alertbar-text span {
+    font-size: 13px;
+    color: #6a5252;
+}
+
+body.av2 .av2-alert-btn {
+    background: var(--av2-maroon);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 22px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+body.av2 .av2-alert-btn:hover {
+    background: var(--av2-maroon-dark);
+}
+
+/* ---- Body layout ---- */
+
+body.av2 .av2-body {
+    display: flex;
+    align-items: flex-start;
+}
+
+/* ---- Sidebar ---- */
+
+body.av2 .av2-sidebar {
+    width: 230px;
+    flex-shrink: 0;
+    background: var(--av2-green-dark);
+    min-height: calc(100vh - 96px);
+    padding: 16px 12px;
+    position: sticky;
+    top: 96px;
+    overflow-y: auto;
+    max-height: calc(100vh - 96px);
+}
+
+body.av2 .av2-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #d9e3dd;
+    text-decoration: none;
+    padding: 11px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    margin-bottom: 3px;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+body.av2 .av2-nav-item:hover {
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+}
+
+body.av2 .av2-nav-item.active {
+    background: #ffffff;
+    color: var(--av2-green-dark);
+    font-weight: 700;
+}
+
+body.av2 .av2-nav-label {
+    color: #7f9186;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin: 16px 14px 8px;
+}
+
+/* ---- Main content ---- */
+
+body.av2 .av2-main {
+    flex: 1;
+    padding: 24px 28px 50px;
+    min-width: 0;
+}
+
+body.av2 .av2-section-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--av2-text);
+    margin: 28px 0 12px;
+}
+
+body.av2 .av2-main > .av2-section-title:first-child {
+    margin-top: 0;
+}
+
+/* ---- Overview card ---- */
+
+body.av2 .av2-overview-card {
+    background: var(--av2-card);
+    border-left: 4px solid var(--av2-green);
+    border-radius: 12px;
+    padding: 18px 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    box-shadow: 0 3px 10px rgba(18, 51, 40, 0.06);
+}
+
+body.av2 .av2-overview-text {
+    color: var(--av2-text);
+    font-size: 14.5px;
+}
+
+body.av2 .av2-btn-primary {
+    background: var(--av2-orange);
+    color: #2b2110;
+    padding: 11px 22px;
+    border-radius: 22px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+body.av2 .av2-btn-primary:hover {
+    background: var(--av2-orange-dark);
+}
+
+/* ---- Quick action grid ---- */
+
+body.av2 .av2-quick-grid {
+    display: flex;
+    gap: 14px;
+    overflow-x: auto;
+    padding-bottom: 6px;
+}
+
+body.av2 .av2-quick-item {
+    flex: 0 0 auto;
+    width: 96px;
+    min-height: 76px;
+    background: var(--av2-card);
+    border: 1px solid var(--av2-border);
+    border-radius: 12px;
+    padding: 16px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    text-decoration: none;
+    color: var(--av2-text);
+    font-size: 12.5px;
+    font-weight: 600;
+    line-height: 1.3;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+body.av2 .av2-quick-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 14px rgba(18, 51, 40, 0.10);
+}
+
+/* ---- Glance / stat grid ---- */
+
+body.av2 .av2-glance-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+body.av2 .av2-glance-grid .av2-glance-card {
+    flex: 1 1 200px;
+}
+
+body.av2 .av2-glance-grid-3 .av2-glance-card {
+    flex-basis: 220px;
+}
+
+body.av2 .av2-glance-card {
+    background: var(--av2-card);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 3px 10px rgba(18, 51, 40, 0.06);
+    text-align: left;
+}
+
+body.av2 .av2-glance-value {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--av2-text);
+}
+
+body.av2 .av2-value-warning { color: var(--color-warning); }
+body.av2 .av2-value-success { color: var(--color-success); }
+body.av2 .av2-value-danger  { color: var(--color-danger); }
+
+body.av2 .av2-glance-label {
+    color: var(--av2-text-muted);
+    font-size: 13px;
+    margin-top: 4px;
+}
+
+/* ---- Notifications box ---- */
+
+body.av2 .av2-notif-box {
+    background: var(--av2-card);
+    border-radius: 12px;
+    padding: 26px;
+    text-align: center;
+    color: var(--av2-text-muted);
+    font-size: 14px;
+    box-shadow: 0 3px 10px rgba(18, 51, 40, 0.06);
+}
+
+/* ---- Scheme / shortcut cards ---- */
+
+body.av2 .av2-schemes-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+body.av2 .av2-scheme-card {
+    flex: 1 1 320px;
+    background: var(--av2-card);
+    border-radius: 12px;
+    padding: 22px;
+    box-shadow: 0 3px 10px rgba(18, 51, 40, 0.06);
+}
+
+body.av2 .av2-scheme-card h3 {
+    font-size: 15px;
+    color: var(--av2-text);
+    margin-bottom: 8px;
+}
+
+body.av2 .av2-scheme-card p {
+    font-size: 13.5px;
+    color: var(--av2-text-muted);
+    line-height: 1.5;
+    margin-bottom: 16px;
+}
+
+body.av2 .av2-scheme-btn {
+    display: inline-block;
+    background: transparent;
+    border: 1.5px solid var(--av2-green);
+    color: var(--av2-green);
+    padding: 9px 18px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 13.5px;
+}
+
+body.av2 .av2-scheme-btn:hover {
+    background: var(--av2-green);
+    color: #fff;
+}
+
+/* ---- Re-skin the existing shared chart / table / report
+       components so they blend with the v2 canvas, scoped
+       only to this page via body.av2 ---- */
+
+body.av2 .dashboard-section {
+    justify-content: flex-start;
+    margin-top: 16px;
+}
+
+body.av2 .chart-card {
+    border-radius: 12px;
+    box-shadow: 0 3px 10px rgba(18, 51, 40, 0.06);
+    margin-top: 16px;
+}
+
+body.av2 .chart-card h2 {
+    color: var(--av2-text);
+    font-size: 15px;
+}
+
+body.av2 .activity-card {
+    margin-left: 0;
+}
+
+body.av2 .activity-table th {
+    color: var(--av2-text-muted);
+    font-size: 12.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+body.av2 .reports-section {
+    border-radius: 12px;
+    box-shadow: 0 3px 10px rgba(18, 51, 40, 0.06);
+}
+
+body.av2 .reports-section h1 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--av2-text);
+}
+
+/* ---- Responsive ---- */
+
+@media (max-width: 760px) {
+
+    body.av2 .av2-body {
+        flex-direction: column;
+    }
+
+    body.av2 .av2-sidebar {
+        width: 100%;
+        position: static;
+        max-height: none;
+        min-height: auto;
+    }
+
+    body.av2 .av2-glance-card,
+    body.av2 .av2-scheme-card {
+        flex-basis: 100%;
+    }
+
+    body.av2 .av2-alertbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+    </style>
 
 </head>
 
 
-<body>
-<div id="google_translate_element"></div>
+<body class="av2">
+<div id="google_translate_element" class="av2-translate"></div>
 <script type="text/javascript">
   function googleTranslateElementInit() {
     new google.translate.TranslateElement(
@@ -31,82 +558,90 @@
      TOP NAVBAR
 ========================= -->
 
-<div class="topbar">
+<div class="av2-topbar">
 
-    <div class="logo">
-         Hospital Management System
+    <div class="av2-topbar-left">
+        <span class="av2-logo-text">Hospital Admin Dashboard</span>
     </div>
 
-    <div class="welcome">
-        Welcome {{ session["user"] }}
+    <div class="av2-topbar-right">
+        <span class="av2-namaste">Namaste, {{ session["user"] }}</span>
+        <span class="av2-lang-pill">English</span>
+        <a href="/logout" class="av2-logout-pill">Logout</a>
     </div>
 
 </div>
 
 
 <!-- =========================
+     URGENT / ALERT BANNER
+========================= -->
+
+<div class="av2-alertbar">
+
+    <div class="av2-alertbar-text">
+        <strong>{{ pending }} approval{{ 's' if pending != 1 else '' }} need attention</strong>
+        <span>Appointments are waiting for admin review</span>
+    </div>
+
+    <a href="/admin_appointments" class="av2-alert-btn">
+        Review appointments
+    </a>
+
+</div>
+
+
+<div class="av2-body">
+
+<!-- =========================
      SIDEBAR
 ========================= -->
 
-<div class="sidebar">
+<div class="av2-sidebar">
 
-    <h2>Menu</h2>
+    <a href="/dashboard" class="av2-nav-item active">Dashboard</a>
 
-    <a href="/dashboard"> Dashboard</a>
+    <a href="/view_users" class="av2-nav-item">Users</a>
 
-    <a href="/view_users"> Users</a>
+    <a href="/view_doctors" class="av2-nav-item">Doctors</a>
 
-    <a href="/view_doctors"> Doctors</a>
+    <a href="/view_nurses" class="av2-nav-item">Nurses</a>
 
-    <a href="/view_nurses"> Nurses</a>
+    <a href="/view_patients" class="av2-nav-item">Patients</a>
 
-    <a href="/view_patients"> Patients</a>
+    <a href="/admin_appointments" class="av2-nav-item">Appointments</a>
 
-    <a href="/admin_appointments"> Appointments</a>
+    <a href="/add_ehr" class="av2-nav-item">Add EHR</a>
 
-    <a href="/add_ehr">Add EHR</a>
+    <a href="/view_ehr" class="av2-nav-item">View EHR</a>
 
-    <a href="/view_ehr">View EHR</a>
+    <a href="/add_consultation" class="av2-nav-item">Add Consultation</a>
 
-    <a href="/add_consultation">Add Consultation</a>
+    <a href="/view_consultation" class="av2-nav-item">View Consultation</a>
 
-    <a href="/view_consultation">View Consultation</a>
+    <a href="/add_prescription" class="av2-nav-item">Add Prescription</a>
 
-    <a href="/add_prescription">Add Prescription</a>
+    <a href="/view_prescriptions" class="av2-nav-item">View Prescriptions</a>
 
-    <a href="/view_prescriptions">View Prescriptions</a>
+    <a href="/add_lab" class="av2-nav-item">Add Lab Test</a>
 
-    <a href="/add_lab">Add Lab Test</a>
+    <a href="/view_lab" class="av2-nav-item">View Lab Reports</a>
 
-    <a href="/view_lab">View Lab Reports</a>
+    <a href="/search_patient_history" class="av2-nav-item">Patient History</a>
 
-    <a href="/search_patient_history">
-        Patient Medical History
-    </a>
+    <a href="/billing_dashboard" class="av2-nav-item">Billing</a>
 
-    <a href="/billing_dashboard">
-        Billing
-    </a>
+    <a href="/notifications" class="av2-nav-item">Notifications</a>
 
-    <a href="/notifications">
-        Notifications
-    </a>
+    <a href="/reports_dashboard" class="av2-nav-item">Reports & Analytics</a>
 
-    <a href="/reports_dashboard">
-        Reports & Analytics
-    </a>
+    <a href="/api_dashboard" class="av2-nav-item">REST API Dashboard</a>
 
-    <a href="/api_dashboard">
-        REST API Dashboard
-    </a>
+    <a href="/admin_feedback" class="av2-nav-item">Feedback</a>
 
-    <a href="/admin_feedback">
-         Feedback
-    </a>
+    <div class="av2-nav-label">Account</div>
 
-    <a href="/logout">
-         Logout
-    </a>
+    <a href="/logout" class="av2-nav-item">Logout</a>
 
 </div>
 
@@ -115,85 +650,98 @@
      MAIN CONTENT
 ========================= -->
 
-<div class="main-content">
-
-    <h1> Admin Dashboard</h1>
+<div class="av2-main">
 
 
     <!-- =========================
-         MAIN DASHBOARD CARDS
+         TODAY'S OVERVIEW
     ========================= -->
 
-    <div class="dashboard-section">
+    <h2 class="av2-section-title">Today's overview</h2>
 
+    <div class="av2-overview-card">
 
-        <div class="dashboard-card">
-
-            <h2> Doctors</h2>
-
-            <h1>{{ total_doctors }}</h1>
-
-            <a href="/add_doctor" class="btn-primary">
-                Add Doctor
-            </a>
-
-            <br><br>
-
-            <a href="/view_doctors" class="btn-primary">
-                View Doctors
-            </a>
-
+        <div class="av2-overview-text">
+            You have <strong>{{ today_appointments }}</strong> appointment(s) scheduled for today,
+            and <strong>{{ pending }}</strong> awaiting approval.
         </div>
 
+        <a href="/admin_appointments" class="av2-btn-primary">
+            View appointments
+        </a>
 
-        <div class="dashboard-card">
+    </div>
 
-            <h2> Nurses</h2>
 
-            <h1>{{ total_nurses }}</h1>
+    <!-- =========================
+         WHAT DO YOU NEED?
+    ========================= -->
 
-            <a href="/add_nurse" class="btn-primary">
-                Add Nurse
-            </a>
+    <h2 class="av2-section-title">What do you need?</h2>
 
-            <br><br>
+    <div class="av2-quick-grid">
 
-            <a href="/view_nurses" class="btn-primary">
-                View Nurses
-            </a>
+        <a href="/add_doctor" class="av2-quick-item">
+            <span>Add<br>doctor</span>
+        </a>
 
+        <a href="/add_nurse" class="av2-quick-item">
+            <span>Add<br>nurse</span>
+        </a>
+
+        <a href="/add_patient" class="av2-quick-item">
+            <span>Add<br>patient</span>
+        </a>
+
+        <a href="/admin_appointments" class="av2-quick-item">
+            <span>Appointments</span>
+        </a>
+
+        <a href="/billing_dashboard" class="av2-quick-item">
+            <span>Billing</span>
+        </a>
+
+        <a href="/view_lab" class="av2-quick-item">
+            <span>Lab<br>reports</span>
+        </a>
+
+        <a href="/reports_dashboard" class="av2-quick-item">
+            <span>Reports</span>
+        </a>
+
+        <a href="/admin_feedback" class="av2-quick-item">
+            <span>Feedback</span>
+        </a>
+
+    </div>
+
+
+    <!-- =========================
+         HOSPITAL AT A GLANCE
+    ========================= -->
+
+    <h2 class="av2-section-title">Hospital at a glance</h2>
+
+    <div class="av2-glance-grid">
+
+        <div class="av2-glance-card">
+            <div class="av2-glance-value">{{ total_doctors }}</div>
+            <div class="av2-glance-label">Doctors</div>
         </div>
 
-
-        <div class="dashboard-card">
-
-            <h2> Patients</h2>
-
-            <h1>{{ total_patients }}</h1>
-
-            <a href="/add_patient" class="btn-primary">
-                Add Patient
-            </a>
-
-            <br><br>
-
-            <a href="/view_patients" class="btn-primary">
-                View Patients
-            </a>
-
+        <div class="av2-glance-card">
+            <div class="av2-glance-value">{{ total_nurses }}</div>
+            <div class="av2-glance-label">Nurses</div>
         </div>
 
+        <div class="av2-glance-card">
+            <div class="av2-glance-value">{{ total_patients }}</div>
+            <div class="av2-glance-label">Patients</div>
+        </div>
 
-        <div class="dashboard-card">
-
-            <h2> Appointments</h2>
-
-            <h1>{{ total_appointments }}</h1>
-
-            <a href="/admin_appointments" class="btn-primary">
-                View Appointments
-            </a>
-
+        <div class="av2-glance-card">
+            <div class="av2-glance-value">{{ total_appointments }}</div>
+            <div class="av2-glance-label">Appointments</div>
         </div>
 
     </div>
@@ -203,32 +751,88 @@
          APPOINTMENT STATUS
     ========================= -->
 
-    <div class="dashboard-section">
+    <h2 class="av2-section-title">Appointment status</h2>
+
+    <div class="av2-glance-grid av2-glance-grid-3">
+
+        <div class="av2-glance-card">
+            <div class="av2-glance-value av2-value-warning">{{ pending }}</div>
+            <div class="av2-glance-label">Pending</div>
+        </div>
+
+        <div class="av2-glance-card">
+            <div class="av2-glance-value av2-value-success">{{ approved }}</div>
+            <div class="av2-glance-label">Approved</div>
+        </div>
+
+        <div class="av2-glance-card">
+            <div class="av2-glance-value av2-value-danger">{{ rejected }}</div>
+            <div class="av2-glance-label">Rejected</div>
+        </div>
+
+    </div>
 
 
-        <div class="dashboard-card">
+    <!-- =========================
+         NOTIFICATIONS
+    ========================= -->
 
-            <h2> Pending</h2>
+    <h2 class="av2-section-title">Notifications</h2>
 
-            <h1>{{ pending }}</h1>
+    <div class="av2-notif-box">
+
+        {% if pending_lab_reports and pending_lab_reports > 0 %}
+
+            {{ pending_lab_reports }} laboratory report(s) are awaiting completion.
+
+        {% elif pending and pending > 0 %}
+
+            {{ pending }} appointment(s) are waiting for your approval.
+
+        {% else %}
+
+            No notifications right now &mdash; we'll let you know when something needs your attention.
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- =========================
+         SYSTEM SHORTCUTS
+    ========================= -->
+
+    <h2 class="av2-section-title">System shortcuts</h2>
+
+    <div class="av2-schemes-grid">
+
+        <div class="av2-scheme-card">
+
+            <h3>Download reports</h3>
+
+            <p>
+                Generate and download patient, doctor, appointment
+                and billing reports in PDF format.
+            </p>
+
+            <a href="/reports_dashboard" class="av2-scheme-btn">
+                Open reports
+            </a>
 
         </div>
 
+        <div class="av2-scheme-card">
 
-        <div class="dashboard-card">
+            <h3>REST API access</h3>
 
-            <h2> Approved</h2>
+            <p>
+                View live API endpoints, test requests and monitor
+                integration status for this hospital system.
+            </p>
 
-            <h1>{{ approved }}</h1>
-
-        </div>
-
-
-        <div class="dashboard-card">
-
-            <h2> Rejected</h2>
-
-            <h1>{{ rejected }}</h1>
+            <a href="/api_dashboard" class="av2-scheme-btn">
+                Open API dashboard
+            </a>
 
         </div>
 
@@ -239,289 +843,105 @@
          ANALYTICS
     ========================= -->
 
-    <h1> Hospital Analytics</h1>
+    <h2 class="av2-section-title">Hospital analytics</h2>
 
+    <div class="av2-glance-grid">
+
+        <div class="av2-glance-card">
+            <div class="av2-glance-value">{{ completed_consultations }}</div>
+            <div class="av2-glance-label">Completed consultations</div>
+        </div>
+
+        <div class="av2-glance-card">
+            <div class="av2-glance-value">{{ cancelled_appointments }}</div>
+            <div class="av2-glance-label">Cancelled appointments</div>
+        </div>
+
+        <div class="av2-glance-card">
+            <div class="av2-glance-value">{{ pending_lab_reports }}</div>
+            <div class="av2-glance-label">Pending lab reports</div>
+        </div>
+
+    </div>
+
+
+    <!-- Patient Demographics -->
 
     <div class="dashboard-section">
 
-
-        <!-- =========================
-             PATIENT DEMOGRAPHICS
-        ========================= -->
-
-        <h1> Patient Demographics</h1>
-
-
-        <div class="dashboard-section">
-
-
-            <!-- Gender Distribution -->
-
-            <div class="chart-card">
-
-                <h2> Gender Distribution</h2>
-
-                <canvas id="genderChart"></canvas>
-
-            </div>
-
-
-            <!-- Age Distribution -->
-
-            <div class="chart-card">
-
-                <h2> Age Distribution</h2>
-
-                <canvas id="ageChart"></canvas>
-
-            </div>
-
+        <div class="chart-card">
+            <h2>Gender Distribution</h2>
+            <canvas id="genderChart"></canvas>
         </div>
 
-
-        <!-- Today's Appointments -->
-
-        <div class="dashboard-card">
-
-            <h2> Today's Appointments</h2>
-
-            <h1>{{ today_appointments }}</h1>
-
-            <p>
-                Appointments scheduled for today
-            </p>
-
-        </div>
-
-
-        <!-- Completed Consultations -->
-
-        <div class="dashboard-card">
-
-            <h2> Completed Consultations</h2>
-
-            <h1>{{ completed_consultations }}</h1>
-
-            <p>
-                Completed appointments
-            </p>
-
-        </div>
-
-
-        <!-- Cancelled Appointments -->
-
-        <div class="dashboard-card">
-
-            <h2> Cancelled Appointments</h2>
-
-            <h1>{{ cancelled_appointments }}</h1>
-
-            <p>
-                Cancelled appointments
-            </p>
-
-        </div>
-
-
-        <!-- Pending Lab Reports -->
-
-        <div class="dashboard-card">
-
-            <h2> Pending Lab Reports</h2>
-
-            <h1>{{ pending_lab_reports }}</h1>
-
-            <p>
-                Laboratory reports awaiting completion
-            </p>
-
+        <div class="chart-card">
+            <h2>Age Distribution</h2>
+            <canvas id="ageChart"></canvas>
         </div>
 
     </div>
 
 
-    <!-- =========================
-         DOCTOR SPECIALIZATION
-    ========================= -->
+    <!-- Doctor Specialization -->
 
     <div class="chart-card">
-
-        <h2>
-             Doctors by Specialization
-        </h2>
-
+        <h2>Doctors by Specialization</h2>
         <canvas id="specializationChart"></canvas>
-
     </div>
 
 
-    <!-- =========================
-         MONTHLY PATIENTS
-    ========================= -->
+    <!-- Monthly Patients -->
 
     <div class="chart-card">
-
-        <h2>
-             Monthly Patient Registrations
-        </h2>
-
+        <h2>Monthly Patient Registrations</h2>
         <canvas id="monthlyPatientsChart"></canvas>
-
     </div>
 
 
-    <!-- =========================
-         APPOINTMENT TRENDS
-    ========================= -->
+    <!-- Appointment Trends -->
 
     <div class="chart-card">
-
-        <h2>
-             Appointment Trends
-        </h2>
-
+        <h2>Appointment Trends</h2>
         <canvas id="appointmentTrendChart"></canvas>
+    </div>
 
+
+    <!-- Doctor Consultations -->
+
+    <div class="chart-card">
+        <h2>Doctor-wise Consultation Count</h2>
+        <canvas id="doctorConsultationChart"></canvas>
     </div>
 
 
     <!-- =========================
-         DOCTOR CONSULTATIONS
+         RECENT ACTIVITY
     ========================= -->
-
-    <div class="chart-card">
-
-        <h2>
-             Doctor-wise Consultation Count
-        </h2>
-
-        <canvas id="doctorConsultationChart"></canvas>
-
-    </div>
-
-
-    <!-- =================================================
-         DOWNLOAD REPORTS
-    ================================================= -->
-
-    <div class="reports-section">
-
-        <h1> Download Reports</h1>
-
-        <p>
-            Generate and download hospital reports in PDF format.
-        </p>
-
-
-        <div class="report-buttons">
-
-
-            <!-- =========================
-                 PATIENT REPORT
-            ========================= -->
-
-            <a href="/download_report/patients"
-               class="report-btn">
-
-                 Download Patient Report
-
-            </a>
-
-
-            <!-- =========================
-                 DOCTOR REPORT
-            ========================= -->
-
-            <a href="/download_report/doctors"
-               class="report-btn">
-
-                 Download Doctor Report
-
-            </a>
-
-
-            <!-- =========================
-                 APPOINTMENT REPORT
-            ========================= -->
-
-            <a href="/download_report/appointments"
-               class="report-btn">
-
-                 Download Appointment Report
-
-            </a>
-
-
-            <!-- =========================
-                 BILLING REPORT
-            ========================= -->
-
-            <a href="/download_report/billing"
-               class="report-btn">
-
-                 Download Billing Report
-
-            </a>
-
-
-        </div>
-
-    </div>
-
-
-    <!-- =================================================
-         RECENT ACTIVITY LOGS
-    ================================================= -->
 
     <div class="chart-card activity-card">
 
-        <h2>
-             Recent Activity
-        </h2>
-
+        <h2>Recent Activity</h2>
 
         <table class="activity-table">
 
             <thead>
-
                 <tr>
-
                     <th>User</th>
-
                     <th>Role</th>
-
                     <th>Action</th>
-
                     <th>Date & Time</th>
-
                 </tr>
-
             </thead>
-
 
             <tbody>
 
                 {% for log in activity_logs %}
 
                 <tr>
-
-                    <td>
-                        {{ log[0] }}
-                    </td>
-
-                    <td>
-                        {{ log[1] }}
-                    </td>
-
-                    <td>
-                        {{ log[2] }}
-                    </td>
-
-                    <td>
-                        {{ log[3] }}
-                    </td>
-
+                    <td>{{ log[0] }}</td>
+                    <td>{{ log[1] }}</td>
+                    <td>{{ log[2] }}</td>
+                    <td>{{ log[3] }}</td>
                 </tr>
 
                 {% endfor %}
@@ -535,6 +955,8 @@
 
 </div>
 
+</div>
+
 
 <!-- =========================
      CHART.JS
@@ -543,388 +965,134 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 
-<!-- =========================
-     SPECIALIZATION CHART
-========================= -->
-
 <script>
 
-const specializationData =
-    {{ specialization_data | tojson }};
+const specializationData = {{ specialization_data | tojson }};
+const specializationLabels = specializationData.map(item => item[0]);
+const specializationValues = specializationData.map(item => item[1]);
 
-const specializationLabels =
-    specializationData.map(
-        item => item[0]
-    );
-
-const specializationValues =
-    specializationData.map(
-        item => item[1]
-    );
-
-
-new Chart(
-    document.getElementById("specializationChart"),
-    {
-
-        type: "pie",
-
-        data: {
-
-            labels: specializationLabels,
-
-            datasets: [{
-
-                data: specializationValues
-
-            }]
-
-        }
-
+new Chart(document.getElementById("specializationChart"), {
+    type: "pie",
+    data: {
+        labels: specializationLabels,
+        datasets: [{ data: specializationValues }]
     }
-);
+});
 
 </script>
 
 
-<!-- =========================
-     MONTHLY PATIENT CHART
-========================= -->
-
 <script>
 
-const monthlyPatientData =
-    {{ monthly_patients | tojson }};
+const monthlyPatientData = {{ monthly_patients | tojson }};
+const monthLabels = monthlyPatientData.map(item => item[0]);
+const patientValues = monthlyPatientData.map(item => item[1]);
 
-const monthLabels =
-    monthlyPatientData.map(
-        item => item[0]
-    );
-
-const patientValues =
-    monthlyPatientData.map(
-        item => item[1]
-    );
-
-
-new Chart(
-    document.getElementById("monthlyPatientsChart"),
-    {
-
-        type: "line",
-
-        data: {
-
-            labels: monthLabels,
-
-            datasets: [{
-
-                label: "Patient Registrations",
-
-                data: patientValues,
-
-                fill: false,
-
-                tension: 0.3
-
-            }]
-
-        },
-
-        options: {
-
-            responsive: true,
-
-            maintainAspectRatio: false,
-
-            scales: {
-
-                y: {
-
-                    beginAtZero: true,
-
-                    ticks: {
-
-                        stepSize: 1
-
-                    }
-
-                }
-
-            }
-
-        }
-
+new Chart(document.getElementById("monthlyPatientsChart"), {
+    type: "line",
+    data: {
+        labels: monthLabels,
+        datasets: [{
+            label: "Patient Registrations",
+            data: patientValues,
+            fill: false,
+            tension: 0.3
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
     }
-);
+});
 
 </script>
 
 
-<!-- =========================
-     DOCTOR CONSULTATION CHART
-========================= -->
-
 <script>
 
-const doctorConsultationData =
-    {{ doctor_consultations | tojson }};
+const doctorConsultationData = {{ doctor_consultations | tojson }};
+const doctorLabels = doctorConsultationData.map(item => item[0]);
+const consultationValues = doctorConsultationData.map(item => item[1]);
 
-
-const doctorLabels =
-    doctorConsultationData.map(
-        item => item[0]
-    );
-
-
-const consultationValues =
-    doctorConsultationData.map(
-        item => item[1]
-    );
-
-
-new Chart(
-    document.getElementById(
-        "doctorConsultationChart"
-    ),
-    {
-
-        type: "bar",
-
-        data: {
-
-            labels: doctorLabels,
-
-            datasets: [{
-
-                label: "Consultations",
-
-                data: consultationValues
-
-            }]
-
-        },
-
-        options: {
-
-            responsive: true,
-
-            maintainAspectRatio: false,
-
-            scales: {
-
-                y: {
-
-                    beginAtZero: true,
-
-                    ticks: {
-
-                        stepSize: 1
-
-                    }
-
-                }
-
-            }
-
-        }
-
+new Chart(document.getElementById("doctorConsultationChart"), {
+    type: "bar",
+    data: {
+        labels: doctorLabels,
+        datasets: [{ label: "Consultations", data: consultationValues }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
     }
-);
+});
 
 </script>
 
 
-<!-- =========================
-     APPOINTMENT TREND CHART
-========================= -->
-
 <script>
 
-const appointmentData =
-    {{ monthly_appointments | tojson }};
+const appointmentData = {{ monthly_appointments | tojson }};
+const appointmentMonths = appointmentData.map(item => item[0]);
+const appointmentValues = appointmentData.map(item => item[1]);
 
-
-const appointmentMonths =
-    appointmentData.map(
-        item => item[0]
-    );
-
-
-const appointmentValues =
-    appointmentData.map(
-        item => item[1]
-    );
-
-
-new Chart(
-    document.getElementById(
-        "appointmentTrendChart"
-    ),
-    {
-
-        type: "line",
-
-        data: {
-
-            labels: appointmentMonths,
-
-            datasets: [{
-
-                label: "Appointments",
-
-                data: appointmentValues,
-
-                fill: false,
-
-                tension: 0.3
-
-            }]
-
-        },
-
-        options: {
-
-            responsive: true,
-
-            maintainAspectRatio: false,
-
-            scales: {
-
-                y: {
-
-                    beginAtZero: true,
-
-                    ticks: {
-
-                        stepSize: 1
-
-                    }
-
-                }
-
-            }
-
-        }
-
+new Chart(document.getElementById("appointmentTrendChart"), {
+    type: "line",
+    data: {
+        labels: appointmentMonths,
+        datasets: [{
+            label: "Appointments",
+            data: appointmentValues,
+            fill: false,
+            tension: 0.3
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
     }
-);
+});
 
 </script>
 
 
-<!-- =========================
-     GENDER DISTRIBUTION
-========================= -->
-
 <script>
 
-const genderData =
-    {{ gender_data | tojson }};
+const genderData = {{ gender_data | tojson }};
+const genderLabels = genderData.map(item => item[0]);
+const genderValues = genderData.map(item => item[1]);
 
-
-const genderLabels =
-    genderData.map(
-        item => item[0]
-    );
-
-
-const genderValues =
-    genderData.map(
-        item => item[1]
-    );
-
-
-new Chart(
-    document.getElementById("genderChart"),
-    {
-
-        type: "doughnut",
-
-        data: {
-
-            labels: genderLabels,
-
-            datasets: [{
-
-                data: genderValues
-
-            }]
-
-        },
-
-        options: {
-
-            responsive: true
-
-        }
-
-    }
-);
+new Chart(document.getElementById("genderChart"), {
+    type: "doughnut",
+    data: {
+        labels: genderLabels,
+        datasets: [{ data: genderValues }]
+    },
+    options: { responsive: true }
+});
 
 </script>
 
 
-<!-- =========================
-     AGE DISTRIBUTION
-========================= -->
-
 <script>
 
-const ageData =
-    {{ age_data | tojson }};
+const ageData = {{ age_data | tojson }};
+const ageLabels = ageData.map(item => item[0]);
+const ageValues = ageData.map(item => item[1]);
 
-
-const ageLabels =
-    ageData.map(
-        item => item[0]
-    );
-
-
-const ageValues =
-    ageData.map(
-        item => item[1]
-    );
-
-
-new Chart(
-    document.getElementById("ageChart"),
-    {
-
-        type: "bar",
-
-        data: {
-
-            labels: ageLabels,
-
-            datasets: [{
-
-                label: "Number of Patients",
-
-                data: ageValues
-
-            }]
-
-        },
-
-        options: {
-
-            responsive: true,
-
-            scales: {
-
-                y: {
-
-                    beginAtZero: true
-
-                }
-
-            }
-
-        }
-
+new Chart(document.getElementById("ageChart"), {
+    type: "bar",
+    data: {
+        labels: ageLabels,
+        datasets: [{ label: "Number of Patients", data: ageValues }]
+    },
+    options: {
+        responsive: true,
+        scales: { y: { beginAtZero: true } }
     }
-);
+});
 
 </script>
 
@@ -932,4 +1100,3 @@ new Chart(
 </body>
 
 </html>
-
