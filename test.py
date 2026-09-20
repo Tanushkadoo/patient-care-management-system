@@ -85,10 +85,10 @@ def home_page():
     return render_template("index.html")
 
 @app.route("/login", methods=["GET", "POST"])
-@app.route("/chatbot")
-def chatbot():
-    if "user" not in session:
-        return redirect("/login")
+def login():
+  if request.method == "POST":
+      email = request.form["email"]
+      password = request.form["password"]
 
     return render_template("chatbot.html")
 
@@ -168,6 +168,8 @@ def login():
             return "Invalid Email or Password"
 
     return render_template("login.html")
+@app.route("/chatbot")
+def chatbot():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
