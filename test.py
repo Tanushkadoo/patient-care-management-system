@@ -260,7 +260,6 @@ USER'S MESSAGE:
         return jsonify({
             "response": response.text
         })
-
     except Exception as e:
         print("Gemini error:", e)
         return jsonify({
