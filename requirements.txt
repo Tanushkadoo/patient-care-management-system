@@ -3,4 +3,4 @@ mysql-connector-python
  python-dotenv
   reportlab
    gunicorn
-google-genai
+google-genai>=2.24.0
