@@ -170,6 +170,10 @@ def login():
     return render_template("login.html")
 @app.route("/chatbot")
 def chatbot():
+    if "user" not in session:
+        return redirect("/login")
+
+    return render_template("chatbot.html")
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
