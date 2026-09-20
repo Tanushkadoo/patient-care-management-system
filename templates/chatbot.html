@@ -113,11 +113,17 @@
 
     </div>
 
-    <div class="input-area">
+   <div class="input-area">
 
-        <input
-            type="text"
-            id="messageInput"
+    <select id="languageSelect">
+        <option value="English">English</option>
+        <option value="Hindi">हिन्दी</option>
+        <option value="Marathi">मराठी</option>
+    </select>
+
+    <input
+        type="text"
+        id="messageInput"
             placeholder="Describe your symptoms or ask a question..."
             onkeydown="handleEnter(event)"
         >
