@@ -86,11 +86,34 @@ def home_page():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-  if request.method == "POST":
-      email = request.form["email"]
-      password = request.form["password"]
+    if request.method == "POST":
+        email = request.form["email"]
+        password = request.form["password"]
 
-    return render_template("chatbot.html")
+        query = """
+        SELECT * FROM users
+        WHERE email = %s AND password = %s
+        """
+
+        cursor.execute(query, (email, password))
+        user = cursor.fetchone()
+
+        if user:
+            role = user[4]
+
+            session["user_id"] = user[0]
+            session["user"] = user[1]
+            session["role"] = role
+
+            if role == "pharmacist":
+                return redirect("/pharmacist_dashboard")
+
+            return redirect("/dashboard")
+
+        else:
+            return "Invalid Email or Password"
+
+    return render_template("login.html")
 
 
 @app.route("/api/chatbot", methods=["POST"])
