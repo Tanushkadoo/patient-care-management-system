@@ -91,7 +91,9 @@ def chatbot():
         return redirect("/login")
 
     return render_template("chatbot.html")
-    @app.route("/api/chatbot", methods=["POST"])
+
+
+@app.route("/api/chatbot", methods=["POST"])
 def api_chatbot():
     if "user" not in session:
         return jsonify({"error": "Please login first"}), 401
