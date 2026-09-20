@@ -1,5 +1,5 @@
 from io import BytesIO
-from datetime import date, datetime
+from datetime import date
 
 import os
 from dotenv import load_dotenv
@@ -27,234 +27,7 @@ from reportlab.platypus import (
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
 
-
 load_dotenv()
-
-
-# =========================================================================
-# PATIENT PRIORITY / RISK ASSESSMENT  (merged from priority.py)
-# =========================================================================
-
-"""
-priority.py
-============
-
-Centralized, rule-based Patient Priority / Risk Assessment logic for the
-Doctor Dashboard's "Patient Priority Queue".
-
-IMPORTANT:
-This is a transparent, rule-based DECISION-SUPPORT PROTOTYPE. It is not a
-validated clinical scoring system and must never be presented as one. It
-only looks at information the application already collects:
-
-  - the patient's recorded disease/condition text
-  - the "Emergency / urgent case" flag on the patient record (the one
-    minimal field added to support this feature)
-  - the patient's most recent consultation (symptoms / diagnosis)
-  - the patient's most recent EHR entry (medical history)
-  - the patient's most recent lab report (status + result text)
-  - the patient's age
-  - the patient's most recent appointment (date/time/status)
-
-Every rule is simple, additive, and explainable — each rule that fires
-appends a short human-readable reason so the doctor can see exactly why a
-patient was flagged. Nothing here is an unexplained "AI prediction".
-"""
-
-
-
-# ---------------------------------------------------------------------------
-# Keyword lists used for the transparent, rule-based scoring below.
-# These are intentionally simple substring matches against free-text
-# fields that already exist in the application (disease, symptoms,
-# diagnosis, medical history, lab result). They are illustrative
-# triage heuristics for a prototype, NOT medically validated criteria.
-# ---------------------------------------------------------------------------
-
-HIGH_RISK_KEYWORDS = [
-    "chest pain", "heart attack", "cardiac arrest", "stroke", "seizure",
-    "unconscious", "unresponsive", "severe bleeding", "hemorrhage",
-    "haemorrhage", "difficulty breathing", "shortness of breath",
-    "breathing difficulty", "trauma", "accident", "fracture",
-    "head injury", "sepsis", "anaphylaxis", "poisoning", "overdose",
-    "emergency", "critical condition",
-]
-
-CHRONIC_KEYWORDS = [
-    "diabetes", "diabetic", "hypertension", "high blood pressure",
-    "asthma", "copd", "kidney disease", "renal", "cancer", "tumor",
-    "tumour", "chronic", "heart disease", "cardiac", "liver disease",
-    "hepatitis", "tuberculosis", "epilepsy", "arthritis",
-]
-
-ABNORMAL_RESULT_KEYWORDS = [
-    "abnormal", "critical", "high", "elevated", "low", "positive",
-    "irregular",
-]
-
-# Score thresholds for translating a numeric score into a risk level.
-HIGH_RISK_THRESHOLD = 60
-MEDIUM_RISK_THRESHOLD = 30
-
-
-def _as_text(value):
-    return str(value) if value else ""
-
-
-def _find_keyword_hits(text, keywords):
-    """Return the list of keywords (in order) found as substrings of text."""
-    if not text:
-        return []
-    text_lower = str(text).lower()
-    return [kw for kw in keywords if kw in text_lower]
-
-
-def _to_date(value):
-    """Best-effort conversion of a DB date/datetime/string value to a date."""
-    if value is None:
-        return None
-    if isinstance(value, datetime):
-        return value.date()
-    if isinstance(value, date):
-        return value
-    if isinstance(value, str):
-        for fmt in ("%Y-%m-%d", "%d-%m-%Y", "%m/%d/%Y"):
-            try:
-                return datetime.strptime(value, fmt).date()
-            except ValueError:
-                continue
-    return None
-
-
-def _to_int(value):
-    try:
-        return int(value)
-    except (TypeError, ValueError):
-        return None
-
-
-def calculate_patient_priority(patient_data):
-    """
-    Calculate a transparent, rule-based priority/risk score for a patient.
-
-    patient_data: dict that may contain any of the following keys
-        (all optional; missing/empty fields simply contribute no points):
-            disease                 - str, patient's recorded condition
-            is_emergency             - truthy/falsy, staff-marked flag
-            age                      - int or numeric string
-            latest_symptoms          - str, most recent consultation symptoms
-            latest_diagnosis         - str, most recent consultation diagnosis
-            medical_history          - str, most recent EHR medical history
-            latest_lab_status        - str, e.g. "Pending" / "Completed"
-            latest_lab_result        - str, free-text lab result
-            latest_lab_test_name     - str, name of the most recent test
-            appointment_date         - date/datetime/str
-            appointment_status       - str, e.g. "Pending"/"Approved"/...
-
-    Returns:
-        {
-            "risk_level": "HIGH" | "MEDIUM" | "LOW",
-            "priority_score": int (0-100),
-            "reasons": [str, ...]
-        }
-    """
-    score = 0
-    reasons = []
-
-    # 1. Explicit emergency / urgent flag set by staff on the patient record
-    if patient_data.get("is_emergency"):
-        score += 50
-        reasons.append("Marked as an emergency / urgent case")
-
-    # 2. Recorded disease / condition text
-    disease = _as_text(patient_data.get("disease"))
-    high_hits = _find_keyword_hits(disease, HIGH_RISK_KEYWORDS)
-    if high_hits:
-        score += 40
-        reasons.append(f"Condition on record indicates a high-risk symptom ('{high_hits[0]}')")
-    else:
-        chronic_hits = _find_keyword_hits(disease, CHRONIC_KEYWORDS)
-        if chronic_hits:
-            score += 20
-            reasons.append(f"Chronic condition requiring monitoring ('{chronic_hits[0]}')")
-
-    # 3. Most recent consultation (symptoms / diagnosis)
-    consult_text = " ".join(filter(None, [
-        _as_text(patient_data.get("latest_symptoms")),
-        _as_text(patient_data.get("latest_diagnosis")),
-    ]))
-    consult_hits = _find_keyword_hits(consult_text, HIGH_RISK_KEYWORDS)
-    if consult_hits:
-        score += 30
-        reasons.append(f"Most recent consultation noted '{consult_hits[0]}'")
-
-    # 4. Most recent EHR medical history
-    history_hits = _find_keyword_hits(
-        patient_data.get("medical_history"),
-        HIGH_RISK_KEYWORDS + CHRONIC_KEYWORDS,
-    )
-    if history_hits:
-        score += 10
-        reasons.append(f"Medical history includes '{history_hits[0]}'")
-
-    # 5. Lab status / results
-    lab_status = _as_text(patient_data.get("latest_lab_status"))
-    if lab_status.lower() == "pending":
-        score += 15
-        reasons.append("Lab report pending doctor review")
-    else:
-        abnormal_hits = _find_keyword_hits(
-            patient_data.get("latest_lab_result"), ABNORMAL_RESULT_KEYWORDS
-        )
-        if abnormal_hits:
-            score += 20
-            test_name = _as_text(patient_data.get("latest_lab_test_name")) or "test"
-            reasons.append(f"Recent {test_name} result flagged as '{abnormal_hits[0]}'")
-
-    # 6. Age-related risk
-    age = _to_int(patient_data.get("age"))
-    if age is not None:
-        if age >= 65:
-            score += 15
-            reasons.append("Age 65+ (elevated risk group)")
-        elif age <= 5:
-            score += 10
-            reasons.append("Young child (age 5 or under)")
-
-    # 7. Appointment timing
-    appt_status = _as_text(patient_data.get("appointment_status"))
-    appt_date = _to_date(patient_data.get("appointment_date"))
-    if appt_date is not None and appt_status in ("Pending", "Approved"):
-        today = date.today()
-        if appt_date == today:
-            score += 10
-            reasons.append("Appointment scheduled for today")
-        elif appt_date < today:
-            score += 15
-            reasons.append("Overdue appointment / follow-up")
-
-    score = max(0, min(score, 100))
-
-    if score >= HIGH_RISK_THRESHOLD:
-        risk_level = "HIGH"
-    elif score >= MEDIUM_RISK_THRESHOLD:
-        risk_level = "MEDIUM"
-    else:
-        risk_level = "LOW"
-
-    if not reasons:
-        reasons.append("No urgent indicators found in current records")
-
-    return {
-        "risk_level": risk_level,
-        "priority_score": score,
-        "reasons": reasons,
-    }
-
-
-# =========================================================================
-# MAIN APPLICATION ROUTES
-# =========================================================================
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY")
@@ -1001,15 +774,10 @@ def dashboard():
 
         notifications = cursor.fetchall()
 
-        priority_patients, high_count, medium_count, low_count = build_priority_queue()
 
         return render_template(
             "doctor_dashboard.html",
-            notifications=notifications,
-            priority_patients=priority_patients,
-            high_risk_count=high_count,
-            medium_risk_count=medium_count,
-            low_risk_count=low_count
+            notifications=notifications
         )
 
 
@@ -1086,122 +854,6 @@ def reports_dashboard():
         return "Access Denied"
 
     return render_template("reports_dashboard.html")
-
-def build_priority_queue():
-    """
-    Build the doctor-facing "Patient Priority Queue".
-
-    Pulls each patient together with their most recent lab report,
-    consultation, EHR entry and appointment (all via a single query, no
-    per-patient N+1 queries), runs the transparent rule-based
-    calculate_patient_priority() function on each, and returns the list
-    sorted HIGH -> MEDIUM -> LOW (then by score, then soonest appointment).
-
-    Intentionally excludes aadhaar_number and any other sensitive fields
-    not needed for triage display.
-    """
-    cursor.execute("""
-        SELECT
-            p.id,
-            p.patient_name,
-            p.age,
-            p.disease,
-            p.is_emergency,
-            lab.status,
-            lab.result,
-            lab.test_name,
-            cons.symptoms,
-            cons.diagnosis,
-            ehr.medical_history,
-            appt.appointment_date,
-            appt.appointment_time,
-            appt.status
-        FROM patients p
-        LEFT JOIN (
-            SELECT l1.patient_id, l1.status, l1.result, l1.test_name
-            FROM laboratory l1
-            INNER JOIN (
-                SELECT patient_id, MAX(test_date) AS max_date
-                FROM laboratory
-                GROUP BY patient_id
-            ) l2 ON l1.patient_id = l2.patient_id AND l1.test_date = l2.max_date
-        ) lab ON lab.patient_id = p.id
-        LEFT JOIN (
-            SELECT c1.patient_id, c1.symptoms, c1.diagnosis
-            FROM consultation c1
-            INNER JOIN (
-                SELECT patient_id, MAX(consultation_date) AS max_date
-                FROM consultation
-                GROUP BY patient_id
-            ) c2 ON c1.patient_id = c2.patient_id AND c1.consultation_date = c2.max_date
-        ) cons ON cons.patient_id = p.id
-        LEFT JOIN (
-            SELECT e1.patient_id, e1.medical_history
-            FROM ehr e1
-            INNER JOIN (
-                SELECT patient_id, MAX(ehr_id) AS max_id
-                FROM ehr
-                GROUP BY patient_id
-            ) e2 ON e1.patient_id = e2.patient_id AND e1.ehr_id = e2.max_id
-        ) ehr ON ehr.patient_id = p.id
-        LEFT JOIN (
-            SELECT a1.patient_id, a1.appointment_date, a1.appointment_time, a1.status
-            FROM appointments a1
-            INNER JOIN (
-                SELECT patient_id, MAX(appointment_date) AS max_date
-                FROM appointments
-                GROUP BY patient_id
-            ) a2 ON a1.patient_id = a2.patient_id AND a1.appointment_date = a2.max_date
-        ) appt ON appt.patient_id = p.user_id
-    """)
-
-    rows = cursor.fetchall()
-
-    risk_rank = {"HIGH": 0, "MEDIUM": 1, "LOW": 2}
-    queue = []
-    counts = {"HIGH": 0, "MEDIUM": 0, "LOW": 0}
-
-    for row in rows:
-        (
-            patient_id, patient_name, age, disease, is_emergency,
-            lab_status, lab_result, lab_test_name,
-            symptoms, diagnosis, medical_history,
-            appointment_date, appointment_time, appointment_status
-        ) = row
-
-        result = calculate_patient_priority({
-            "disease": disease,
-            "is_emergency": is_emergency,
-            "age": age,
-            "latest_symptoms": symptoms,
-            "latest_diagnosis": diagnosis,
-            "medical_history": medical_history,
-            "latest_lab_status": lab_status,
-            "latest_lab_result": lab_result,
-            "latest_lab_test_name": lab_test_name,
-            "appointment_date": appointment_date,
-            "appointment_status": appointment_status,
-        })
-
-        counts[result["risk_level"]] += 1
-
-        queue.append({
-            "id": patient_id,
-            "name": patient_name,
-            "age": age,
-            "disease": disease,
-            "risk_level": result["risk_level"],
-            "priority_score": result["priority_score"],
-            "reasons": result["reasons"],
-            "appointment_date": appointment_date,
-            "appointment_time": appointment_time,
-            "appointment_status": appointment_status,
-        })
-
-    queue.sort(key=lambda item: (risk_rank[item["risk_level"]], -item["priority_score"]))
-
-    return queue, counts["HIGH"], counts["MEDIUM"], counts["LOW"]
-
 
 def log_activity(action):
     if "user_id" not in session:
@@ -1476,12 +1128,11 @@ def add_patient():
         blood_group = request.form["blood_group"]
         address = request.form["address"]
         aadhaar_number = request.form["aadhaar_number"]
-        is_emergency = 1 if request.form.get("is_emergency") == "on" else 0
 
         cursor.execute("""
             INSERT INTO patients
-            (patient_name, age, disease, phone, gender, blood_group, aadhaar_number, address, is_emergency)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+            (patient_name, age, disease, phone, gender, blood_group, aadhaar_number, address)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
         """, (
             patient_name,
             age,
@@ -1490,8 +1141,7 @@ def add_patient():
             gender,
             blood_group,
             aadhaar_number,
-            address,
-            is_emergency
+            address
         ))
 
         connection.commit()
@@ -1513,16 +1163,7 @@ def edit_patient(id):
     if request.method == "GET":
         cursor.execute("SELECT * FROM patients WHERE id=%s", (id,))
         patient = cursor.fetchone()
-
-        cursor.execute("SELECT is_emergency FROM patients WHERE id=%s", (id,))
-        emergency_row = cursor.fetchone()
-        is_emergency = bool(emergency_row[0]) if emergency_row else False
-
-        return render_template(
-            "edit_patient.html",
-            patient=patient,
-            is_emergency=is_emergency
-        )
+        return render_template("edit_patient.html", patient=patient)
 
     if request.method == "POST":
         patient_name = request.form["patient_name"]
@@ -1533,7 +1174,6 @@ def edit_patient(id):
         blood_group = request.form["blood_group"]
         address = request.form["address"]
         aadhaar_number = request.form["aadhaar_number"]
-        is_emergency = 1 if request.form.get("is_emergency") == "on" else 0
 
         cursor.execute("""
             UPDATE patients
@@ -1544,10 +1184,9 @@ def edit_patient(id):
                 gender = %s,
                 blood_group =%s,
                 address =%s,
-                aadhaar_number =%s,
-                is_emergency =%s
+                aadhaar_number =%s
             WHERE id=%s
-        """, (patient_name, age, disease, phone, gender, blood_group, address, aadhaar_number, is_emergency, id))
+        """, (patient_name, age, disease, phone, gender, blood_group, address, aadhar_number, id))
 
         connection.commit()
         return redirect("/view_patients")
