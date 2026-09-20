@@ -129,7 +129,7 @@ def api_chatbot():
         return jsonify({"error": "Message is required"}), 400
 
     try:
- prompt = f"""
+        prompt = f"""
 You are GramCare's AI-assisted health guidance and triage assistant.
 
 Your purpose is to help patients and frontline healthcare workers understand
@@ -185,7 +185,6 @@ FORMATTING RULES:
 - Use plain text only.
 - Do NOT use Markdown.
 - Do NOT use **bold**, ## headings, or Markdown tables.
-- Use the exact section headings shown above.
 - Use • for bullet points.
 - Keep responses concise and structured.
 - Never write one large paragraph.
@@ -193,6 +192,7 @@ FORMATTING RULES:
 User's message:
 {user_message}
 """
+
         response = gemini_client.models.generate_content(
             model="gemini-3.6-flash",
             contents=prompt
@@ -204,7 +204,6 @@ User's message:
 
     except Exception as e:
         print("Gemini error:", e)
-
         return jsonify({
             "error": "Unable to connect to the AI assistant right now."
         }), 500
