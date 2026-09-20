@@ -5,6 +5,7 @@ import os
 from dotenv import load_dotenv
 
 import mysql.connector
+from google import genai
 
 from flask import (
     Flask,
@@ -31,6 +32,9 @@ load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY")
+gemini_client = genai.Client(
+    api_key=os.getenv("GEMINI_API_KEY")
+)
 
 connection = mysql.connector.connect(
     host=os.getenv("DB_HOST"),
@@ -81,6 +85,58 @@ def home_page():
     return render_template("index.html")
 
 @app.route("/login", methods=["GET", "POST"])
+@app.route("/chatbot")
+def chatbot():
+    if "user" not in session:
+        return redirect("/login")
+
+    return render_template("chatbot.html")
+    @app.route("/api/chatbot", methods=["POST"])
+def api_chatbot():
+    if "user" not in session:
+        return jsonify({"error": "Please login first"}), 401
+
+    data = request.get_json()
+    user_message = data.get("message", "").strip()
+
+    if not user_message:
+        return jsonify({"error": "Message is required"}), 400
+
+    try:
+        prompt = f"""
+You are GramCare's healthcare assistance chatbot.
+
+Your role is to provide general health information and help users
+understand when they should seek professional medical care.
+
+Rules:
+- Do not claim to diagnose diseases.
+- Do not prescribe medicines or dosages.
+- Do not replace a doctor.
+- If the user describes potentially serious symptoms,
+  advise them to seek urgent professional medical attention.
+- Keep answers simple and easy to understand.
+- Use short paragraphs and bullet points when useful.
+
+User's message:
+{user_message}
+"""
+
+        response = gemini_client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents=prompt
+        )
+
+        return jsonify({
+            "response": response.text
+        })
+
+    except Exception as e:
+        print("Gemini error:", e)
+
+        return jsonify({
+            "error": "Unable to connect to the AI assistant right now."
+        }), 500
 def login():
     if request.method == "POST":
         email = request.form["email"]
