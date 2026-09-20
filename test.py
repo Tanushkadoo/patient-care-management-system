@@ -127,9 +127,8 @@ def api_chatbot():
 
     if not user_message:
         return jsonify({"error": "Message is required"}), 400
-
     try:
-               prompt = f"""
+        prompt = f"""
 You are GramCare's AI Health and Website Assistant.
 
 First determine what the user is asking about.
@@ -249,22 +248,24 @@ FORMATTING RULES:
 - Keep responses concise and structured.
 - Never write one large paragraph.
 
-                USER'S MESSAGE:
-                {user_message}
-                """
-                response = gemini_client.models.generate_content(
-                    model="gemini-3.6-flash",
-                    contents=prompt
-                )
+USER'S MESSAGE:
+{user_message}
+"""
 
-                return jsonify({
-                    "response": response.text
-                })
-            except Exception as e:
-                print("Gemini error:", e)
-                return jsonify({
-                    "error": "Unable to connect to the AI assistant right now."
-                }), 500
+        response = gemini_client.models.generate_content(
+            model="gemini-3.6-flash",
+            contents=prompt
+        )
+
+        return jsonify({
+            "response": response.text
+        })
+
+    except Exception as e:
+        print("Gemini error:", e)
+        return jsonify({
+            "error": "Unable to connect to the AI assistant right now."
+        }), 500
 def login():
     if request.method == "POST":
         email = request.form["email"]
