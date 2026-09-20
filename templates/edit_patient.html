@@ -102,6 +102,11 @@
                     value="{{ patient[8] }}"
                     required></textarea>
 
+                <label class="checkbox-row">
+                    <input type="checkbox" name="is_emergency" {% if is_emergency %}checked{% endif %}>
+                    Mark as Emergency / Urgent Case
+                </label>
+
                 <br><br>
 
                 <button type="submit">

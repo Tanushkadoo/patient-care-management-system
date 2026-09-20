@@ -688,6 +688,22 @@ footer{
     background:var(--color-primary-dark);
 }
 
+.form-box .checkbox-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-weight:normal;
+    margin-top:15px;
+    margin-bottom:8px;
+}
+
+.form-box .checkbox-row input[type="checkbox"]{
+    width:18px;
+    height:18px;
+    accent-color:var(--color-primary);
+    padding:0;
+}
+
 
 
 .form-container{

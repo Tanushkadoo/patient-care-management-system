@@ -105,6 +105,57 @@
   .btn-outline{ background:transparent; border-color:var(--teal); color:var(--teal); }
   .btn-outline:hover{ background:var(--teal-tint); }
 
+  /* ===== Patient Priority Queue ===== */
+  .priority-counts{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:14px; }
+  .priority-count{ border-radius:var(--radius-sm); padding:14px; text-align:left; border:1px solid var(--line); }
+  .priority-count .num{ font-size:1.5rem; font-weight:700; }
+  .priority-count .label{ font-size:0.82rem; margin-top:2px; }
+  .priority-count.high{ background:var(--red-tint); border-color:#EBC5C1; }
+  .priority-count.high .num{ color:var(--red); }
+  .priority-count.medium{ background:#FCEFD8; border-color:#F1DFB2; }
+  .priority-count.medium .num{ color:var(--gold-dark); }
+  .priority-count.low{ background:var(--teal-tint); border-color:#CFE0DB; }
+  .priority-count.low .num{ color:var(--teal); }
+
+  .priority-toolbar{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:14px; }
+  .priority-filters{ display:flex; gap:6px; flex-wrap:wrap; }
+  .filter-chip{
+    border:1px solid var(--line); background:var(--surface); color:var(--ink-soft);
+    padding:6px 14px; border-radius:999px; font-size:0.85rem; font-weight:700; cursor:pointer;
+  }
+  .filter-chip.active{ background:var(--teal); border-color:var(--teal); color:#fff; }
+  .priority-search{
+    flex:1; min-width:160px; padding:9px 14px; border:1px solid var(--line); border-radius:999px;
+    font-family:inherit; font-size:0.9rem; background:var(--surface); color:var(--ink);
+  }
+
+  .priority-queue{ display:flex; flex-direction:column; gap:12px; }
+  .priority-card{
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--radius-lg);
+    padding:16px 18px; box-shadow:var(--shadow); border-left:5px solid var(--line);
+  }
+  .priority-card.risk-high{ border-left-color:var(--red); }
+  .priority-card.risk-medium{ border-left-color:var(--gold); }
+  .priority-card.risk-low{ border-left-color:var(--teal); }
+
+  .priority-card-head{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+  .priority-badge{
+    display:inline-flex; align-items:center; gap:6px; font-size:0.78rem; font-weight:700;
+    padding:4px 10px; border-radius:999px; white-space:nowrap;
+  }
+  .priority-badge.risk-high{ background:var(--red-tint); color:var(--red); }
+  .priority-badge.risk-medium{ background:#FCEFD8; color:var(--gold-dark); }
+  .priority-badge.risk-low{ background:var(--teal-tint); color:var(--teal); }
+  .priority-score{ font-size:0.78rem; color:var(--ink-soft); font-weight:700; }
+
+  .priority-card h3{ margin:8px 0 2px; font-size:1.05rem; }
+  .priority-meta{ color:var(--ink-soft); font-size:0.88rem; margin:0 0 8px; }
+  .priority-reasons{ margin:0 0 12px; padding-left:18px; color:var(--ink); font-size:0.9rem; }
+  .priority-reasons li{ margin-bottom:2px; }
+  .priority-appt{ font-size:0.85rem; color:var(--ink-soft); margin-bottom:10px; }
+  .priority-empty{ padding:26px 18px; text-align:center; color:var(--ink-soft); background:var(--surface); border:1px solid var(--line); border-radius:var(--radius-lg); }
+  .priority-disclaimer{ font-size:0.82rem; color:var(--ink-soft); margin:10px 0 18px; }
+
   /* ===== Today's schedule ===== */
   .schedule-list{ background:var(--surface); border:1px solid var(--line); border-radius:var(--radius-lg); overflow:hidden; box-shadow:var(--shadow); }
   .schedule-row{
@@ -292,6 +343,87 @@
   <main class="main">
     <div class="content" id="main-content">
 
+      <!-- Patient Priority Queue -->
+      <section aria-labelledby="priority-heading">
+        <div class="section-head">
+          <h2 id="priority-heading">Patient Priority Queue</h2>
+        </div>
+
+        <p class="priority-disclaimer">
+          Priority is calculated from available patient information using a transparent, rule-based system.
+          It is a decision-support prototype intended to support clinical review — not a diagnosis, and not a
+          replacement for professional clinical judgment.
+        </p>
+
+        <div class="priority-counts">
+          <div class="priority-count high">
+            <div class="num">{{ high_risk_count|default(0) }}</div>
+            <div class="label">🔴 High risk</div>
+          </div>
+          <div class="priority-count medium">
+            <div class="num">{{ medium_risk_count|default(0) }}</div>
+            <div class="label">🟠 Medium risk</div>
+          </div>
+          <div class="priority-count low">
+            <div class="num">{{ low_risk_count|default(0) }}</div>
+            <div class="label">🟢 Low risk</div>
+          </div>
+        </div>
+
+        <div class="priority-toolbar">
+          <div class="priority-filters" role="group" aria-label="Filter by risk level">
+            <button type="button" class="filter-chip active" data-filter="ALL">All</button>
+            <button type="button" class="filter-chip" data-filter="HIGH">High Risk</button>
+            <button type="button" class="filter-chip" data-filter="MEDIUM">Medium Risk</button>
+            <button type="button" class="filter-chip" data-filter="LOW">Low Risk</button>
+          </div>
+          <input
+            type="text"
+            id="priority-search"
+            class="priority-search"
+            placeholder="Search patient by name…"
+            aria-label="Search patient by name">
+        </div>
+
+        <div class="priority-queue" id="priority-queue">
+          {% if priority_patients %}
+            {% for patient in priority_patients %}
+            <div class="priority-card risk-{{ patient.risk_level|lower }}"
+                 data-risk="{{ patient.risk_level }}"
+                 data-name="{{ patient.name|lower }}">
+              <div class="priority-card-head">
+                <span class="priority-badge risk-{{ patient.risk_level|lower }}">
+                  {% if patient.risk_level == 'HIGH' %}🔴{% elif patient.risk_level == 'MEDIUM' %}🟠{% else %}🟢{% endif %}
+                  {{ patient.risk_level }} RISK
+                </span>
+                <span class="priority-score">Score: {{ patient.priority_score }}/100</span>
+              </div>
+
+              <h3>{{ patient.name }}{% if patient.age %}, {{ patient.age }}{% endif %}</h3>
+              <p class="priority-meta">Condition: {{ patient.disease or "Not recorded" }}</p>
+
+              <ul class="priority-reasons">
+                {% for reason in patient.reasons %}
+                <li>{{ reason }}</li>
+                {% endfor %}
+              </ul>
+
+              {% if patient.appointment_date %}
+              <p class="priority-appt">
+                Appointment: {{ patient.appointment_date }}{% if patient.appointment_time %} at {{ patient.appointment_time }}{% endif %}
+                {% if patient.appointment_status %}&middot; {{ patient.appointment_status }}{% endif %}
+              </p>
+              {% endif %}
+
+              <a class="btn btn-outline" href="/edit_patient/{{ patient.id }}">View Patient</a>
+            </div>
+            {% endfor %}
+          {% else %}
+            <div class="priority-empty">No patients to triage right now.</div>
+          {% endif %}
+        </div>
+      </section>
+
       <!-- Today's schedule -->
       <section aria-labelledby="schedule-heading">
         <div class="section-head">
@@ -429,6 +561,37 @@
     </div>
   </main>
 </div>
+
+<script>
+  (function () {
+    var chips = document.querySelectorAll('.filter-chip');
+    var search = document.getElementById('priority-search');
+    var cards = document.querySelectorAll('#priority-queue .priority-card');
+    var activeFilter = 'ALL';
+
+    function applyFilters() {
+      var term = (search && search.value ? search.value.toLowerCase().trim() : '');
+      cards.forEach(function (card) {
+        var matchesRisk = (activeFilter === 'ALL' || card.getAttribute('data-risk') === activeFilter);
+        var matchesSearch = (!term || card.getAttribute('data-name').indexOf(term) !== -1);
+        card.style.display = (matchesRisk && matchesSearch) ? '' : 'none';
+      });
+    }
+
+    chips.forEach(function (chip) {
+      chip.addEventListener('click', function () {
+        chips.forEach(function (c) { c.classList.remove('active'); });
+        chip.classList.add('active');
+        activeFilter = chip.getAttribute('data-filter');
+        applyFilters();
+      });
+    });
+
+    if (search) {
+      search.addEventListener('input', applyFilters);
+    }
+  })();
+</script>
 
 </body>
 </html>
