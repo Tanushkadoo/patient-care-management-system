@@ -6,9 +6,6 @@ from dotenv import load_dotenv
 
 import mysql.connector
 
-from twilio.rest import Client
-from twilio.base.exceptions import TwilioRestException
-
 from flask import (
     Flask,
     render_template,
@@ -16,8 +13,7 @@ from flask import (
     redirect,
     session,
     jsonify,
-    send_file,
-    flash
+    send_file
 )
 
 from reportlab.platypus import (
@@ -35,49 +31,6 @@ load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY")
-
-# --- Twilio Verify (phone OTP) setup ---
-TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
-TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
-TWILIO_VERIFY_SID = os.getenv("TWILIO_VERIFY_SID")
-
-twilio_client = None
-if TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN:
-    twilio_client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
-
-
-def send_registration_otp(phone):
-    """Send an OTP to `phone` (E.164 format, e.g. +919876543210) via Twilio Verify."""
-    if not twilio_client:
-        # No Twilio credentials configured - fall back to printing the code
-        # to the console so you can still test the flow locally.
-        print(f"[DEV MODE] Twilio not configured, would send OTP to {phone}")
-        return True
-
-    try:
-        twilio_client.verify.v2.services(TWILIO_VERIFY_SID).verifications.create(
-            to=phone, channel="sms"
-        )
-        return True
-    except TwilioRestException as e:
-        print("Twilio send OTP error:", e)
-        return False
-
-
-def check_registration_otp(phone, code):
-    """Verify the OTP the user typed in against Twilio Verify."""
-    if not twilio_client:
-        # DEV MODE fallback: accept the fixed test code "000000"
-        return code == "000000"
-
-    try:
-        result = twilio_client.verify.v2.services(TWILIO_VERIFY_SID).verification_checks.create(
-            to=phone, code=code
-        )
-        return result.status == "approved"
-    except TwilioRestException as e:
-        print("Twilio check OTP error:", e)
-        return False
 
 connection = mysql.connector.connect(
     host=os.getenv("DB_HOST"),
@@ -164,96 +117,34 @@ def register():
         email = request.form["email"]
         password = request.form["password"]
         role = request.form["role"]
-        phone = request.form["phone"].strip()
 
-        # Basic E.164 sanity check, e.g. +919876543210
-        if not phone.startswith("+") or not phone[1:].isdigit():
-            flash("Enter phone number in international format, e.g. +919876543210")
-            return render_template("register.html")
+        query = """
+        INSERT INTO users (full_name, email, password, role)
+        VALUES (%s, %s, %s, %s)
+        """
 
-        cursor.execute("SELECT id FROM users WHERE email = %s OR phone = %s", (email, phone))
-        if cursor.fetchone():
-            flash("An account with this email or phone number already exists.")
-            return render_template("register.html")
+        cursor.execute(query, (full_name, email, password, role))
+        connection.commit()
 
-        if not send_registration_otp(phone):
-            flash("Could not send OTP. Please check the number and try again.")
-            return render_template("register.html")
+        new_user_id = cursor.lastrowid
 
-        # Stash the not-yet-created account in the session until the OTP is verified
-        session["pending_registration"] = {
-            "full_name": full_name,
-            "email": email,
-            "password": password,
-            "role": role,
-            "phone": phone
-        }
-
-        return redirect("/verify-otp")
-
-    return render_template("register.html")
-
-
-@app.route("/verify-otp", methods=["GET", "POST"])
-def verify_otp():
-    pending = session.get("pending_registration")
-
-    if not pending:
-        return redirect("/register")
-
-    if request.method == "POST":
-        code = request.form["otp"].strip()
-
-        if check_registration_otp(pending["phone"], code):
-            query = """
-            INSERT INTO users (full_name, email, password, role, phone)
-            VALUES (%s, %s, %s, %s, %s)
-            """
-            cursor.execute(query, (
-                pending["full_name"],
-                pending["email"],
-                pending["password"],
-                pending["role"],
-                pending["phone"]
-            ))
+        if role == "patient":
+            cursor.execute("""
+                INSERT INTO patients (patient_name, user_id)
+                VALUES (%s, %s)
+            """, (full_name, new_user_id))
             connection.commit()
 
-            new_user_id = cursor.lastrowid
+        if role == "doctor":
+            cursor.execute("""
+                INSERT INTO doctors (doctor_name, user_id)
+                VALUES (%s, %s)
+            """, (full_name, new_user_id))
+            connection.commit()
 
-            if pending["role"] == "patient":
-                cursor.execute("""
-                    INSERT INTO patients (patient_name, user_id)
-                    VALUES (%s, %s)
-                """, (pending["full_name"], new_user_id))
-                connection.commit()
+        return redirect("/login")
 
-            if pending["role"] == "doctor":
-                cursor.execute("""
-                    INSERT INTO doctors (doctor_name, user_id)
-                    VALUES (%s, %s)
-                """, (pending["full_name"], new_user_id))
-                connection.commit()
-
-            session.pop("pending_registration", None)
-            flash("Account verified and created. Please log in.")
-            return redirect("/login")
-
-        flash("Incorrect or expired OTP. Please try again.")
-        return render_template("verify_otp.html", phone=pending["phone"])
-
-    return render_template("verify_otp.html", phone=pending["phone"])
-
-
-@app.route("/resend-otp")
-def resend_otp():
-    pending = session.get("pending_registration")
-
-    if not pending:
-        return redirect("/register")
-
-    send_registration_otp(pending["phone"])
-    flash("OTP resent.")
-    return redirect("/verify-otp")
+    return render_template("register.html")
 
 @app.route("/add_user", methods=["GET", "POST"])
 def add_user():
