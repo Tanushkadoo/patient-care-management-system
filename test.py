@@ -256,7 +256,7 @@ USER'S MESSAGE:
         for attempt in range(3):
             try:
                 response = gemini_client.models.generate_content(
-                    model="gemini-3.6-flash",
+                    model="gemini-3.1-flash-lite",
                     contents=prompt
                 )
                 break
