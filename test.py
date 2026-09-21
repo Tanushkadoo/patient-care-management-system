@@ -1,5 +1,6 @@
 from io import BytesIO
 from datetime import date
+import time
 
 import os
 from dotenv import load_dotenv
@@ -252,10 +253,20 @@ USER'S MESSAGE:
 {user_message}
 """
 
-        response = gemini_client.models.generate_content(
-            model="gemini-3.6-flash",
-            contents=prompt
-        )
+        for attempt in range(3):
+            try:
+                response = gemini_client.models.generate_content(
+                    model="gemini-3.6-flash",
+                    contents=prompt
+                )
+                break
+
+            except Exception as e:
+                if "503" in str(e) or "UNAVAILABLE" in str(e):
+                    if attempt < 2:
+                        time.sleep(2)
+                        continue
+                raise
 
         return jsonify({
             "response": response.text
