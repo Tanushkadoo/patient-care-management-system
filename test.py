@@ -262,9 +262,9 @@ USER'S MESSAGE:
         })
 
     except Exception as e:
-        print("Gemini error:", e)
+        print("Gemini error:", repr(e))
         return jsonify({
-            "error": "Unable to connect to the AI assistant right now."
+            "error": str(e)
         }), 500
 def login():
     if request.method == "POST":
