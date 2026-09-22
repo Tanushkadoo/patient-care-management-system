@@ -533,3 +533,154 @@ footer { border-top: 1.5px solid var(--ink); background: var(--paper-card); }
   .services-grid { grid-template-columns: 1fr; }
   .stats-inner { grid-template-columns: 1fr 1fr; }
 } 
+/* ============================================================
+   LOGIN / REGISTER — matches homepage "health passbook" style
+   ============================================================ */
+
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--paper);
+  padding: 40px 20px;
+}
+
+.login-box {
+  width: 100%;
+  max-width: 420px;
+  background: var(--paper-card);
+  border: 1px solid var(--rule);
+  border-left: 6px solid var(--indigo);
+  border-radius: 4px;
+  box-shadow: 6px 6px 0 var(--marigold);
+  padding: 40px 32px;
+}
+
+.login-box h1 {
+  font-family: 'Fraunces', serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--indigo);
+  margin-bottom: 4px;
+  line-height: 1.2;
+}
+
+.login-box h2 {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: 16px;
+  color: var(--ink-soft);
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px dashed var(--rule-strong);
+}
+
+.login-box form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.login-box .input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.login-box label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.login-box input,
+.login-box select {
+  font-family: 'Work Sans', sans-serif;
+  font-size: 15px;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 10px 12px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.login-box input:focus,
+.login-box select:focus {
+  border-color: var(--marigold);
+}
+
+.login-box input::placeholder {
+  color: var(--ink-faint);
+}
+
+.login-box br {
+  display: none; /* spacing now handled by form gap */
+}
+
+.login-box button[type="submit"] {
+  margin-top: 8px;
+  font-family: 'Work Sans', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--paper);
+  background: var(--marigold);
+  border: none;
+  border-radius: 3px;
+  padding: 12px 20px;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 var(--marigold-deep);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.login-box button[type="submit"]:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 var(--marigold-deep);
+}
+
+.login-box button[type="submit"]:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 var(--marigold-deep);
+}
+
+.login-box p {
+  margin-top: 20px;
+  font-size: 14px;
+  color: var(--ink-soft);
+  text-align: center;
+}
+
+.login-box p a {
+  color: var(--indigo);
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.login-box > a {
+  display: inline-block;
+  margin-top: 16px;
+  font-size: 13px;
+  color: var(--ink-faint);
+  text-decoration: none;
+}
+
+.login-box > a:hover {
+  color: var(--indigo);
+}
+
+#google_translate_element {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font-size: 12px;
+}
+
+@media (max-width: 480px) {
+  .login-box { padding: 28px 20px; }
+  .login-box h1 { font-size: 19px; }
+}
