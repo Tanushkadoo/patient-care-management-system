@@ -729,11 +729,12 @@ def book_appointment():
     if request.method == "POST":
 
         doctor_id = request.form["doctor_id"]
-        from datetime import datetime
+        appointment_date = request.form["appointment_date"]
+        appointment_time = request.form["appointment_time"]
 
-        print(doctor_id)
-        print(appointment_date)
-        print(appointment_time)
+        print("DOCTOR ID:", doctor_id)
+        print("APPOINTMENT DATE:", appointment_date)
+        print("APPOINTMENT TIME:", appointment_time)
 
         query = """
         INSERT INTO appointments
