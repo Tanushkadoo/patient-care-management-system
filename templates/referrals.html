@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Referral Tracking</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+
+        .referral-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 25px;
+        }
+
+        .referral-table th,
+        .referral-table td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .referral-table th {
+            background: #f4f6f8;
+        }
+
+        .status {
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-weight: 600;
+        }
+
+        .pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .accepted {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .treatment {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .completed {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .urgent {
+            color: #c0392b;
+            font-weight: bold;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="page-container">
+
+    <h1>Referral Tracking</h1>
+
+    {% if session["role"] in ["doctor", "admin", "nurse"] %}
+
+    <a href="/create_referral">
+        + Create New Referral
+    </a>
+
+    {% endif %}
+
+
+    <table class="referral-table">
+
+        <thead>
+
+            <tr>
+
+                <th>ID</th>
+
+                <th>Patient</th>
+
+                <th>Referring Doctor</th>
+
+                <th>Receiving Doctor</th>
+
+                <th>Reason</th>
+
+                <th>Priority</th>
+
+                <th>Status</th>
+
+                <th>Date</th>
+
+                {% if session["role"] in ["doctor", "admin", "nurse"] %}
+                <th>Action</th>
+                {% endif %}
+
+            </tr>
+
+        </thead>
+
+
+        <tbody>
+
+        {% for referral in referrals %}
+
+        <tr>
+
+            <td>
+                {{ referral[0] }}
+            </td>
+
+            <td>
+                {{ referral[1] }}
+            </td>
+
+            <td>
+                Dr. {{ referral[2] }}
+            </td>
+
+            <td>
+
+                {% if referral[3] %}
+                    Dr. {{ referral[3] }}
+                {% else %}
+                    Not Assigned
+                {% endif %}
+
+            </td>
+
+            <td>
+                {{ referral[4] }}
+            </td>
+
+            <td>
+
+                {% if referral[5] == "Urgent" %}
+
+                    <span class="urgent">
+                        URGENT
+                    </span>
+
+                {% else %}
+
+                    {{ referral[5] }}
+
+                {% endif %}
+
+            </td>
+
+            <td>
+
+                {% if referral[6] == "Pending" %}
+
+                    <span class="status pending">
+                        Pending
+                    </span>
+
+                {% elif referral[6] == "Accepted" %}
+
+                    <span class="status accepted">
+                        Accepted
+                    </span>
+
+                {% elif referral[6] == "In Treatment" %}
+
+                    <span class="status treatment">
+                        In Treatment
+                    </span>
+
+                {% elif referral[6] == "Completed" %}
+
+                    <span class="status completed">
+                        Completed
+                    </span>
+
+                {% elif referral[6] == "Rejected" %}
+
+                    <span class="status rejected">
+                        Rejected
+                    </span>
+
+                {% endif %}
+
+            </td>
+
+            <td>
+                {{ referral[7] }}
+            </td>
+
+
+            {% if session["role"] in ["doctor", "admin", "nurse"] %}
+
+            <td>
+
+                {% if referral[6] == "Pending" %}
+
+                <a href="/update_referral/{{ referral[0] }}/Accepted">
+                    Accept
+                </a>
+
+                |
+
+                <a href="/update_referral/{{ referral[0] }}/Rejected">
+                    Reject
+                </a>
+
+
+                {% elif referral[6] == "Accepted" %}
+
+                <a href="/update_referral/{{ referral[0] }}/In%20Treatment">
+                    Start Treatment
+                </a>
+
+
+                {% elif referral[6] == "In Treatment" %}
+
+                <a href="/update_referral/{{ referral[0] }}/Completed">
+                    Complete
+                </a>
+
+
+                {% else %}
+
+                    Completed / Closed
+
+                {% endif %}
+
+            </td>
+
+            {% endif %}
+
+        </tr>
+
+        {% else %}
+
+        <tr>
+
+            <td colspan="9">
+                No referrals found.
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+    <br>
+
+    <a href="/dashboard">
+        ← Back to Dashboard
+    </a>
+
+</div>
+
+</body>
+
+</html>
