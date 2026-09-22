@@ -729,8 +729,7 @@ def book_appointment():
     if request.method == "POST":
 
         doctor_id = request.form["doctor_id"]
-        appointment_date = request.form["appointment_date"]
-        appointment_time = request.form["appointment_time"]
+        from datetime import datetime
 
         print(doctor_id)
         print(appointment_date)
