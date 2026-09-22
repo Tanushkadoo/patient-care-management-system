@@ -252,7 +252,6 @@ FORMATTING RULES:
 USER'S MESSAGE:
 {user_message}
 """
-
         for attempt in range(3):
             try:
                 response = gemini_client.models.generate_content(
@@ -264,8 +263,13 @@ USER'S MESSAGE:
             except Exception as e:
                 if "503" in str(e) or "UNAVAILABLE" in str(e):
                     if attempt < 2:
-                        time.sleep(2)
+                        time.sleep(2 ** (attempt + 1))
                         continue
+
+                    return jsonify({
+                        "response": "The GramCare AI Assistant is temporarily busy. Please try again in a moment."
+                    }), 200
+
                 raise
 
         return jsonify({
