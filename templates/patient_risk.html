@@ -617,6 +617,14 @@ form.addEventListener("submit", async function(event) {
         "Check My Risk";
 
 });
+    const urlParams = new URLSearchParams(window.location.search);
+
+const symptomsFromChatbot = urlParams.get("symptoms");
+
+if (symptomsFromChatbot) {
+    document.getElementById("symptoms").value =
+        symptomsFromChatbot;
+}
 
 </script>
 
