@@ -189,10 +189,66 @@ async function sendMessage() {
             botMessage.textContent =
                 data.error || "Something went wrong.";
         }
+messages.appendChild(botMessage);
 
-        messages.appendChild(botMessage);
 
-        messages.scrollTop = messages.scrollHeight;
+// Check whether the user's message is health-related
+
+const healthKeywords = [
+    "pain",
+    "fever",
+    "cough",
+    "headache",
+    "vomiting",
+    "dizziness",
+    "breathing",
+    "chest",
+    "bleeding",
+    "weakness",
+    "nausea",
+    "diarrhea",
+    "symptom",
+    "sick",
+    "ill",
+    "injury",
+    "rash",
+    "stomach"
+];
+
+const isHealthQuestion =
+    healthKeywords.some(keyword =>
+        message.toLowerCase().includes(keyword)
+    );
+
+
+// Show Check My Risk button
+
+if (isHealthQuestion) {
+
+    const riskButton =
+        document.createElement("button");
+
+    riskButton.textContent =
+        "Check My Risk";
+
+    riskButton.className =
+        "check-risk-btn";
+
+    riskButton.onclick = function () {
+
+        const encodedSymptoms =
+            encodeURIComponent(message);
+
+        window.location.href =
+            "/patient_risk?symptoms=" +
+            encodedSymptoms;
+    };
+
+    messages.appendChild(riskButton);
+}
+
+
+messages.scrollTop = messages.scrollHeight;
 
     } catch (error) {
 
