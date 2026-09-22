@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Patient Risk Assessment | GramCare</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #f5f8f7;
+            color: #1e2927;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .risk-page {
+            width: min(900px, calc(100% - 32px));
+            margin: auto;
+            padding: 30px 0 50px;
+        }
+
+        .header {
+            margin-bottom: 24px;
+        }
+
+        .back {
+            color: #176b62;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .brand {
+            margin-top: 22px;
+            color: #176b62;
+            font-size: 13px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        h1 {
+            margin: 6px 0;
+            font-size: 32px;
+        }
+
+        .subtitle {
+            color: #66716e;
+        }
+
+        .notice {
+            background: #e8f3f1;
+            border: 1px solid #cfe1dd;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid #dce5e2;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 8px 24px rgba(15, 63, 58, 0.05);
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        textarea,
+        input {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #cfdad6;
+            border-radius: 10px;
+            font: inherit;
+            outline: none;
+        }
+
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        textarea:focus,
+        input:focus {
+            border-color: #176b62;
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 15px;
+            margin-top: 18px;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 20px;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            background: #0f3f3a;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #176b62;
+        }
+
+        button:disabled {
+            opacity: 0.6;
+        }
+
+        .result {
+            margin-top: 20px;
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #dce5e2;
+            padding-bottom: 18px;
+        }
+
+        .result-header h2 {
+            margin: 0;
+        }
+
+        .badge {
+            padding: 8px 15px;
+            border-radius: 30px;
+            font-weight: bold;
+        }
+
+        .LOW {
+            background: #e9f6ee;
+            color: #246746;
+        }
+
+        .MODERATE {
+            background: #fff5dc;
+            color: #8a5b00;
+        }
+
+        .HIGH,
+        .URGENT {
+            background: #fbeaea;
+            color: #a52b2b;
+        }
+
+        .section {
+            padding: 17px 0;
+            border-bottom: 1px solid #dce5e2;
+        }
+
+        .section:last-child {
+            border-bottom: none;
+        }
+
+        .section h3 {
+            margin: 0 0 8px;
+        }
+
+        .section p,
+        .section li {
+            color: #66716e;
+            line-height: 1.5;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .error {
+            margin-top: 15px;
+            padding: 12px;
+            background: #fbeaea;
+            color: #a52b2b;
+            border-radius: 10px;
+        }
+
+        .safety {
+            color: #66716e;
+            font-size: 13px;
+            margin-top: 20px;
+        }
+
+        @media(max-width: 650px) {
+
+            .row {
+                grid-template-columns: 1fr;
+            }
+
+            .risk-page {
+                width: calc(100% - 22px);
+            }
+
+            h1 {
+                font-size: 26px;
+            }
+
+            .result-header {
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<main class="risk-page">
+
+    <div class="header">
+
+        <a href="/dashboard" class="back">
+            ← Back to Dashboard
+        </a>
+
+        <div class="brand">
+            GRAMCARE
+        </div>
+
+        <h1>
+            Patient Risk Assessment
+        </h1>
+
+        <p class="subtitle">
+            Describe your symptoms to get an
+            AI-assisted preliminary urgency assessment.
+        </p>
+
+    </div>
+
+
+    <div class="notice">
+
+        <strong>Important:</strong>
+
+        This is a preliminary screening tool,
+        not a diagnosis.
+
+        If you have severe or rapidly worsening
+        symptoms, seek urgent medical care.
+
+    </div>
+
+
+    <!-- INPUT CARD -->
+
+    <div class="card">
+
+        <form id="riskForm">
+
+            <label for="symptoms">
+                What symptoms are you experiencing?
+            </label>
+
+            <textarea
+                id="symptoms"
+                placeholder="Example: I have fever and cough for 2 days and I feel weak."
+                required></textarea>
+
+
+            <div class="row">
+
+                <div>
+
+                    <label for="duration">
+                        How long have you had these symptoms?
+                    </label>
+
+                    <input
+                        type="text"
+                        id="duration"
+                        placeholder="Example: 2 days">
+
+                </div>
+
+
+                <div>
+
+                    <label for="age">
+                        Age
+                    </label>
+
+                    <input
+                        type="number"
+                        id="age"
+                        min="0"
+                        max="120"
+                        placeholder="21">
+
+                </div>
+
+            </div>
+
+
+            <button
+                type="submit"
+                id="assessBtn">
+
+                Check My Risk
+
+            </button>
+
+        </form>
+
+    </div>
+
+
+    <!-- RESULT -->
+
+    <div
+        id="result"
+        class="card result hidden">
+
+        <div class="result-header">
+
+            <div>
+
+                <small>
+                    ASSESSMENT RESULT
+                </small>
+
+                <h2 id="riskLevel">
+                    -
+                </h2>
+
+            </div>
+
+
+            <span
+                id="riskBadge"
+                class="badge">
+
+                -
+
+            </span>
+
+        </div>
+
+
+        <div class="section">
+
+            <h3>
+                Why this level?
+            </h3>
+
+            <p id="riskReason"></p>
+
+        </div>
+
+
+        <div class="section">
+
+            <h3>
+                What you should do
+            </h3>
+
+            <ul id="riskActions"></ul>
+
+        </div>
+
+
+        <div
+            class="section"
+            id="warningSection">
+
+            <h3>
+                Warning signs
+            </h3>
+
+            <ul id="warningSigns"></ul>
+
+        </div>
+
+
+        <div class="section">
+
+            <h3>
+                Next step
+            </h3>
+
+            <p id="nextStep"></p>
+
+        </div>
+
+
+        <p class="safety">
+            AI-assisted screening does not replace
+            a qualified healthcare professional.
+        </p>
+
+    </div>
+
+
+    <p
+        id="error"
+        class="error hidden">
+    </p>
+
+</main>
+
+
+<script>
+
+const form = document.getElementById("riskForm");
+
+const button = document.getElementById("assessBtn");
+
+const result = document.getElementById("result");
+
+const errorBox = document.getElementById("error");
+
+
+function showList(elementId, items) {
+
+    const list =
+        document.getElementById(elementId);
+
+    list.innerHTML = "";
+
+    (items || []).forEach(item => {
+
+        const li =
+            document.createElement("li");
+
+        li.textContent = item;
+
+        list.appendChild(li);
+
+    });
+}
+
+
+form.addEventListener("submit", async function(event) {
+
+    event.preventDefault();
+
+    const symptoms =
+        document.getElementById("symptoms")
+        .value.trim();
+
+    const duration =
+        document.getElementById("duration")
+        .value.trim();
+
+    const age =
+        document.getElementById("age")
+        .value.trim();
+
+
+    if (!symptoms) {
+
+        errorBox.textContent =
+            "Please describe your symptoms first.";
+
+        errorBox.classList.remove("hidden");
+
+        return;
+    }
+
+
+    errorBox.classList.add("hidden");
+
+    result.classList.add("hidden");
+
+    button.disabled = true;
+
+    button.textContent = "Assessing...";
+
+
+    try {
+
+        const response =
+            await fetch("/api/patient-risk", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body: JSON.stringify({
+
+                    symptoms: symptoms,
+
+                    duration: duration,
+
+                    age: age
+
+                })
+
+            });
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.error ||
+                "Unable to assess symptoms."
+            );
+
+        }
+
+
+        const level =
+            data.risk_level || "MODERATE";
+
+
+        document.getElementById(
+            "riskLevel"
+        ).textContent = level;
+
+
+        const badge =
+            document.getElementById(
+                "riskBadge"
+            );
+
+        badge.textContent = level;
+
+        badge.className =
+            "badge " + level;
+
+
+        document.getElementById(
+            "riskReason"
+        ).textContent =
+            data.reason || "";
+
+
+        showList(
+            "riskActions",
+            data.actions
+        );
+
+
+        showList(
+            "warningSigns",
+            data.warning_signs
+        );
+
+
+        document.getElementById(
+            "nextStep"
+        ).textContent =
+            data.next_step || "";
+
+
+        if (
+            data.warning_signs &&
+            data.warning_signs.length
+        ) {
+
+            document.getElementById(
+                "warningSection"
+            ).classList.remove("hidden");
+
+        } else {
+
+            document.getElementById(
+                "warningSection"
+            ).classList.add("hidden");
+
+        }
+
+
+        result.classList.remove("hidden");
+
+
+        result.scrollIntoView({
+            behavior: "smooth"
+        });
+
+
+    } catch (error) {
+
+        errorBox.textContent =
+            error.message ||
+            "Something went wrong.";
+
+        errorBox.classList.remove("hidden");
+
+    }
+
+
+    button.disabled = false;
+
+    button.textContent =
+        "Check My Risk";
+
+});
+
+</script>
+
+</body>
+
+</html>
