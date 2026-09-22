@@ -668,7 +668,264 @@ def delete_user(id):
 def logout():
     session.clear()
     return redirect("/login")
-    
+
+# =========================================================
+# REFERRAL TRACKING SYSTEM
+# =========================================================
+
+@app.route("/create_referral", methods=["GET", "POST"])
+def create_referral():
+
+    if "user" not in session:
+        return redirect("/login")
+
+    if session["role"] not in ["doctor", "admin", "nurse"]:
+        return "Access Denied"
+
+    # Get all patients
+    cursor.execute("""
+        SELECT id, patient_name
+        FROM patients
+        ORDER BY patient_name
+    """)
+    patients = cursor.fetchall()
+
+    # Get all doctors
+    cursor.execute("""
+        SELECT id, doctor_name, specialization
+        FROM doctors
+        ORDER BY doctor_name
+    """)
+    doctors = cursor.fetchall()
+
+    # Get logged-in doctor's database ID
+    referring_doctor_id = None
+
+    if session["role"] == "doctor":
+
+        cursor.execute("""
+            SELECT id
+            FROM doctors
+            WHERE user_id = %s
+        """, (session["user_id"],))
+
+        doctor = cursor.fetchone()
+
+        if doctor is None:
+            return "Doctor profile not found."
+
+        referring_doctor_id = doctor[0]
+
+    if request.method == "POST":
+
+        patient_id = request.form["patient_id"]
+        receiving_doctor_id = request.form.get("receiving_doctor_id")
+        reason = request.form["reason"]
+        clinical_notes = request.form.get("clinical_notes", "")
+        priority = request.form["priority"]
+
+        # Admin/Nurse can select the referring doctor
+        if session["role"] in ["admin", "nurse"]:
+            referring_doctor_id = request.form["referring_doctor_id"]
+
+        if not receiving_doctor_id:
+            receiving_doctor_id = None
+
+        cursor.execute("""
+            INSERT INTO referrals
+            (
+                patient_id,
+                referring_doctor_id,
+                receiving_doctor_id,
+                reason,
+                clinical_notes,
+                priority,
+                status
+            )
+            VALUES (%s, %s, %s, %s, %s, %s, 'Pending')
+        """, (
+            patient_id,
+            referring_doctor_id,
+            receiving_doctor_id,
+            reason,
+            clinical_notes,
+            priority
+        ))
+
+        connection.commit()
+
+        return redirect("/referrals")
+
+    return render_template(
+        "create_referral.html",
+        patients=patients,
+        doctors=doctors
+    )
+
+
+@app.route("/referrals")
+def referrals():
+
+    if "user" not in session:
+        return redirect("/login")
+
+    role = session["role"]
+
+    if role == "doctor":
+
+        cursor.execute("""
+            SELECT
+                r.id,
+                p.patient_name,
+                d1.doctor_name,
+                d2.doctor_name,
+                r.reason,
+                r.priority,
+                r.status,
+                r.referral_date
+            FROM referrals r
+
+            JOIN patients p
+                ON r.patient_id = p.id
+
+            JOIN doctors d1
+                ON r.referring_doctor_id = d1.id
+
+            LEFT JOIN doctors d2
+                ON r.receiving_doctor_id = d2.id
+
+            WHERE
+                r.referring_doctor_id = (
+                    SELECT id
+                    FROM doctors
+                    WHERE user_id = %s
+                    LIMIT 1
+                )
+
+                OR
+
+                r.receiving_doctor_id = (
+                    SELECT id
+                    FROM doctors
+                    WHERE user_id = %s
+                    LIMIT 1
+                )
+
+            ORDER BY r.referral_date DESC
+        """, (session["user_id"], session["user_id"]))
+
+    elif role == "patient":
+
+        cursor.execute("""
+            SELECT
+                r.id,
+                p.patient_name,
+                d1.doctor_name,
+                d2.doctor_name,
+                r.reason,
+                r.priority,
+                r.status,
+                r.referral_date
+            FROM referrals r
+
+            JOIN patients p
+                ON r.patient_id = p.id
+
+            JOIN doctors d1
+                ON r.referring_doctor_id = d1.id
+
+            LEFT JOIN doctors d2
+                ON r.receiving_doctor_id = d2.id
+
+            WHERE p.user_id = %s
+
+            ORDER BY r.referral_date DESC
+        """, (session["user_id"],))
+
+    else:
+
+        cursor.execute("""
+            SELECT
+                r.id,
+                p.patient_name,
+                d1.doctor_name,
+                d2.doctor_name,
+                r.reason,
+                r.priority,
+                r.status,
+                r.referral_date
+            FROM referrals r
+
+            JOIN patients p
+                ON r.patient_id = p.id
+
+            JOIN doctors d1
+                ON r.referring_doctor_id = d1.id
+
+            LEFT JOIN doctors d2
+                ON r.receiving_doctor_id = d2.id
+
+            ORDER BY r.referral_date DESC
+        """)
+
+    referral_list = cursor.fetchall()
+
+    return render_template(
+        "referrals.html",
+        referrals=referral_list
+    )
+
+
+@app.route("/update_referral/<int:id>/<status>")
+def update_referral(id, status):
+
+    if "user" not in session:
+        return redirect("/login")
+
+    if session["role"] not in ["doctor", "admin", "nurse"]:
+        return "Access Denied"
+
+    allowed_statuses = [
+        "Pending",
+        "Accepted",
+        "In Treatment",
+        "Completed",
+        "Rejected"
+    ]
+
+    if status not in allowed_statuses:
+        return "Invalid Status"
+
+    if status == "Accepted":
+
+        cursor.execute("""
+            UPDATE referrals
+            SET status = %s,
+                accepted_at = NOW()
+            WHERE id = %s
+        """, (status, id))
+
+    elif status == "Completed":
+
+        cursor.execute("""
+            UPDATE referrals
+            SET status = %s,
+                completed_at = NOW()
+            WHERE id = %s
+        """, (status, id))
+
+    else:
+
+        cursor.execute("""
+            UPDATE referrals
+            SET status = %s
+            WHERE id = %s
+        """, (status, id))
+
+    connection.commit()
+
+    return redirect("/referrals")
+
 @app.route("/dashboard")
 def dashboard():
 
