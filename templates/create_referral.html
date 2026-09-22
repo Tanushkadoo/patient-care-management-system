@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Create Referral</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+<div class="page-container">
+
+    <h1>Create Patient Referral</h1>
+
+    <form method="POST">
+
+        {% if session["role"] in ["admin", "nurse"] %}
+
+        <label>Referring Doctor</label>
+
+        <select name="referring_doctor_id" required>
+
+            <option value="">
+                Select Referring Doctor
+            </option>
+
+            {% for doctor in doctors %}
+
+            <option value="{{ doctor[0] }}">
+                Dr. {{ doctor[1] }}
+                {% if doctor[2] %}
+                - {{ doctor[2] }}
+                {% endif %}
+            </option>
+
+            {% endfor %}
+
+        </select>
+
+        {% endif %}
+
+
+        <label>Patient</label>
+
+        <select name="patient_id" required>
+
+            <option value="">
+                Select Patient
+            </option>
+
+            {% for patient in patients %}
+
+            <option value="{{ patient[0] }}">
+                {{ patient[1] }}
+            </option>
+
+            {% endfor %}
+
+        </select>
+
+
+        <label>Receiving Doctor</label>
+
+        <select name="receiving_doctor_id">
+
+            <option value="">
+                Select Receiving Doctor
+            </option>
+
+            {% for doctor in doctors %}
+
+            <option value="{{ doctor[0] }}">
+                Dr. {{ doctor[1] }}
+                {% if doctor[2] %}
+                - {{ doctor[2] }}
+                {% endif %}
+            </option>
+
+            {% endfor %}
+
+        </select>
+
+
+        <label>Priority</label>
+
+        <select name="priority" required>
+
+            <option value="Normal">
+                Normal
+            </option>
+
+            <option value="High">
+                High
+            </option>
+
+            <option value="Urgent">
+                Urgent
+            </option>
+
+        </select>
+
+
+        <label>Referral Reason</label>
+
+        <textarea
+            name="reason"
+            rows="4"
+            required
+            placeholder="Enter reason for referral"></textarea>
+
+
+        <label>Clinical Notes</label>
+
+        <textarea
+            name="clinical_notes"
+            rows="5"
+            placeholder="Enter relevant clinical information"></textarea>
+
+
+        <button type="submit">
+            Create Referral
+        </button>
+
+    </form>
+
+    <br>
+
+    <a href="/referrals">
+        View Referral Tracking
+    </a>
+
+</div>
+
+</body>
+
+</html>
