@@ -682,6 +682,22 @@ def create_referral():
     if session["role"] not in ["doctor", "admin", "nurse"]:
         return "Access Denied"
 
+    print("DATABASE:", os.getenv("DB_NAME"))
+
+    cursor.execute("SELECT DATABASE()")
+    print("ACTUAL DATABASE:", cursor.fetchone())
+
+    cursor.execute("SHOW TABLES LIKE 'referrals'")
+    print("REFERRALS TABLE:", cursor.fetchone())
+
+    # Get all patients
+    cursor.execute("""
+        SELECT id, patient_name
+        FROM patients
+        ORDER BY patient_name
+    """)
+    patients = cursor.fetchall()
+
     # Get all patients
     cursor.execute("""
         SELECT id, patient_name
