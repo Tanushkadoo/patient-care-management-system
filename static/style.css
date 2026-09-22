@@ -684,3 +684,21 @@ footer { border-top: 1.5px solid var(--ink); background: var(--paper-card); }
   .login-box { padding: 28px 20px; }
   .login-box h1 { font-size: 19px; }
 }
+/* Force override any conflicting .login-container rules */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+.login-container.login-page,
+.login-container.register-page {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 100vh !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 40px 20px !important;
+  box-sizing: border-box;
+}
