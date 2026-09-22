@@ -364,44 +364,84 @@ HIGH_CONCERN_TERMS = [
 ]
 
 
-def assess_patient_risk(symptoms, duration=""):
-    text = f"{symptoms} {duration}".lower().strip()
+def assess_patient_risk(symptoms, duration):
 
-    matched_red_flags = []
+    text = f"{symptoms} {duration}".lower()
 
-    for label, patterns in RED_FLAG_PATTERNS:
-        if any(pattern in text for pattern in patterns):
-            matched_red_flags.append(label)
-
-    # Emergency symptoms always override other levels
-    if matched_red_flags:
-        return "URGENT", matched_red_flags
-
-    high_matches = [
-        term for term in HIGH_CONCERN_TERMS
-        if term in text
+    urgent_patterns = [
+        "chest pain",
+        "severe chest pain",
+        "difficulty breathing",
+        "cannot breathe",
+        "can't breathe",
+        "shortness of breath",
+        "face drooping",
+        "arm weakness",
+        "slurred speech",
+        "unconscious",
+        "passed out",
+        "severe bleeding",
+        "vomiting blood"
     ]
 
-    if high_matches:
-        return "HIGH", high_matches
+    high_patterns = [
+        "severe pain",
+        "persistent vomiting",
+        "repeated vomiting",
+        "fainting",
+        "confusion",
+        "high fever",
+        "worsening pain",
+        "getting worse",
+        "rapidly worsening",
+        "severe weakness"
+    ]
 
-    symptom_markers = [
+    moderate_patterns = [
         "fever",
         "cough",
-        "cold",
-        "headache",
-        "dizziness",
         "vomiting",
         "diarrhea",
-        "pain",
+        "dizziness",
+        "headache",
+        "stomach pain",
+        "abdominal pain",
         "weakness",
         "rash",
         "sore throat",
-        "body ache",
         "nausea",
-        "stomach ache",
-        "abdominal pain"
+        "body ache"
     ]
+
+    urgent_matches = [
+        term for term in urgent_patterns
+        if term in text
+    ]
+
+    high_matches = [
+        term for term in high_patterns
+        if term in text
+    ]
+
+    moderate_matches = [
+        term for term in moderate_patterns
+        if term in text
+    ]
+
+    if urgent_matches:
+        return "URGENT", urgent_matches
+
+    elif high_matches:
+        return "HIGH", high_matches
+
+    elif len(moderate_matches) >= 2:
+        return "MODERATE", moderate_matches
+
+    elif len(moderate_matches) == 1:
+        return "LOW", moderate_matches
+
+    else:
+        return "LOW", []
 
     marker_count = sum(
         1 for marker in symptom_markers
