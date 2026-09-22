@@ -277,6 +277,328 @@ USER'S MESSAGE:
         return jsonify({
             "error": str(e)
         }), 500
+        # ================= PATIENT RISK ASSESSMENT =================
+
+RED_FLAG_PATTERNS = [
+    (
+        "severe breathing difficulty",
+        [
+            "severe difficulty breathing",
+            "can't breathe",
+            "cannot breathe",
+            "gasping",
+            "choking",
+            "struggling to breathe"
+        ]
+    ),
+    (
+        "possible stroke warning signs",
+        [
+            "face drooping",
+            "face is drooping",
+            "one side of face",
+            "arm weakness",
+            "one sided weakness",
+            "one-sided weakness",
+            "slurred speech",
+            "speech difficulty",
+            "can't speak",
+            "cannot speak"
+        ]
+    ),
+    (
+        "severe chest symptoms",
+        [
+            "severe chest pain",
+            "crushing chest pain",
+            "chest pain spreading",
+            "chest pain radiating",
+            "pressure in chest",
+            "tightness in chest",
+            "chest tightness"
+        ]
+    ),
+    (
+        "loss of consciousness",
+        [
+            "unconscious",
+            "passed out",
+            "not responding",
+            "lost consciousness"
+        ]
+    ),
+    (
+        "severe bleeding",
+        [
+            "vomiting blood",
+            "coughing blood",
+            "blood won't stop",
+            "blood will not stop",
+            "severe bleeding"
+        ]
+    ),
+    (
+        "possible severe allergic reaction",
+        [
+            "throat swelling",
+            "tongue swelling",
+            "swelling of throat"
+        ]
+    )
+]
+
+
+HIGH_CONCERN_TERMS = [
+    "severe pain",
+    "very severe pain",
+    "persistent vomiting",
+    "repeated vomiting",
+    "fainting",
+    "confusion",
+    "difficulty breathing",
+    "shortness of breath",
+    "high fever",
+    "worsening pain",
+    "getting worse",
+    "rapidly worsening"
+]
+
+
+def assess_patient_risk(symptoms, duration=""):
+    text = f"{symptoms} {duration}".lower().strip()
+
+    matched_red_flags = []
+
+    for label, patterns in RED_FLAG_PATTERNS:
+        if any(pattern in text for pattern in patterns):
+            matched_red_flags.append(label)
+
+    # Emergency symptoms always override other levels
+    if matched_red_flags:
+        return "URGENT", matched_red_flags
+
+    high_matches = [
+        term for term in HIGH_CONCERN_TERMS
+        if term in text
+    ]
+
+    if high_matches:
+        return "HIGH", high_matches
+
+    symptom_markers = [
+        "fever",
+        "cough",
+        "cold",
+        "headache",
+        "dizziness",
+        "vomiting",
+        "diarrhea",
+        "pain",
+        "weakness",
+        "rash",
+        "sore throat",
+        "body ache",
+        "nausea",
+        "stomach ache",
+        "abdominal pain"
+    ]
+
+    marker_count = sum(
+        1 for marker in symptom_markers
+        if marker in text
+    )
+
+    if marker_count >= 2:
+        return "MODERATE", symptom_markers
+
+    return "LOW", symptom_markers
+
+
+def build_risk_response(risk_level, matched_terms):
+
+    if risk_level == "URGENT":
+
+        actions = [
+            "Seek urgent medical care now or go to the nearest emergency department.",
+            "If the situation is severe or worsening, call 108 for emergency assistance.",
+            "Do not rely on this tool to rule out an emergency."
+        ]
+
+        warning_signs = [
+            "Severe breathing difficulty, severe chest symptoms, stroke-like symptoms, loss of consciousness, or uncontrolled bleeding."
+        ]
+
+        next_step = "Get urgent professional medical assessment now."
+
+    elif risk_level == "HIGH":
+
+        actions = [
+            "Arrange a medical assessment as soon as possible, preferably today.",
+            "Do not delay care if the symptoms are worsening or becoming severe.",
+            "Use GramCare appointments or nearby facilities to find care."
+        ]
+
+        warning_signs = [
+            "Severe breathing difficulty, chest pressure or severe chest pain, fainting, confusion, or rapidly worsening symptoms."
+        ]
+
+        next_step = "Contact a doctor or PHC promptly for an in-person assessment."
+
+    elif risk_level == "MODERATE":
+
+        actions = [
+            "Monitor your symptoms and note whether they are improving or getting worse.",
+            "Consider booking a doctor or PHC appointment if symptoms persist.",
+            "Rest and maintain normal hydration where appropriate."
+        ]
+
+        warning_signs = [
+            "New breathing difficulty, chest pain, fainting, confusion, or sudden worsening."
+        ]
+
+        next_step = "Arrange a medical consultation if symptoms continue or worsen."
+
+    else:
+
+        actions = [
+            "Monitor your symptoms and note any changes.",
+            "Rest and maintain normal hydration where appropriate.",
+            "Seek medical advice if symptoms persist, worsen, or new warning signs appear."
+        ]
+
+        warning_signs = [
+            "New severe pain, breathing difficulty, chest symptoms, fainting, confusion, or rapid worsening."
+        ]
+
+        next_step = "Continue monitoring and seek professional advice if symptoms do not improve."
+
+    reason_map = {
+        "URGENT": "A reported red-flag symptom can require immediate professional assessment.",
+        "HIGH": "The reported symptoms contain features that may need prompt medical assessment.",
+        "MODERATE": "The reported symptoms suggest that medical advice may be useful, particularly if they persist or worsen.",
+        "LOW": "No clear emergency red flag was detected from the information provided, but this does not rule out a medical problem."
+    }
+
+    return {
+        "risk_level": risk_level,
+        "reason": reason_map[risk_level],
+        "actions": actions,
+        "warning_signs": warning_signs,
+        "next_step": next_step
+    }
+
+
+@app.route("/patient_risk")
+def patient_risk():
+
+    if "user" not in session:
+        return redirect("/login")
+
+    return render_template("patient_risk.html")
+
+
+@app.route("/api/patient-risk", methods=["POST"])
+def api_patient_risk():
+
+    if "user" not in session:
+        return jsonify({
+            "error": "Please login first"
+        }), 401
+
+    data = request.get_json(silent=True) or {}
+
+    symptoms = str(
+        data.get("symptoms", "")
+    ).strip()
+
+    duration = str(
+        data.get("duration", "")
+    ).strip()
+
+    age = str(
+        data.get("age", "")
+    ).strip()
+
+    if not symptoms:
+        return jsonify({
+            "error": "Please describe your symptoms."
+        }), 400
+
+    try:
+
+        risk_level, matched_terms = assess_patient_risk(
+            symptoms,
+            duration
+        )
+
+        result = build_risk_response(
+            risk_level,
+            matched_terms
+        )
+
+        # Gemini only explains the result.
+        # The red-flag rules determine the risk level.
+        try:
+
+            prompt = f"""
+You are assisting GramCare with a preliminary
+symptom-screening explanation.
+
+Do NOT diagnose a disease.
+Do NOT prescribe medicines or dosages.
+
+The system has already assigned this screening level:
+
+{risk_level}
+
+Patient symptoms:
+{symptoms}
+
+Duration:
+{duration or "Not provided"}
+
+Age:
+{age or "Not provided"}
+
+Write ONE short and simple explanation
+(maximum 2 sentences) for why this screening
+level was assigned.
+
+Do not claim certainty.
+
+If the level is URGENT, clearly say that
+urgent professional medical assessment is needed.
+
+Return only the explanation.
+"""
+
+            ai_response = gemini_client.models.generate_content(
+                model="gemini-3.1-flash-lite",
+                contents=prompt
+            )
+
+            if getattr(ai_response, "text", None):
+                result["reason"] = ai_response.text.strip()
+
+        except Exception as ai_error:
+
+            print(
+                "Patient risk Gemini error:",
+                repr(ai_error)
+            )
+
+        return jsonify(result)
+
+    except Exception as e:
+
+        print(
+            "Patient risk error:",
+            repr(e)
+        )
+
+        return jsonify({
+            "error": "Unable to assess the symptoms right now. Please try again."
+        }), 500
 def login():
     if request.method == "POST":
         email = request.form["email"]
