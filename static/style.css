@@ -532,4 +532,4 @@ footer { border-top: 1.5px solid var(--ink); background: var(--paper-card); }
   .hero-title { font-size: 38px; }
   .services-grid { grid-template-columns: 1fr; }
   .stats-inner { grid-template-columns: 1fr 1fr; }
-}
+} 
